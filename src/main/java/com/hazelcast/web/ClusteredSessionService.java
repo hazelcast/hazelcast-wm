@@ -19,13 +19,13 @@ package com.hazelcast.web;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.instance.OutOfMemoryErrorDispatcher;
-import com.hazelcast.internal.serialization.SerializationService;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import com.hazelcast.map.EntryProcessor;
 import com.hazelcast.map.impl.MapEntrySimple;
 import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.spi.impl.SerializationServiceSupport;
+import com.hazelcast.spi.serialization.SerializationService;
 import com.hazelcast.util.EmptyStatement;
 import com.hazelcast.util.ExceptionUtil;
 import com.hazelcast.web.entryprocessor.DeleteSessionEntryProcessor;
@@ -107,13 +107,13 @@ public class ClusteredSessionService {
         ensureInstance();
         es.scheduleWithFixedDelay(new Runnable() {
             public void run() {
-            try {
-                ensureInstance();
-            } catch (Exception e) {
-                if (LOGGER.isFinestEnabled()) {
-                    LOGGER.finest("Cannot connect hazelcast server", e);
+                try {
+                    ensureInstance();
+                } catch (Exception e) {
+                    if (LOGGER.isFinestEnabled()) {
+                        LOGGER.finest("Cannot connect hazelcast server", e);
+                    }
                 }
-            }
             }
         }, 2 * CLUSTER_CHECK_INTERVAL, CLUSTER_CHECK_INTERVAL, TimeUnit.SECONDS);
     }

@@ -1,7 +1,7 @@
 package com.hazelcast.wm.test;
 
 import com.hazelcast.core.IMap;
-import com.hazelcast.internal.serialization.SerializationService;
+import com.hazelcast.spi.serialization.SerializationService;
 import com.hazelcast.web.SessionState;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
 
     String testName;
+
     protected WebFilterSlowTests(String serverXml1) {
         super(serverXml1);
     }

@@ -43,6 +43,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
+import static com.hazelcast.web.HazelcastInstanceLoader.INSTANCE_NAME;
+import static com.hazelcast.web.HazelcastInstanceLoader.CLIENT_CONFIG_LOCATION;
+import static com.hazelcast.web.HazelcastInstanceLoader.CONFIG_LOCATION;
+import static com.hazelcast.web.HazelcastInstanceLoader.STICKY_SESSION_CONFIG;
+import static com.hazelcast.web.HazelcastInstanceLoader.SESSION_TTL_CONFIG;
+import static com.hazelcast.web.HazelcastInstanceLoader.MAP_NAME;
+import static com.hazelcast.web.HazelcastInstanceLoader.USE_CLIENT;
+
 /**
  * Provides clustered sessions by backing session data with an {@link IMap}.
  * <p/>
@@ -166,15 +174,11 @@ public class WebFilter implements Filter {
         loadProperties();
         initCookieParams();
         initParams();
-        String mapName = getParam("map-name");
-        if (mapName == null) {
-            mapName = "_web_" + servletContext.getServletContextName();
-        }
-        clusteredSessionService = new ClusteredSessionService(filterConfig, properties, mapName);
+        clusteredSessionService = new ClusteredSessionService(filterConfig, properties);
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("sticky:" + stickySession + ", shutdown-on-destroy: " + shutdownOnDestroy
-                    + ", map-name: " + mapName);
+                    + ", map-name: " + properties.getProperty(MAP_NAME));
         }
     }
 
@@ -216,12 +220,18 @@ public class WebFilter implements Filter {
         if (properties == null) {
             properties = new Properties();
         }
-        setProperty(HazelcastInstanceLoader.CONFIG_LOCATION);
-        setProperty(HazelcastInstanceLoader.INSTANCE_NAME);
-        setProperty(HazelcastInstanceLoader.USE_CLIENT);
-        setProperty(HazelcastInstanceLoader.CLIENT_CONFIG_LOCATION);
-        setProperty(HazelcastInstanceLoader.STICKY_SESSION_CONFIG);
-        setProperty(HazelcastInstanceLoader.SESSION_TTL_CONFIG);
+        setProperty(CONFIG_LOCATION);
+        setProperty(INSTANCE_NAME);
+        setProperty(USE_CLIENT);
+        setProperty(CLIENT_CONFIG_LOCATION);
+        setProperty(STICKY_SESSION_CONFIG);
+        setProperty(SESSION_TTL_CONFIG);
+
+        String mapName = getParam(MAP_NAME);
+        if (mapName == null) {
+            mapName = "_web_" + servletContext.getServletContextName();
+        }
+        properties.setProperty(MAP_NAME, mapName);
     }
 
     private void setProperty(String propertyName) {

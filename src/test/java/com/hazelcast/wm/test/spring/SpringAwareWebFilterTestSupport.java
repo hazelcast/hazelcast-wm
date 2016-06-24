@@ -21,7 +21,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public abstract class SpringAwareWebFilterTestSupport extends AbstractWebFilterTest {
 

@@ -75,7 +75,7 @@ import static com.hazelcast.web.HazelcastInstanceLoader.USE_CLIENT;
  * destroyed (Default: {@code true})</li>
  * <li>{@code map-name}: Names the {@link IMap} the filter should use to persist session details (Default:
  * {@code "_web_" + ServletContext.getServletContextName()}; e.g. "_web_MyApp")</li>
- * * <li>{@code session-ttl-seconds}: Sets the {@link MapConfig#setMaxIdleSeconds(int)} (int) time-to-live} for
+ *  * <li>{@code session-ttl-seconds}: Sets the {@link MapConfig#setMaxIdleSeconds(int)} (int) time-to-live} for
  * the {@link IMap} used to persist session details (Default: Uses the existing {@link MapConfig} setting
  * for the {@link IMap}, which defaults to infinite)</li>
  * <li>{@code sticky-session}: When enabled, optimizes {@link IMap} interactions by assuming individual sessions
@@ -98,12 +98,15 @@ import static com.hazelcast.web.HazelcastInstanceLoader.USE_CLIENT;
  */
 public class WebFilter implements Filter {
 
+    /**
+     * This is prefix for hazelcast session attributes
+     */
+    public static final String WEB_FILTER_ATTRIBUTE_KEY = WebFilter.class.getName();
+
     protected static final ILogger LOGGER = Logger.getLogger(WebFilter.class);
     protected static final LocalCacheEntry NULL_ENTRY = new LocalCacheEntry(false);
     protected static final String HAZELCAST_REQUEST = "*hazelcast-request";
     protected static final String HAZELCAST_SESSION_COOKIE_NAME = "hazelcast.sessionId";
-
-    private static final String WEB_FILTER_ATTRIBUTE_KEY = WebFilter.class.getName();
 
     protected ServletContext servletContext;
     protected FilterConfig filterConfig;

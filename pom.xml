@@ -23,7 +23,7 @@
     <name>hazelcast-wm</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-wm</artifactId>
-    <version>3.7</version>
+    <version>3.7.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Hazelcast In-Memory DataGrid Web Module Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -611,7 +611,7 @@
         <profile>
             <id>master</id>
             <properties>
-                <hazelcast.version>3.7</hazelcast.version>
+                <hazelcast.version>3.7-SNAPSHOT</hazelcast.version>
             </properties>
             <dependencies>
                 <dependency>

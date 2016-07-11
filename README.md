@@ -1,2 +1,3 @@
 # hazelcast-wm
 
+test

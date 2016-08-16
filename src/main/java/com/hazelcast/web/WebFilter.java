@@ -115,6 +115,7 @@ public class WebFilter implements Filter {
 
     private String sessionCookieName = HAZELCAST_SESSION_COOKIE_NAME;
     private String sessionCookieDomain;
+    private String sessionCookiePath;
     private boolean sessionCookieSecure;
     private boolean sessionCookieHttpOnly;
     private boolean stickySession = true;
@@ -214,6 +215,10 @@ public class WebFilter implements Filter {
         String cookieHttpOnly = getParam("cookie-http-only");
         if (cookieHttpOnly != null) {
             sessionCookieHttpOnly = Boolean.valueOf(cookieHttpOnly);
+        }
+        String cookiePath = getParam("cookie-path");
+        if (cookiePath != null) {
+            sessionCookiePath = cookiePath;
         }
     }
 
@@ -321,7 +326,19 @@ public class WebFilter implements Filter {
 
     private void addSessionCookie(final HazelcastRequestWrapper req, final String sessionId) {
         final Cookie sessionCookie = new Cookie(sessionCookieName, sessionId);
-        String path = req.getContextPath();
+        
+        //Changes Added to take the session path from Init Parameter if passed
+        //Context Path will be used as Session Path if the Init Param is not passed to keep it backward compatible
+        String path=null;
+        
+        if(null != sessionCookiePath && !sessionCookiePath.isEmpty()){
+        	path = sessionCookiePath;
+        }
+        else
+        {
+        	path = req.getContextPath();
+        }
+        
         if ("".equals(path)) {
             path = "/";
         }

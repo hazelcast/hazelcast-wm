@@ -37,7 +37,7 @@
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>3.7-EA</hazelcast.version>
+        <hazelcast.version>3.7</hazelcast.version>
 
         <log4j.version>1.2.12</log4j.version>
         <junit.version>4.12</junit.version>

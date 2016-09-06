@@ -35,7 +35,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Properties;
@@ -105,7 +104,6 @@ public class WebFilter implements Filter {
 
     protected static final ILogger LOGGER = Logger.getLogger(WebFilter.class);
     protected static final LocalCacheEntry NULL_ENTRY = new LocalCacheEntry(false);
-    protected static final String HAZELCAST_REQUEST = "*hazelcast-request";
     protected static final String HAZELCAST_SESSION_COOKIE_NAME = "hazelcast.sessionId";
 
     protected ServletContext servletContext;
@@ -244,7 +242,7 @@ public class WebFilter implements Filter {
         }
     }
 
-    protected HazelcastHttpSession createNewSession(RequestWrapper requestWrapper, String existingSessionId) {
+    protected HazelcastHttpSession createNewSession(HazelcastRequestWrapper requestWrapper, String existingSessionId) {
         String id = existingSessionId == null ? generateSessionId() : existingSessionId;
         if (requestWrapper.getOriginalSession(false) != null) {
             LOGGER.finest("Original session exists!!!");
@@ -311,7 +309,7 @@ public class WebFilter implements Filter {
         return session;
     }
 
-    private void addSessionCookie(final RequestWrapper req, final String sessionId) {
+    private void addSessionCookie(final HazelcastRequestWrapper req, final String sessionId) {
         final Cookie sessionCookie = new Cookie(sessionCookieName, sessionId);
         String path = req.getContextPath();
         if ("".equals(path)) {
@@ -338,7 +336,7 @@ public class WebFilter implements Filter {
         req.res.addCookie(sessionCookie);
     }
 
-    private String getSessionCookie(final RequestWrapper req) {
+    private String getSessionCookie(final HazelcastRequestWrapper req) {
         final Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (final Cookie cookie : cookies) {
@@ -355,34 +353,18 @@ public class WebFilter implements Filter {
     @Override
     public final void doFilter(ServletRequest req, ServletResponse res, final FilterChain chain)
             throws IOException, ServletException {
-        if (!(req instanceof HttpServletRequest)) {
-            chain.doFilter(req, res);
-        } else {
-            if (req instanceof RequestWrapper) {
-                LOGGER.finest("Request is instance of RequestWrapper! Continue...");
-                chain.doFilter(req, res);
-                return;
+
+        HazelcastRequestWrapper requestWrapper =
+                new HazelcastRequestWrapper((HttpServletRequest) req, (HttpServletResponse) res);
+
+        chain.doFilter(requestWrapper, res);
+
+        HazelcastHttpSession session = requestWrapper.getSession(false);
+        if (session != null && session.isValid() && deferredWrite) {
+            if (LOGGER.isFinestEnabled()) {
+                LOGGER.finest("UPDATING SESSION " + session.getId());
             }
-            HttpServletRequest httpReq = (HttpServletRequest) req;
-            RequestWrapper existingReq = (RequestWrapper) req.getAttribute(HAZELCAST_REQUEST);
-            final ResponseWrapper resWrapper = new ResponseWrapper((HttpServletResponse) res);
-            final RequestWrapper reqWrapper = new RequestWrapper(httpReq, resWrapper);
-            if (existingReq != null) {
-                reqWrapper.setHazelcastSession(existingReq.hazelcastSession, existingReq.clusteredSessionId);
-            }
-            chain.doFilter(reqWrapper, resWrapper);
-            if (existingReq != null) {
-                return;
-            }
-            HazelcastHttpSession session = reqWrapper.getSession(false);
-            if (session != null && session.isValid()) {
-                if (LOGGER.isFinestEnabled()) {
-                    LOGGER.finest("UPDATING SESSION " + session.getId());
-                }
-                if (deferredWrite) {
-                    session.sessionDeferredWrite();
-                }
-            }
+            session.sessionDeferredWrite();
         }
     }
 
@@ -403,28 +385,15 @@ public class WebFilter implements Filter {
         }
     }
 
-    protected static class ResponseWrapper extends HttpServletResponseWrapper {
-
-        public ResponseWrapper(final HttpServletResponse original) {
-            super(original);
-        }
-    }
-
-    protected class RequestWrapper extends HttpServletRequestWrapper {
-        final ResponseWrapper res;
+    protected class HazelcastRequestWrapper extends HttpServletRequestWrapper {
+        final HttpServletResponse res;
         HazelcastHttpSession hazelcastSession;
         String clusteredSessionId;
 
-        public RequestWrapper(final HttpServletRequest req,
-                              final ResponseWrapper res) {
+        public HazelcastRequestWrapper(final HttpServletRequest req,
+                                       final HttpServletResponse res) {
             super(req);
             this.res = res;
-            req.setAttribute(HAZELCAST_REQUEST, this);
-        }
-
-        public void setHazelcastSession(HazelcastHttpSession hazelcastSession, String requestedSessionId) {
-            this.hazelcastSession = hazelcastSession;
-            this.clusteredSessionId = requestedSessionId;
         }
 
         HttpSession getOriginalSession(boolean create) {
@@ -465,7 +434,7 @@ public class WebFilter implements Filter {
         public HazelcastHttpSession getSession(final boolean create) {
             hazelcastSession = readSessionFromLocal();
             if (hazelcastSession == null && !res.isCommitted() && (create || clusteredSessionId != null)) {
-                hazelcastSession = createNewSession(RequestWrapper.this, clusteredSessionId);
+                hazelcastSession = createNewSession(HazelcastRequestWrapper.this, clusteredSessionId);
             }
             return hazelcastSession;
         }
@@ -525,9 +494,5 @@ public class WebFilter implements Filter {
             return null;
         }
 
-        public String changeSessionId() {
-            HazelcastHttpSession newSession = getSession(true);
-            return newSession.getOriginalSessionId();
-        }
-    } // END of RequestWrapper
-} // END of WebFilter
+    }
+}

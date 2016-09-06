@@ -456,14 +456,6 @@ public class WebFilter implements Filter {
             };
         }
 
-        public HazelcastHttpSession getOrCreateHazelcastSession() {
-
-            if (hazelcastSession == null && !res.isCommitted()) {
-                hazelcastSession = createNewSession(RequestWrapper.this, clusteredSessionId);
-            }
-            return hazelcastSession;
-        }
-
         @Override
         public HttpSession getSession() {
             return getSession(true);
@@ -472,8 +464,8 @@ public class WebFilter implements Filter {
         @Override
         public HazelcastHttpSession getSession(final boolean create) {
             hazelcastSession = readSessionFromLocal();
-            if (hazelcastSession == null) {
-                hazelcastSession = getOrCreateHazelcastSession();
+            if (hazelcastSession == null && !res.isCommitted() && (create || clusteredSessionId != null)) {
+                hazelcastSession = createNewSession(RequestWrapper.this, clusteredSessionId);
             }
             return hazelcastSession;
         }

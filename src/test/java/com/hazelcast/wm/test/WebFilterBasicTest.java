@@ -162,6 +162,12 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
     }
 
+    @Test(timeout = 20000)
+    public void testNoSession() throws Exception {
+        CookieStore cookieStore = new BasicCookieStore();
+        assertEquals("true", executeRequest("noSession", serverPort1, cookieStore));
+    }
+
     @Override
     protected ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
         return new JettyServer(port, sourceDir, serverXml);

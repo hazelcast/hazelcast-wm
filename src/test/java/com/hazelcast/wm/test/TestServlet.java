@@ -40,7 +40,12 @@ public class TestServlet extends HttpServlet {
             Object value = session.getAttribute("key");
             resp.getWriter().write(value.toString());
             return;
+        } else if (req.getRequestURI().contains("noSession")) {
+            HttpSession session = req.getSession(false);
+            resp.getWriter().write(String.valueOf(session == null));
+            return;
         }
+
         HttpSession session = req.getSession();
         if (req.getRequestURI().endsWith("write")) {
             session.setAttribute("key", "value");

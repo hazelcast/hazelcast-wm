@@ -16,14 +16,14 @@
 
 package com.hazelcast.wm.test;
 
-import com.hazelcast.test.annotation.SlowTest;
+import com.hazelcast.test.annotation.QuickTest;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(WebTestRunner.class)
 @DelegatedRunWith(Parameterized.class)
-@Category(SlowTest.class)
+@Category(QuickTest.class)
 public class JettyClientFailOverTest extends  WebFilterClientFailOverTests {
 
     public JettyClientFailOverTest(String name, String serverXml1, String serverXml2) {

@@ -42,12 +42,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
-import static com.hazelcast.web.HazelcastInstanceLoader.INSTANCE_NAME;
 import static com.hazelcast.web.HazelcastInstanceLoader.CLIENT_CONFIG_LOCATION;
 import static com.hazelcast.web.HazelcastInstanceLoader.CONFIG_LOCATION;
-import static com.hazelcast.web.HazelcastInstanceLoader.STICKY_SESSION_CONFIG;
-import static com.hazelcast.web.HazelcastInstanceLoader.SESSION_TTL_CONFIG;
+import static com.hazelcast.web.HazelcastInstanceLoader.INSTANCE_NAME;
 import static com.hazelcast.web.HazelcastInstanceLoader.MAP_NAME;
+import static com.hazelcast.web.HazelcastInstanceLoader.SESSION_TTL_CONFIG;
+import static com.hazelcast.web.HazelcastInstanceLoader.STICKY_SESSION_CONFIG;
 import static com.hazelcast.web.HazelcastInstanceLoader.USE_CLIENT;
 
 /**
@@ -242,8 +242,18 @@ public class WebFilter implements Filter {
         }
     }
 
+    private boolean sessionExistsInTheCluster(String hazelcastSessionId) {
+        try {
+            return hazelcastSessionId != null && clusteredSessionService.containsSession(hazelcastSessionId);
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
     protected HazelcastHttpSession createNewSession(HazelcastRequestWrapper requestWrapper, String existingSessionId) {
-        String id = existingSessionId == null ? generateSessionId() : existingSessionId;
+        // use existing hazelcast session id for the new session only if the session info exists in the cluster
+        String id = sessionExistsInTheCluster(existingSessionId) ? existingSessionId : generateSessionId();
+
         if (requestWrapper.getOriginalSession(false) != null) {
             LOGGER.finest("Original session exists!!!");
         }
@@ -334,20 +344,6 @@ public class WebFilter implements Filter {
         }
         sessionCookie.setSecure(sessionCookieSecure);
         req.res.addCookie(sessionCookie);
-    }
-
-    private String getSessionCookie(final HazelcastRequestWrapper req) {
-        final Cookie[] cookies = req.getCookies();
-        if (cookies != null) {
-            for (final Cookie cookie : cookies) {
-                final String name = cookie.getName();
-                final String value = cookie.getValue();
-                if (name.equalsIgnoreCase(sessionCookieName)) {
-                    return value;
-                }
-            }
-        }
-        return null;
     }
 
     @Override

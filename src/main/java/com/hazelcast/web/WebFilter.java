@@ -388,7 +388,6 @@ public class WebFilter implements Filter {
     protected class HazelcastRequestWrapper extends HttpServletRequestWrapper {
         final HttpServletResponse res;
         HazelcastHttpSession hazelcastSession;
-        String clusteredSessionId;
 
         public HazelcastRequestWrapper(final HttpServletRequest req,
                                        final HttpServletResponse res) {
@@ -433,8 +432,9 @@ public class WebFilter implements Filter {
         @Override
         public HazelcastHttpSession getSession(final boolean create) {
             hazelcastSession = readSessionFromLocal();
-            if (hazelcastSession == null && !res.isCommitted() && (create || clusteredSessionId != null)) {
-                hazelcastSession = createNewSession(HazelcastRequestWrapper.this, clusteredSessionId);
+            String hazelcastSessionId = findHazelcastSessionIdFromRequest();
+            if (hazelcastSession == null && !res.isCommitted() && (create || hazelcastSessionId != null)) {
+                hazelcastSession = createNewSession(HazelcastRequestWrapper.this, hazelcastSessionId);
             }
             return hazelcastSession;
         }
@@ -453,7 +453,7 @@ public class WebFilter implements Filter {
             if (originalSession != null) {
                 String hazelcastSessionId = originalSessions.get(originalSession.getId());
                 if (hazelcastSessionId != null) {
-                    hazelcastSession = sessions.get(hazelcastSessionId);
+                    hazelcastSession = getSessionWithId(hazelcastSessionId);
 
                     if (hazelcastSession != null && !hazelcastSession.isStickySession()) {
                         hazelcastSession.updateReloadFlag();
@@ -471,21 +471,13 @@ public class WebFilter implements Filter {
                     originalSession.invalidate();
                 }
             }
-            if (clusteredSessionId != null) {
-                hazelcastSession = sessions.get(clusteredSessionId);
-            }
             return readFromCookie();
         }
 
         private HazelcastHttpSession readFromCookie() {
-            if (clusteredSessionId == null) {
-                clusteredSessionId = getSessionCookie(this);
-                if (clusteredSessionId == null) {
-                    clusteredSessionId = getParameter(HAZELCAST_SESSION_COOKIE_NAME);
-                }
-            }
-            if (clusteredSessionId != null) {
-                hazelcastSession = getSessionWithId(clusteredSessionId);
+            String existingHazelcastSessionId = findHazelcastSessionIdFromRequest();
+            if (existingHazelcastSessionId != null) {
+                hazelcastSession = getSessionWithId(existingHazelcastSessionId);
                 if (hazelcastSession != null && !hazelcastSession.isStickySession()) {
                     hazelcastSession.updateReloadFlag();
                     return hazelcastSession;
@@ -494,5 +486,27 @@ public class WebFilter implements Filter {
             return null;
         }
 
+
+        private String findHazelcastSessionIdFromRequest() {
+            String hzSessionId = null;
+
+            final Cookie[] cookies = getCookies();
+            if (cookies != null) {
+                for (final Cookie cookie : cookies) {
+                    final String name = cookie.getName();
+                    final String value = cookie.getValue();
+                    if (name.equalsIgnoreCase(sessionCookieName)) {
+                        hzSessionId = value;
+                        break;
+                    }
+                }
+            }
+            // if hazelcast session id is not found on the cookie, look into request parameters
+            if (hzSessionId == null) {
+                hzSessionId = getParameter(HAZELCAST_SESSION_COOKIE_NAME);
+            }
+
+            return hzSessionId;
+        }
     }
 }

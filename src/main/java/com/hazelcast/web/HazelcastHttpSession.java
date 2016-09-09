@@ -31,6 +31,10 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * HazelcastHttpSession is HttpSession implementation based on Hazelcast Imap.
+ * It contains the methods used to get, put, manage the current state of the HttpSession.
+ */
 public class HazelcastHttpSession implements HttpSession {
 
     volatile String invalidatedOriginalSessionId;

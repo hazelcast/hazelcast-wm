@@ -26,6 +26,10 @@ import com.hazelcast.web.entryprocessor.GetAttributeNamesEntryProcessor;
 import com.hazelcast.web.entryprocessor.GetSessionStateEntryProcessor;
 import com.hazelcast.web.entryprocessor.SessionUpdateEntryProcessor;
 
+/**
+ * WebDataSerializerHook is used to create IdentifiedDataSerializable instances of serializable classes
+ * in Hazelcast Filter Based Session Replication Module
+ */
 public class WebDataSerializerHook implements DataSerializerHook {
 
     /**

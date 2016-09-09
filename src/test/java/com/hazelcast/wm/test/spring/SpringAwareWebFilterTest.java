@@ -33,6 +33,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -109,4 +110,20 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
         assertEquals("propValue", properties.getProperty("propKey"));
     }
 
+    // https://github.com/hazelcast/hazelcast-wm/issues/6
+    @Test
+    public void testChangeSessionIdAfterLogin() throws Exception {
+        SpringSecuritySession sss = new SpringSecuritySession();
+        request(RequestType.POST_REQUEST,
+                SPRING_SECURITY_LOGIN_URL,
+                serverPort1, sss.cookieStore);
+
+        String hzSessionIdBeforeLogin = sss.getHazelcastSessionId();
+        String jsessionIdBeforeLogin = sss.getSessionId();
+
+        sss = login(sss, false);
+
+        assertNotEquals(jsessionIdBeforeLogin, sss.getSessionId());
+        assertNotEquals(hzSessionIdBeforeLogin, sss.getHazelcastSessionId());
+    }
 }

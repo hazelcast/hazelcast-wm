@@ -244,6 +244,16 @@ public class ClusteredSessionService {
     }
 
     /**
+     * Check if session with sessionId exists on the cluster
+     *
+     * @param sessionId     the session id
+     * @return true if session exists on the cluster
+     */
+    public boolean containsSession(String sessionId) {
+        return clusterMap.containsKey(sessionId);
+    }
+
+    /**
      * Delete session.
      *
      * @param sessionId  sessionId

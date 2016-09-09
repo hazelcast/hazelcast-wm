@@ -91,6 +91,10 @@ To set up Hazelcast Session Clustering:
     <param-name>deferred-write</param-name>
     <param-value>false</param-value>
   </init-param>
+  <init-param>
+    <param-name>cookie-path</param-name>
+    <param-value>/</param-value>
+  </init-param>
 </filter>
 <filter-mapping>
   <filter-name>hazelcast-filter</filter-name>
@@ -116,6 +120,7 @@ Following are the descriptions of parameters included in the above XML.
 - `sticky-session`: If set to true, all requests of a session are routed to the member where the session is first created. This provides better performance. If set to false, when a session is updated on a member, entry for this session on all members is invalidated. You have to know how your load balancer is configured before setting this parameter. Its default value is true.
 - `cookie-name`: Name of the session ID cookie.
 - `cookie-domain`: Domain of the session ID cookie. Its default value is based on the incoming request.
+- `cookie-path`: Path of the session ID cookie. Its default value is based on the context path of the incoming request.
 - `cookie-secure`: Specifies whether the cookie only be sent using a secure protocol. Its default value is false.
 - `cookie-http-only`: Specifies whether the attribute `HttpOnly` cab be set on cookie. Its default value is false.
 - `debug`: If set to true, the debugging feature is enabled. Its default value is false.

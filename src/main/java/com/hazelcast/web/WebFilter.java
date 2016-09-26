@@ -121,6 +121,7 @@ public class WebFilter implements Filter {
     private boolean stickySession = true;
     private boolean shutdownOnDestroy = true;
     private boolean deferredWrite;
+    private boolean useRequestParameter;
     private Properties properties;
     private ClusteredSessionService clusteredSessionService;
 
@@ -196,6 +197,10 @@ public class WebFilter implements Filter {
         String deferredWriteParam = getParam("deferred-write");
         if (deferredWriteParam != null) {
             deferredWrite = Boolean.parseBoolean(deferredWriteParam);
+        }
+        String useRequestParameterParam = getParam("use-request-parameter");
+        if (useRequestParameterParam != null) {
+            useRequestParameter = Boolean.parseBoolean(useRequestParameterParam);
         }
     }
 
@@ -512,8 +517,9 @@ public class WebFilter implements Filter {
                     }
                 }
             }
-            // if hazelcast session id is not found on the cookie, look into request parameters
-            if (hzSessionId == null) {
+            // if hazelcast session id is not found on the cookie and using request parameter is enabled, look into
+            // request parameters
+            if (hzSessionId == null && useRequestParameter) {
                 hzSessionId = getParameter(HAZELCAST_SESSION_COOKIE_NAME);
             }
 

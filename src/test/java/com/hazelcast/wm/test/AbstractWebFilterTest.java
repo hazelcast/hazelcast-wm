@@ -26,13 +26,16 @@ import com.hazelcast.test.HazelcastTestSupport;
 import com.hazelcast.test.TestEnvironment;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,7 +45,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -262,6 +268,22 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                                    String context,
                                    int serverPort,
                                    CookieStore cookieStore) throws Exception {
+        return request(reqType, context, serverPort, cookieStore, Collections.<String, String>emptyMap());
+    }
+
+    protected String executeRequest(RequestType reqType,
+                                   String context,
+                                   int serverPort,
+                                   CookieStore cookieStore,
+                                   Map<String, String> requestParams) throws Exception {
+        return responseToString(request(reqType, context, serverPort, cookieStore, requestParams));
+    }
+
+    protected HttpResponse request(RequestType reqType,
+                                   String context,
+                                   int serverPort,
+                                   CookieStore cookieStore,
+                                   Map<String, String> requestParams) throws Exception {
         if (reqType == null) {
             throw new IllegalArgumentException("Request type paramater cannot be empty !");
         }
@@ -273,6 +295,11 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                 break;
             case POST_REQUEST:
                 request = new HttpPost("http://localhost:" + serverPort + "/" + context);
+                List<NameValuePair> params = new ArrayList<NameValuePair>(requestParams.size());
+                for (Entry<String, String> reqParamEntry : requestParams.entrySet()) {
+                    params.add(new BasicNameValuePair(reqParamEntry.getKey(), reqParamEntry.getValue()));
+                }
+                ((HttpPost)request).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
                 break;
             default:
                 throw new IllegalArgumentException(reqType + " typed request is not supported");

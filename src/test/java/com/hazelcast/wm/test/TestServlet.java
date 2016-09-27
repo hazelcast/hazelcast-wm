@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -136,6 +138,25 @@ public class TestServlet extends HttpServlet {
                 session.setAttribute(param, value);
             }
             resp.getWriter().write("null");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        session.setAttribute("attr1", "val1");
+
+        if (req.getRequestURI().endsWith("login")) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while((line = reader.readLine()) != null){
+                result.append(line);
+            }
+
+            resp.getWriter().write(result.length() > 0 ? "true" : "false");
+        } else if (req.getRequestURI().endsWith("useRequestParameter")) {
+            resp.getWriter().write(session.getId());
         }
     }
 }

@@ -95,6 +95,10 @@ To set up Hazelcast Session Clustering:
     <param-name>cookie-path</param-name>
     <param-value>/</param-value>
   </init-param>
+  <init-param>
+    <param-name>use-request-parameter</param-name>
+    <param-value>false</param-value>
+  </init-param>
 </filter>
 <filter-mapping>
   <filter-name>hazelcast-filter</filter-name>
@@ -130,6 +134,7 @@ Following are the descriptions of parameters included in the above XML.
 - `client-config-location`: Location of the client's configuration. It can be specified as a servlet resource, classpath resource or as a URL. Its default value is null.
 - `shutdown-on-destroy`: Specifies whether you want to shut down the Hazelcast instance during the undeployment of your web application. Its default value is true.
 - `deferred-write`: Specifies whether the sessions in each instance will be cached locally. Its default value is false.
+- `use-request-parameter`: Specifies whether a request parameter can be used by the client to send back the session ID value. Its default value is false.
 
 # Using High-Density Memory Store
 
@@ -261,4 +266,21 @@ Here is an example:
 ...
 ```
 
+# Using Request Parameter Instead of Cookie for Sending Back the Session ID
+
+If you have a Servlet that serves REST style `POST` requests and you don't want the clients to use cookies for sending 
+back the session ID, you can enable `use-request-parameter` setting and clients can send back the session ID as a 
+request parameter. You can enable it in your `web.xml` file:
+
+```
+...
+   <init-param>
+            <param-name>use-request-parameter</param-name>
+            <param-value>true</param-value>
+   </init-param>
+...
+```
+
+Note that this causes Hazelcast's `WebFilter` to consume the `ServletRequest#getInputStream` (as it
+needs to examine request parameters) so it will not be available to any servlet that is filtered by this `WebFilter`.
 

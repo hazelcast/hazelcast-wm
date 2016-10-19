@@ -232,7 +232,11 @@ When called by the target application, the value of `HttpSession.getId()` is the
 
 # Defining Session Expiry
 
-Hazelcast automatically removes sessions from the cluster if the sessions are expired on the Web Container. This removal is done by `com.hazelcast.web.SessionListener`, which is an implementation of `javax.servlet.http.HttpSessionListener`. 
+Hazelcast automatically removes sessions from the cluster if sessions are expired on the Web Container. This 
+removal is done by `com.hazelcast.web.SessionListener`, which is an implementation of 
+`javax.servlet.http.HttpSessionListener`. Session is not removed instantly because it might be active in other nodes of
+the cluster. It's done after the period of time specified by `session-ttl-seconds` on `WebFilter` passes (or 
+`max-idle-seconds` element in your `hazelcast.xml` on the server side [if client/server mode is used](#client-mode-vs-p2p-mode)). 
 
 Default session expiration configuration depends on the Servlet Container that is being used. You can also define it in your web.xml.
 

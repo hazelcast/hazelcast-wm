@@ -52,42 +52,55 @@ To set up Hazelcast Session Clustering:
     <param-name>map-name</param-name>
     <param-value>my-sessions</param-value>
   </init-param>
+  <init-param>
     <param-name>session-ttl-seconds</param-name>
     <param-value>10</param-value>
   </init-param>
+  <init-param>
     <param-name>sticky-session</param-name>
     <param-value>true</param-value>
   </init-param>
+  <init-param>
     <param-name>cookie-name</param-name>
     <param-value>hazelcast.sessionId</param-value>
   </init-param>
+  <init-param>  
     <param-name>cookie-domain</param-name>
     <param-value>.mywebsite.com</param-value>
   </init-param>
+  <init-param>  
     <param-name>cookie-secure</param-name>
     <param-value>false</param-value>
   </init-param>
+  <init-param>  
     <param-name>cookie-http-only</param-name>
     <param-value>false</param-value>
   </init-param>
+  <init-param>  
     <param-name>debug</param-name>
     <param-value>true</param-value>
   </init-param>
+  <init-param>  
     <param-name>config-location</param-name>
     <param-value>/WEB-INF/hazelcast.xml</param-value>
   </init-param>
+  <init-param>  
     <param-name>instance-name</param-name>
     <param-value>default</param-value>
   </init-param>
+  <init-param>  
     <param-name>use-client</param-name>
     <param-value>false</param-value>
   </init-param>
+  <init-param>  
     <param-name>client-config-location</param-name>
     <param-value>/WEB-INF/hazelcast-client.xml</param-value>
   </init-param>
+  <init-param>  
     <param-name>shutdown-on-destroy</param-name>
     <param-value>true</param-value>
   </init-param>
+  <init-param>  
     <param-name>deferred-write</param-name>
     <param-value>false</param-value>
   </init-param>

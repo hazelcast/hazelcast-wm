@@ -115,6 +115,10 @@ public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
         assertEquals("true", executeRequest("remove", serverPort2, cookieStore));
         assertEquals("null", executeRequest("read", serverPort1, cookieStore));
+        //overwrite previously removed value
+        assertEquals("true", executeRequest("write", serverPort1, cookieStore));
+        assertEquals(1, map.size());
+        assertEquals("value", executeRequest("read", serverPort2, cookieStore));
     }
 
     @Test(timeout = 60000)

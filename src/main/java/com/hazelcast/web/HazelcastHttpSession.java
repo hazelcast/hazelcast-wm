@@ -205,6 +205,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (!deferredWrite) {
             try {
                 webFilter.getClusteredSessionService().deleteAttribute(id, name);
+                entry.setDirty(false);
             } catch (Exception ignored) {
                 EmptyStatement.ignore(ignored);
             }

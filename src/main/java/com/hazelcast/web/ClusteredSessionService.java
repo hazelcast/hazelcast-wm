@@ -34,12 +34,10 @@ import com.hazelcast.web.entryprocessor.GetAttributeNamesEntryProcessor;
 import com.hazelcast.web.entryprocessor.GetSessionStateEntryProcessor;
 import com.hazelcast.web.entryprocessor.SessionUpdateEntryProcessor;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -71,8 +69,7 @@ public class ClusteredSessionService {
     private volatile SerializationServiceSupport sss;
     private volatile HazelcastInstance hazelcastInstance;
 
-    private final FilterConfig filterConfig;
-    private final Properties properties;
+    private final WebFilterConfig filterConfig;
 
     private final Queue<AbstractMap.SimpleEntry<String, Boolean>> orphanSessions = new
             LinkedBlockingQueue<AbstractMap.SimpleEntry<String, Boolean>>();
@@ -85,24 +82,14 @@ public class ClusteredSessionService {
      * Instantiates a new Clustered session service.
      *
      * @param filterConfig   the filter config
-     * @param properties     the properties
      */
-    public ClusteredSessionService(FilterConfig filterConfig, Properties properties) {
+    public ClusteredSessionService(WebFilterConfig filterConfig) {
         this.filterConfig = filterConfig;
-        this.properties = properties;
         try {
             init();
         } catch (Exception e) {
             ExceptionUtil.rethrow(e);
         }
-    }
-
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public FilterConfig getFilterConfig() {
-        return filterConfig;
     }
 
     public void setFailedConnection(boolean failedConnection) {
@@ -146,8 +133,8 @@ public class ClusteredSessionService {
     private void reconnectHZInstance() throws ServletException {
         LOGGER.info("Retrying the connection!!");
         lastConnectionTry = System.currentTimeMillis();
-        hazelcastInstance = HazelcastInstanceLoader.createInstance(this);
-        clusterMap = hazelcastInstance.getMap(properties.getProperty(HazelcastInstanceLoader.MAP_NAME));
+        hazelcastInstance = HazelcastInstanceLoader.createInstance(this, filterConfig);
+        clusterMap = hazelcastInstance.getMap(filterConfig.getMapName());
         sss = (SerializationServiceSupport) hazelcastInstance;
         setFailedConnection(false);
         LOGGER.info("Successfully Connected!");

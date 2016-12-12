@@ -16,6 +16,7 @@
 
 package com.hazelcast.web;
 
+import com.hazelcast.nio.serialization.HazelcastSerializationException;
 import com.hazelcast.util.EmptyStatement;
 
 import javax.servlet.ServletContext;
@@ -105,6 +106,8 @@ public class HazelcastHttpSession implements HttpSession {
             try {
                 webFilter.getClusteredSessionService().setAttribute(id, name, value);
                 entry.setDirty(false);
+            } catch (HazelcastSerializationException e) {
+                WebFilter.LOGGER.warning("Failed to serialize attribute [" + name + "]:" + e.getMessage(), e);
             } catch (Exception ignored) {
                 EmptyStatement.ignore(ignored);
             }

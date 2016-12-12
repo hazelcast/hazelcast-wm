@@ -41,9 +41,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.logging.Level;
 
-import static java.lang.String.format;
+import static com.hazelcast.util.StringUtil.isNullOrEmptyAfterTrim;
 
 final class HazelcastInstanceLoader {
 
@@ -70,26 +69,57 @@ final class HazelcastInstanceLoader {
         final String configLocation = properties.getProperty(CONFIG_LOCATION);
         final String useClientProp = properties.getProperty(USE_CLIENT);
         final String clientConfigLocation = properties.getProperty(CLIENT_CONFIG_LOCATION);
-        final boolean useClient = !isEmpty(useClientProp) && Boolean.parseBoolean(useClientProp);
-        URL configUrl = null;
-        if (useClient && !isEmpty(clientConfigLocation)) {
-            configUrl = getConfigURL(sessionService.getFilterConfig(), clientConfigLocation);
-        } else if (!isEmpty(configLocation)) {
-            configUrl = getConfigURL(sessionService.getFilterConfig(), configLocation);
-        }
-        String sessionTTLConfig = properties.getProperty(SESSION_TTL_CONFIG);
+        final boolean useClient = !isNullOrEmptyAfterTrim(useClientProp) && Boolean.parseBoolean(useClientProp);
+        final String mapName = properties.getProperty(MAP_NAME);
+        final String sessionTTL = properties.getProperty(SESSION_TTL_CONFIG);
+
+        URL configUrl = getConfigUrl(sessionService, configLocation, clientConfigLocation, useClient);
+
         if (useClient) {
-            if (sessionTTLConfig != null) {
+            if (!isNullOrEmptyAfterTrim(sessionTTL)) {
                 throw new InvalidConfigurationException("session-ttl-seconds cannot be used with client/server mode.");
             }
             boolean isSticky = Boolean.valueOf(properties.getProperty(STICKY_SESSION_CONFIG));
             return createClientInstance(sessionService, configUrl, instanceName, isSticky);
         }
-        Config config = getServerConfig(properties.getProperty(MAP_NAME), configUrl, sessionTTLConfig);
-        return createHazelcastInstance(sessionService, instanceName, config);
+
+        if (!isNullOrEmptyAfterTrim(instanceName)) {
+            HazelcastInstance existingInstance = Hazelcast.getHazelcastInstanceByName(instanceName);
+            if (existingInstance != null) {
+                LOGGER.info("Using existing HazelcastInstance [" + instanceName + "] for session replication");
+
+                if (!isNullOrEmptyAfterTrim(configLocation)) {
+                    LOGGER.warning(CONFIG_LOCATION + " setting ignored because existing Hazelcast instance ["
+                            + instanceName + "] is being used.");
+                }
+
+                if (!isNullOrEmptyAfterTrim(sessionTTL)) {
+                    LOGGER.warning(SESSION_TTL_CONFIG + " setting ignored because existing Hazelcast instance ["
+                            + instanceName + "] is being used.");
+                }
+
+                return existingInstance;
+            }
+        }
+
+        return createServerInstance(sessionService, instanceName, mapName, configUrl, sessionTTL);
     }
 
-    private static Config getServerConfig(String mapName, URL configUrl, String sessionTTLConfig) throws ServletException {
+    private static URL getConfigUrl(ClusteredSessionService sessionService, String configLocation,
+                                    String clientConfigLocation, boolean useClient) throws ServletException {
+
+        if (useClient && !isNullOrEmptyAfterTrim(clientConfigLocation)) {
+            return getConfigURL(sessionService.getFilterConfig(), clientConfigLocation);
+        } else if (!isNullOrEmptyAfterTrim(configLocation)) {
+            return getConfigURL(sessionService.getFilterConfig(), configLocation);
+        } else {
+            return null;
+        }
+    }
+
+    private static HazelcastInstance createServerInstance(ClusteredSessionService sessionService,
+                                                          String instanceName, String mapName,
+                                                          URL configUrl, String sessionTTL) throws ServletException {
         Config config;
         if (configUrl == null) {
             config = new XmlConfigBuilder().build();
@@ -100,32 +130,26 @@ final class HazelcastInstanceLoader {
                 throw new ServletException(e);
             }
         }
-        if (sessionTTLConfig == null) {
-            sessionTTLConfig = SESSION_TTL_DEFAULT_SECONDS;
+
+        if (!isNullOrEmptyAfterTrim(instanceName)) {
+            config.setInstanceName(instanceName);
         }
+
         MapConfig mapConfig = config.getMapConfig(mapName);
         try {
-            mapConfig.setMaxIdleSeconds(Integer.parseInt(sessionTTLConfig));
+            if (isNullOrEmptyAfterTrim(sessionTTL)) {
+                sessionTTL = SESSION_TTL_DEFAULT_SECONDS;
+            }
+
+            mapConfig.setMaxIdleSeconds(Integer.parseInt(sessionTTL));
         } catch (NumberFormatException e) {
             ExceptionUtil.rethrow(new InvalidConfigurationException("session-ttl-seconds must be a numeric value"));
         }
-        return config;
-    }
 
-    private static HazelcastInstance createHazelcastInstance(ClusteredSessionService sessionService,
-                                                             String instanceName, Config config) {
-        ListenerConfig listenerConfig = new ListenerConfig(new ServerLifecycleListener(sessionService));
-        config.addListenerConfig(listenerConfig);
-        if (!isEmpty(instanceName)) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(format("getOrCreateHazelcastInstance for session replication, using name '%s'", instanceName));
-            }
-            config.setInstanceName(instanceName);
-            return Hazelcast.getOrCreateHazelcastInstance(config);
-        } else {
-            LOGGER.info("Creating a new HazelcastInstance for session replication");
-            return Hazelcast.newHazelcastInstance(config);
-        }
+        config.addListenerConfig(new ListenerConfig(new ServerLifecycleListener(sessionService)));
+
+        LOGGER.info("Creating a new HazelcastInstance for session replication");
+        return Hazelcast.newHazelcastInstance(config);
     }
 
     private static HazelcastInstance createClientInstance(ClusteredSessionService sessionService,
@@ -149,7 +173,7 @@ final class HazelcastInstanceLoader {
         ListenerConfig listenerConfig = new ListenerConfig(new ClientLifecycleListener(sessionService));
         clientConfig.addListenerConfig(listenerConfig);
 
-        if (!isEmpty(instanceName)) {
+        if (!isNullOrEmptyAfterTrim(instanceName)) {
             HazelcastInstance instance = HazelcastClient.getHazelcastClientByName(instanceName);
             if (instance != null) {
                 return instance;
@@ -178,9 +202,5 @@ final class HazelcastInstanceLoader {
             throw new ServletException("Could not load configuration '" + configLocation + "'");
         }
         return configUrl;
-    }
-
-    private static boolean isEmpty(String s) {
-        return s == null || s.trim().length() == 0;
     }
 }

@@ -26,8 +26,10 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -82,18 +84,7 @@ public final class WebFilterConfig {
     public static WebFilterConfig create(FilterConfig filterConfig, Properties properties) {
         boolean useClient = getBoolean(filterConfig, properties, USE_CLIENT, false);
 
-        if (useClient) {
-            if (paramExists(filterConfig, properties, SESSION_TTL_CONFIG)) {
-                throw new InvalidConfigurationException(SESSION_TTL_CONFIG + " cannot be used with client mode.");
-            }
-            if (paramExists(filterConfig, properties, CONFIG_LOCATION)) {
-                throw new InvalidConfigurationException(CONFIG_LOCATION + " cannot be used with client mode.");
-            }
-        } else {
-            if (paramExists(filterConfig, properties, CLIENT_CONFIG_LOCATION)) {
-                throw new InvalidConfigurationException(CLIENT_CONFIG_LOCATION + " cannot be used with P2P mode.");
-            }
-        }
+        validateHazelcastConfigParameters(filterConfig, properties, useClient);
 
         // Client mode parameters
         String clientConfigLocation = getString(filterConfig, properties, CLIENT_CONFIG_LOCATION, null);
@@ -139,17 +130,6 @@ public final class WebFilterConfig {
         wfc.cookieHttpOnly = cookieHttpOnly;
         wfc.cookiePath = cookiePath;
         return wfc;
-    }
-
-    private static URL validateAndGetConfigUrl(ServletContext ctx, boolean useClient, String configLocation,
-                                               String clientConfigLocation) {
-        if (!useClient && configLocation != null) {
-            return getConfigURL(ctx, configLocation);
-        } else if (useClient && clientConfigLocation != null) {
-            return getConfigURL(ctx, clientConfigLocation);
-        } else {
-            return null;
-        }
     }
 
     public boolean isUseClient() {
@@ -262,12 +242,7 @@ public final class WebFilterConfig {
         }
     }
 
-    private static boolean paramExists(FilterConfig filterConfig, Properties properties, String paramName) {
-        return filterConfig.getInitParameter(paramName) != null
-                || (properties != null && properties.getProperty(paramName) != null);
-    }
-
-    private static URL getConfigURL(final ServletContext ctx, final String configLocation) {
+    private static URL getConfigUrl(final ServletContext ctx, final String configLocation) {
         URL configUrl = null;
         try {
             configUrl = ctx.getResource(configLocation);
@@ -289,5 +264,76 @@ public final class WebFilterConfig {
         } else {
             return filterConfig.getInitParameter(paramName);
         }
+    }
+
+    private static URL validateAndGetConfigUrl(ServletContext ctx, boolean useClient, String configLocation,
+                                               String clientConfigLocation) {
+        if (!useClient && configLocation != null) {
+            return getConfigUrl(ctx, configLocation);
+        } else if (useClient && clientConfigLocation != null) {
+            return getConfigUrl(ctx, clientConfigLocation);
+        } else {
+            return null;
+        }
+    }
+
+    private static void validateHazelcastConfigParameters(FilterConfig filterConfig, Properties properties, boolean useClient) {
+        if (paramExists(filterConfig, properties, INSTANCE_NAME)) {
+            List<String> wrongParams = parametersExist(filterConfig, properties, SESSION_TTL_CONFIG,
+                    CONFIG_LOCATION, CLIENT_CONFIG_LOCATION);
+
+            if (!wrongParams.isEmpty()) {
+                StringBuilder errorMsgBuilder = new StringBuilder("The following parameters cannot be used when "
+                        + INSTANCE_NAME + " is set to 'true' because an existing Hazelcast");
+                if (useClient) {
+                    errorMsgBuilder.append("Client");
+                }
+                errorMsgBuilder.append(" instance is being used: [");
+                for (int i = 0; i < wrongParams.size(); i++) {
+                    errorMsgBuilder.append(wrongParams.get(i));
+                    if (i != wrongParams.size() - 1) {
+                        errorMsgBuilder.append(", ");
+                    }
+                }
+                errorMsgBuilder.append("]");
+                throw new InvalidConfigurationException(errorMsgBuilder.toString());
+            }
+        }
+
+        if (useClient) {
+            List<String> wrongParams = parametersExist(filterConfig, properties, SESSION_TTL_CONFIG, CONFIG_LOCATION);
+            if (!wrongParams.isEmpty()) {
+                StringBuilder errorMsgBuilder = new StringBuilder("The following parameters cannot be used when "
+                        + USE_CLIENT + " is set to 'true': [");
+                for (int i = 0; i < wrongParams.size(); i++) {
+                    errorMsgBuilder.append(wrongParams.get(i));
+                    if (i != wrongParams.size() - 1) {
+                        errorMsgBuilder.append(", ");
+                    }
+                }
+                errorMsgBuilder.append("]");
+                throw new InvalidConfigurationException(errorMsgBuilder.toString());
+            }
+        } else {
+            if (paramExists(filterConfig, properties, CLIENT_CONFIG_LOCATION)) {
+                throw new InvalidConfigurationException(CLIENT_CONFIG_LOCATION + " cannot be used with P2P mode.");
+            }
+        }
+    }
+
+    private static List<String> parametersExist(FilterConfig filterConfig, Properties properties,
+                                                String... parameterNames) {
+        ArrayList<String> parameters = new ArrayList<String>(parameterNames.length);
+        for (String pName : parameterNames) {
+            if (paramExists(filterConfig, properties, pName)) {
+                parameters.add(pName);
+            }
+        }
+        return parameters;
+    }
+
+    private static boolean paramExists(FilterConfig filterConfig, Properties properties, String paramName) {
+        return (filterConfig != null && filterConfig.getInitParameter(paramName) != null)
+                || (properties != null && properties.getProperty(paramName) != null);
     }
 }

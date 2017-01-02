@@ -42,13 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
-import static com.hazelcast.web.HazelcastInstanceLoader.CLIENT_CONFIG_LOCATION;
-import static com.hazelcast.web.HazelcastInstanceLoader.CONFIG_LOCATION;
-import static com.hazelcast.web.HazelcastInstanceLoader.INSTANCE_NAME;
-import static com.hazelcast.web.HazelcastInstanceLoader.MAP_NAME;
-import static com.hazelcast.web.HazelcastInstanceLoader.SESSION_TTL_CONFIG;
-import static com.hazelcast.web.HazelcastInstanceLoader.STICKY_SESSION_CONFIG;
-import static com.hazelcast.web.HazelcastInstanceLoader.USE_CLIENT;
+import static com.hazelcast.util.StringUtil.isNullOrEmptyAfterTrim;
 
 /**
  * Provides clustered sessions by backing session data with an {@link IMap}.
@@ -82,8 +76,7 @@ import static com.hazelcast.web.HazelcastInstanceLoader.USE_CLIENT;
  * <li>{@code deferred-write}: When enabled, optimizes {@link IMap} interactions by only writing session attributes
  * at the end of a request. This can yield significant performance improvements for session-heavy applications
  * (Default: {@code false})</li>
- * <li>{@code cookie-name}: Sets the name for the Hazelcast session cookie (Default:
- * {@link #HAZELCAST_SESSION_COOKIE_NAME "hazelcast.sessionId"}</li>
+ * <li>{@code cookie-name}: Sets the name for the Hazelcast session cookie (Default: "hazelcast.sessionId")
  * <li>{@code cookie-domain}: Sets the domain for the Hazelcast session cookie (Default: {@code null})</li>
  * <li>{@code cookie-secure}: When enabled, indicates the Hazelcast session cookie should only be sent over
  * secure protocols (Default: {@code false})</li>
@@ -104,36 +97,25 @@ public class WebFilter implements Filter {
 
     protected static final ILogger LOGGER = Logger.getLogger(WebFilter.class);
     protected static final LocalCacheEntry NULL_ENTRY = new LocalCacheEntry(false);
-    protected static final String HAZELCAST_SESSION_COOKIE_NAME = "hazelcast.sessionId";
 
     protected ServletContext servletContext;
-    protected FilterConfig filterConfig;
+
+    private final Properties properties;
 
     private final ConcurrentMap<String, String> originalSessions = new ConcurrentHashMap<String, String>(1000);
     private final ConcurrentMap<String, HazelcastHttpSession> sessions =
             new ConcurrentHashMap<String, HazelcastHttpSession>(1000);
 
-    private String sessionCookieName = HAZELCAST_SESSION_COOKIE_NAME;
-    private String sessionCookieDomain;
-    private String sessionCookiePath;
-    private boolean sessionCookieSecure;
-    private boolean sessionCookieHttpOnly;
-    private boolean stickySession = true;
-    private boolean shutdownOnDestroy = true;
-    private boolean deferredWrite;
-    private boolean useRequestParameter;
-    private Properties properties;
     private ClusteredSessionService clusteredSessionService;
 
+    private WebFilterConfig config;
+
     public WebFilter() {
+        this.properties = null;
     }
 
     public WebFilter(Properties properties) {
         this.properties = properties;
-    }
-
-    public Properties getProperties() {
-        return properties;
     }
 
     void destroyOriginalSession(HttpSession originalSession) {
@@ -167,88 +149,17 @@ public class WebFilter implements Filter {
     }
 
     @Override
-    public final void init(final FilterConfig config)
-            throws ServletException {
-        filterConfig = config;
+    public final void init(final FilterConfig filterConfig) throws ServletException {
+        this.config = WebFilterConfig.create(filterConfig, this.properties);
         // Register the WebFilter with the ServletContext so SessionListener can look it up. The name
         // here is WebFilter.class instead of getClass() because WebFilter can have subclasses
-        servletContext = config.getServletContext();
+        servletContext = filterConfig.getServletContext();
         servletContext.setAttribute(WEB_FILTER_ATTRIBUTE_KEY, this);
-        loadProperties();
-        initCookieParams();
-        initParams();
-        clusteredSessionService = new ClusteredSessionService(filterConfig, properties);
+
+        clusteredSessionService = new ClusteredSessionService(this.config);
 
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest("sticky:" + stickySession + ", shutdown-on-destroy: " + shutdownOnDestroy
-                    + ", map-name: " + properties.getProperty(MAP_NAME));
-        }
-    }
-
-    private void initParams() {
-        String stickySessionParam = getParam("sticky-session");
-        if (stickySessionParam != null) {
-            stickySession = Boolean.valueOf(stickySessionParam);
-        }
-        String shutdownOnDestroyParam = getParam("shutdown-on-destroy");
-        if (shutdownOnDestroyParam != null) {
-            shutdownOnDestroy = Boolean.valueOf(shutdownOnDestroyParam);
-        }
-        String deferredWriteParam = getParam("deferred-write");
-        if (deferredWriteParam != null) {
-            deferredWrite = Boolean.parseBoolean(deferredWriteParam);
-        }
-        String useRequestParameterParam = getParam("use-request-parameter");
-        if (useRequestParameterParam != null) {
-            useRequestParameter = Boolean.parseBoolean(useRequestParameterParam);
-        }
-    }
-
-    private void initCookieParams() {
-        String cookieName = getParam("cookie-name");
-        if (cookieName != null) {
-            sessionCookieName = cookieName;
-        }
-        String cookieDomain = getParam("cookie-domain");
-        if (cookieDomain != null) {
-            sessionCookieDomain = cookieDomain;
-        }
-        String cookieSecure = getParam("cookie-secure");
-        if (cookieSecure != null) {
-            sessionCookieSecure = Boolean.valueOf(cookieSecure);
-        }
-        String cookieHttpOnly = getParam("cookie-http-only");
-        if (cookieHttpOnly != null) {
-            sessionCookieHttpOnly = Boolean.valueOf(cookieHttpOnly);
-        }
-        String cookiePath = getParam("cookie-path");
-        if (cookiePath != null) {
-            sessionCookiePath = cookiePath;
-        }
-    }
-
-    private void loadProperties() throws ServletException {
-        if (properties == null) {
-            properties = new Properties();
-        }
-        setProperty(CONFIG_LOCATION);
-        setProperty(INSTANCE_NAME);
-        setProperty(USE_CLIENT);
-        setProperty(CLIENT_CONFIG_LOCATION);
-        setProperty(STICKY_SESSION_CONFIG);
-        setProperty(SESSION_TTL_CONFIG);
-
-        String mapName = getParam(MAP_NAME);
-        if (mapName == null) {
-            mapName = "_web_" + servletContext.getServletContextName();
-        }
-        properties.setProperty(MAP_NAME, mapName);
-    }
-
-    private void setProperty(String propertyName) {
-        String value = getParam(propertyName);
-        if (value != null) {
-            properties.setProperty(propertyName, value);
+            LOGGER.finest(this.config.toString());
         }
     }
 
@@ -268,7 +179,7 @@ public class WebFilter implements Filter {
             LOGGER.finest("Original session exists!!!");
         }
         HttpSession originalSession = requestWrapper.getOriginalSession(true);
-        HazelcastHttpSession hazelcastSession = createHazelcastHttpSession(id, originalSession, deferredWrite);
+        HazelcastHttpSession hazelcastSession = createHazelcastHttpSession(id, originalSession);
         if (existingSessionId == null) {
             hazelcastSession.setClusterWideNew(true);
             // If the session is being created for the first time, add its initial reference in the cluster-wide map.
@@ -284,11 +195,11 @@ public class WebFilter implements Filter {
      *
      * @param id              the session id
      * @param originalSession the original session
-     * @param deferredWrite   whether writes are deferred
      * @return a new HazelcastHttpSession instance
      */
-    protected HazelcastHttpSession createHazelcastHttpSession(String id, HttpSession originalSession, boolean deferredWrite) {
-        return new HazelcastHttpSession(this, id, originalSession, deferredWrite, stickySession);
+    protected HazelcastHttpSession createHazelcastHttpSession(String id, HttpSession originalSession) {
+        return new HazelcastHttpSession(this, id, originalSession, config.isDeferredWrite(),
+                config.isStickySession(), config.getTransientAttributes());
     }
 
     private void updateSessionMaps(String sessionId, HttpSession originalSession, HazelcastHttpSession hazelcastSession) {
@@ -330,14 +241,14 @@ public class WebFilter implements Filter {
     }
 
     private void addSessionCookie(final HazelcastRequestWrapper req, final String sessionId) {
-        final Cookie sessionCookie = new Cookie(sessionCookieName, sessionId);
+        final Cookie sessionCookie = new Cookie(config.getCookieName(), sessionId);
 
         // Changes Added to take the session path from Init Parameter if passed
         // Context Path will be used as Session Path if the Init Param is not passed to keep it backward compatible
-        String path = null;
+        String path;
 
-        if (null != sessionCookiePath && !sessionCookiePath.isEmpty()) {
-            path = sessionCookiePath;
+        if (!isNullOrEmptyAfterTrim(config.getCookiePath())) {
+            path = config.getCookiePath();
         } else {
             path = req.getContextPath();
         }
@@ -347,10 +258,10 @@ public class WebFilter implements Filter {
         }
         sessionCookie.setPath(path);
         sessionCookie.setMaxAge(-1);
-        if (sessionCookieDomain != null) {
-            sessionCookie.setDomain(sessionCookieDomain);
+        if (config.getCookieDomain() != null) {
+            sessionCookie.setDomain(config.getCookieDomain());
         }
-        if (sessionCookieHttpOnly) {
+        if (config.isCookieHttpOnly()) {
             try {
                 sessionCookie.setHttpOnly(true);
             } catch (NoSuchMethodError e) {
@@ -362,7 +273,7 @@ public class WebFilter implements Filter {
                         + "</init-param>");
             }
         }
-        sessionCookie.setSecure(sessionCookieSecure);
+        sessionCookie.setSecure(config.isCookieSecure());
         req.res.addCookie(sessionCookie);
     }
 
@@ -376,7 +287,7 @@ public class WebFilter implements Filter {
         chain.doFilter(requestWrapper, res);
 
         HazelcastHttpSession session = requestWrapper.getSession(false);
-        if (session != null && session.isValid() && deferredWrite) {
+        if (session != null && session.isValid() && config.isDeferredWrite()) {
             if (LOGGER.isFinestEnabled()) {
                 LOGGER.finest("UPDATING SESSION " + session.getId());
             }
@@ -388,16 +299,8 @@ public class WebFilter implements Filter {
     public final void destroy() {
         sessions.clear();
         originalSessions.clear();
-        if (shutdownOnDestroy) {
+        if (config.isShutdownOnDestroy()) {
             clusteredSessionService.destroy();
-        }
-    }
-
-    String getParam(String name) {
-        if (properties != null && properties.containsKey(name)) {
-            return properties.getProperty(name);
-        } else {
-            return filterConfig.getInitParameter(name);
         }
     }
 
@@ -511,7 +414,7 @@ public class WebFilter implements Filter {
                 for (final Cookie cookie : cookies) {
                     final String name = cookie.getName();
                     final String value = cookie.getValue();
-                    if (name.equalsIgnoreCase(sessionCookieName)) {
+                    if (name.equalsIgnoreCase(config.getCookieName())) {
                         hzSessionId = value;
                         break;
                     }
@@ -519,8 +422,8 @@ public class WebFilter implements Filter {
             }
             // if hazelcast session id is not found on the cookie and using request parameter is enabled, look into
             // request parameters
-            if (hzSessionId == null && useRequestParameter) {
-                hzSessionId = getParameter(HAZELCAST_SESSION_COOKIE_NAME);
+            if (hzSessionId == null && config.isUseRequestParameter()) {
+                hzSessionId = getParameter(config.getCookieName());
             }
 
             return hzSessionId;

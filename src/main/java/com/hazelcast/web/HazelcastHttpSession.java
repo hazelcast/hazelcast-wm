@@ -22,14 +22,12 @@ import com.hazelcast.util.EmptyStatement;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionContext;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -53,23 +51,15 @@ public class HazelcastHttpSession implements HttpSession {
     private Set<String> transientAttributes;
 
     public HazelcastHttpSession(WebFilter webFilter, final String sessionId, final HttpSession originalSession,
-                                final boolean deferredWrite, final boolean stickySession) {
+                                final boolean deferredWrite, final boolean stickySession,
+                                final Set<String> transientAttributes) {
         this.webFilter = webFilter;
         this.id = sessionId;
         this.originalSession = originalSession;
         this.deferredWrite = deferredWrite;
         this.stickySession = stickySession;
-        String transientAttributesParam = webFilter.getParam("transient-attributes");
-        if (transientAttributesParam == null) {
-            this.transientAttributes = Collections.emptySet();
-        } else {
-            this.transientAttributes = new HashSet<String>();
-            StringTokenizer st = new StringTokenizer(transientAttributesParam, ",");
-            while (st.hasMoreTokens()) {
-                String token = st.nextToken();
-                this.transientAttributes.add(token.trim());
-            }
-        }
+        this.transientAttributes = transientAttributes;
+
         buildLocalCache();
     }
 

@@ -52,7 +52,6 @@ public final class WebFilterConfig {
     private static final String SHUTDOWN_ON_DESTROY = "shutdown-on-destroy";
     private static final String DEFERRED_WRITE = "deferred-write";
     private static final String USE_REQUEST_PARAMETER = "use-request-parameter";
-    private static final String DEBUG = "debug";
     private static final String TRANSIENT_ATTRIBUTES = "transient-attributes";
 
     private static final String COOKIE_NAME = "cookie-name";
@@ -70,7 +69,6 @@ public final class WebFilterConfig {
     private boolean shutdownOnDestroy;
     private boolean deferredWrite;
     private boolean useRequestParameter;
-    private boolean debug;
     private Set<String> transientAttributes;
     private String cookieName;
     private String cookieDomain;
@@ -104,7 +102,6 @@ public final class WebFilterConfig {
         boolean shutdownOnDestroy = getBoolean(filterConfig, properties, SHUTDOWN_ON_DESTROY, true);
         boolean deferredWrite = getBoolean(filterConfig, properties, DEFERRED_WRITE, false);
         boolean useRequestParameter = getBoolean(filterConfig, properties, USE_REQUEST_PARAMETER, false);
-        boolean debug = getBoolean(filterConfig, properties, DEBUG, false);
         Set<String> transientAttributes = getStringSet(filterConfig, properties, TRANSIENT_ATTRIBUTES);
         String cookieName = getString(filterConfig, properties, COOKIE_NAME, "hazelcast.sessionId");
         String cookieDomain = getString(filterConfig, properties, COOKIE_DOMAIN, null);
@@ -122,7 +119,6 @@ public final class WebFilterConfig {
         wfc.shutdownOnDestroy = shutdownOnDestroy;
         wfc.deferredWrite = deferredWrite;
         wfc.useRequestParameter = useRequestParameter;
-        wfc.debug = debug;
         wfc.transientAttributes = transientAttributes;
         wfc.cookieName = cookieName;
         wfc.cookieDomain = cookieDomain;
@@ -166,10 +162,6 @@ public final class WebFilterConfig {
 
     public boolean isUseRequestParameter() {
         return useRequestParameter;
-    }
-
-    public boolean isDebug() {
-        return debug;
     }
 
     public Set<String> getTransientAttributes() {

@@ -122,6 +122,7 @@ public class ClusteredSessionService {
                     }
                 } catch (Exception e) {
                     setFailedConnection(true);
+                    LOGGER.warning("Cannot connect to Hazelcast server: " + e.getMessage());
                     if (LOGGER.isFinestEnabled()) {
                         LOGGER.finest("Cannot connect hazelcast server", e);
                     }
@@ -133,7 +134,7 @@ public class ClusteredSessionService {
     private void reconnectHZInstance() throws ServletException {
         LOGGER.info("Retrying the connection!!");
         lastConnectionTry = System.currentTimeMillis();
-        hazelcastInstance = HazelcastInstanceLoader.createInstance(this, filterConfig);
+        hazelcastInstance = HazelcastInstanceLoader.loadInstance(this, filterConfig);
         clusterMap = hazelcastInstance.getMap(filterConfig.getMapName());
         sss = (SerializationServiceSupport) hazelcastInstance;
         setFailedConnection(false);

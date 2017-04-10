@@ -53,13 +53,14 @@ public class SpringAwareWebFilter extends WebFilter {
 
     @Override
     protected HazelcastHttpSession createNewSession(HazelcastRequestWrapper requestWrapper,
+                                                    boolean create,
                                                     String existingSessionId) {
-        HazelcastHttpSession session = super.createNewSession(requestWrapper, existingSessionId);
+        HazelcastHttpSession session = super.createNewSession(requestWrapper, create, existingSessionId);
         ApplicationContext appContext =
                 WebApplicationContextUtils.getWebApplicationContext(servletContext);
         if (appContext != null) {
             ensureSessionRegistryInitialized(appContext);
-            if (sessionRegistry != null) {
+            if (sessionRegistry != null && session != null) {
                 String originalSessionId = session.getOriginalSessionId();
                 // If original session id is registered already, we don't need it.
                 // So, we should remove it.

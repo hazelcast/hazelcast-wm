@@ -171,9 +171,15 @@ public class WebFilter implements Filter {
         }
     }
 
-    protected HazelcastHttpSession createNewSession(HazelcastRequestWrapper requestWrapper, String existingSessionId) {
+    protected HazelcastHttpSession createNewSession(HazelcastRequestWrapper requestWrapper,
+                                                    boolean create,
+                                                    String existingSessionId) {
         // use existing hazelcast session id for the new session only if the session info exists in the cluster
-        String id = sessionExistsInTheCluster(existingSessionId) ? existingSessionId : generateSessionId();
+        boolean sessionExistsInTheCluster = sessionExistsInTheCluster(existingSessionId);
+        if (!create && !sessionExistsInTheCluster) {
+            return null;
+        }
+        String id = sessionExistsInTheCluster ? existingSessionId : generateSessionId();
 
         if (requestWrapper.getOriginalSession(false) != null) {
             LOGGER.finest("Original session exists!!!");
@@ -353,7 +359,7 @@ public class WebFilter implements Filter {
             hazelcastSession = readSessionFromLocal();
             String hazelcastSessionId = findHazelcastSessionIdFromRequest();
             if (hazelcastSession == null && !res.isCommitted() && (create || hazelcastSessionId != null)) {
-                hazelcastSession = createNewSession(HazelcastRequestWrapper.this, hazelcastSessionId);
+                hazelcastSession = createNewSession(HazelcastRequestWrapper.this, create, hazelcastSessionId);
             }
             return hazelcastSession;
         }

@@ -2,7 +2,8 @@ package com.hazelcast.wm.test;
 
 import com.hazelcast.config.InvalidConfigurationException;
 import com.hazelcast.web.WebFilterConfig;
-import com.hazelcast.wm.test.spring.FilterConfigStub;
+import com.hazelcast.wm.test.spring.MapBasedFilterConfig;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,7 +18,7 @@ public class WebFilterConfigTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private FilterConfig emptyFilterConfig = new FilterConfigStub();
+    private final FilterConfig emptyFilterConfig = new MapBasedFilterConfig();
 
     @Test
     public void testInstanceName_withConfigLocation() throws Exception {
@@ -61,5 +62,30 @@ public class WebFilterConfigTest {
         properties.setProperty("config-location", "some.xml");
 
         WebFilterConfig.create(emptyFilterConfig, properties);
+    }
+
+    @Test
+    public void bothServletFilterConfigAndPropertiesAreUsed() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty("cookie-name", "customcookiename");
+
+        MapBasedFilterConfig servletFilterConfig = new MapBasedFilterConfig();
+        servletFilterConfig.setParameter("use-client", "true");
+
+        WebFilterConfig webFilterConfig = WebFilterConfig.create(servletFilterConfig, properties);
+        Assert.assertEquals(true, webFilterConfig.isUseClient());
+        Assert.assertEquals("customcookiename", webFilterConfig.getCookieName());
+    }
+
+    @Test
+    public void propertiesOverrideServletFilterConfiguration() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty("cookie-name", "cookie1");
+
+        MapBasedFilterConfig servletFilterConfig = new MapBasedFilterConfig();
+        servletFilterConfig.setParameter("cookie-name", "cookie2");
+
+        WebFilterConfig webFilterConfig = WebFilterConfig.create(servletFilterConfig, properties);
+        Assert.assertEquals("cookie1", webFilterConfig.getCookieName());
     }
 }

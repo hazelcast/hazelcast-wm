@@ -366,7 +366,7 @@ public class WebFilter implements Filter {
 
         @Override
         public boolean isRequestedSessionIdValid() {
-            return hazelcastSession.isValid();
+            return hazelcastSession != null && hazelcastSession.isValid();
         }
 
         private HazelcastHttpSession readSessionFromLocal() {

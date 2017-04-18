@@ -251,7 +251,7 @@ public final class WebFilterConfig {
     }
 
     private static String getValue(FilterConfig filterConfig, Properties properties, String paramName) {
-        if (properties != null) {
+        if (properties != null && properties.containsKey(paramName)) {
             return properties.getProperty(paramName);
         } else {
             return filterConfig.getInitParameter(paramName);

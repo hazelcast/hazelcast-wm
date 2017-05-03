@@ -53,6 +53,7 @@
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
         <maven.gpg.plugin.version>1.4</maven.gpg.plugin.version>
         <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
+        <bytebuddy.version>1.6.12</bytebuddy.version>
 
         <maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
         <maven.checkstyle.plugin.version>2.15</maven.checkstyle.plugin.version>
@@ -407,6 +408,18 @@
             <version>${log4j.version}</version>
             <scope>test</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${bytebuddy.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-agent</artifactId>
+            <version>${bytebuddy.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <profiles>

@@ -16,8 +16,9 @@
 
 package com.hazelcast.web;
 
+import com.hazelcast.logging.ILogger;
+import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.serialization.HazelcastSerializationException;
-import com.hazelcast.util.EmptyStatement;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -35,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * It contains the methods used to get, put, manage the current state of the HttpSession.
  */
 public class HazelcastHttpSession implements HttpSession {
+    private static final ILogger LOGGER = Logger.getLogger(HazelcastHttpSession.class);
 
     volatile String invalidatedOriginalSessionId;
 
@@ -97,9 +99,9 @@ public class HazelcastHttpSession implements HttpSession {
                 webFilter.getClusteredSessionService().setAttribute(id, name, value);
                 entry.setDirty(false);
             } catch (HazelcastSerializationException e) {
-                WebFilter.LOGGER.warning("Failed to serialize attribute [" + name + "]:" + e.getMessage(), e);
-            } catch (Exception ignored) {
-                EmptyStatement.ignore(ignored);
+                LOGGER.warning("Failed to serialize attribute [" + name + "]:" + e.getMessage(), e);
+            } catch (Exception e) {
+                LOGGER.warning("Unexpected error occurred.", e);
             }
         }
     }
@@ -115,8 +117,8 @@ public class HazelcastHttpSession implements HttpSession {
                 cacheEntry.setReload(false);
                 localCache.put(name, cacheEntry);
             } catch (Exception e) {
-                if (WebFilter.LOGGER.isFinestEnabled()) {
-                    WebFilter.LOGGER.finest("session could not be load so you might be dealing with stale data", e);
+                if (LOGGER.isFinestEnabled()) {
+                    LOGGER.finest("session could not be load so you might be dealing with stale data", e);
                 }
                 if (cacheEntry == null) {
                     return null;
@@ -199,8 +201,8 @@ public class HazelcastHttpSession implements HttpSession {
             try {
                 webFilter.getClusteredSessionService().deleteAttribute(id, name);
                 entry.setDirty(false);
-            } catch (Exception ignored) {
-                EmptyStatement.ignore(ignored);
+            } catch (Exception e) {
+                LOGGER.warning("Unexpected error occurred.", e);
             }
         }
     }
@@ -263,8 +265,8 @@ public class HazelcastHttpSession implements HttpSession {
 
                     localCache.put(attributeKey, cacheEntry);
                 }
-                if (WebFilter.LOGGER.isFinestEnabled()) {
-                    WebFilter.LOGGER.finest("Storing " + attributeKey + " on session " + id);
+                if (LOGGER.isFinestEnabled()) {
+                    LOGGER.finest("Storing " + attributeKey + " on session " + id);
                 }
                 cacheEntry.setValue(entry.getValue());
                 cacheEntry.setDirty(false);
@@ -294,8 +296,10 @@ public class HazelcastHttpSession implements HttpSession {
 
             try {
                 webFilter.getClusteredSessionService().updateAttributes(id, updates);
-            } catch (Exception ignored) {
-                EmptyStatement.ignore(ignored);
+            } catch (HazelcastSerializationException e) {
+                LOGGER.warning("Failed to serialize session with ID [" + id + "]:" + e.getMessage(), e);
+            } catch (Exception e) {
+                LOGGER.warning("Unexpected error occurred.", e);
             }
         }
     }

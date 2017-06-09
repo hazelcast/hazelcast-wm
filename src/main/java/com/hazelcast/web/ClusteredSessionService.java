@@ -26,7 +26,6 @@ import com.hazelcast.map.impl.MapEntrySimple;
 import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.spi.impl.SerializationServiceSupport;
 import com.hazelcast.spi.serialization.SerializationService;
-import com.hazelcast.util.EmptyStatement;
 import com.hazelcast.util.ExceptionUtil;
 import com.hazelcast.web.entryprocessor.DeleteSessionEntryProcessor;
 import com.hazelcast.web.entryprocessor.GetAttributeEntryProcessor;
@@ -301,8 +300,8 @@ public class ClusteredSessionService {
             try {
                 hazelcastInstance.getLifecycleService().shutdown();
                 es.shutdown();
-            } catch (Exception ignored) {
-                EmptyStatement.ignore(ignored);
+            } catch (Exception e) {
+                LOGGER.warning("Unexpected error occurred.", e);
             }
         }
     }

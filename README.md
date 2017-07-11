@@ -135,7 +135,7 @@ Following are the descriptions of parameters included in the above XML.
 - `cookie-domain`: Domain of the session ID cookie. Its default value is based on the incoming request.
 - `cookie-path`: Path of the session ID cookie. Its default value is based on the context path of the incoming request.
 - `cookie-secure`: Specifies whether the cookie only be sent using a secure protocol. Its default value is false.
-- `cookie-http-only`: Specifies whether the attribute `HttpOnly` cab be set on cookie. Its default value is false.
+- `cookie-http-only`: Specifies whether the attribute `HttpOnly` can be set on cookie. Its default value is false.
 - `config-location`: Location of Hazelcast configuration. It can be specified as a servlet resource, classpath resource or as a URL. Its default value is `hazelcast-default.xml` or `hazelcast.xml` in the classpath.
 - `instance-name`: Name of an existing Hazelcast instance, if you want to use it. Its default value is null. If you do not have an instance, then you should create one.
 - `use-client`: Specifies whether you want to connect to an existing cluster as a client. Its default value is false.

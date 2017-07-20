@@ -263,7 +263,7 @@ public class WebFilter implements Filter {
             path = "/";
         }
         sessionCookie.setPath(path);
-        sessionCookie.setMaxAge(-1);
+        sessionCookie.setMaxAge(config.getCookieMaxAge());
         if (config.getCookieDomain() != null) {
             sessionCookie.setDomain(config.getCookieDomain());
         }

@@ -59,6 +59,7 @@ public final class WebFilterConfig {
     private static final String COOKIE_SECURE = "cookie-secure";
     private static final String COOKIE_HTTP_ONLY = "cookie-http-only";
     private static final String COOKIE_PATH = "cookie-path";
+    private static final String COOKIE_MAX_AGE = "cookie-max-age";
 
     private boolean useClient;
     private URL configUrl;
@@ -75,6 +76,7 @@ public final class WebFilterConfig {
     private boolean cookieSecure;
     private boolean cookieHttpOnly;
     private String cookiePath;
+    private int cookieMaxAge;
 
     private WebFilterConfig() {
     }
@@ -108,6 +110,7 @@ public final class WebFilterConfig {
         boolean cookieSecure = getBoolean(filterConfig, properties, COOKIE_SECURE, false);
         boolean cookieHttpOnly = getBoolean(filterConfig, properties, COOKIE_HTTP_ONLY, false);
         String cookiePath = getString(filterConfig, properties, COOKIE_PATH, null);
+        int cookieMaxAge = getInt(filterConfig, properties, COOKIE_MAX_AGE, -1);
 
         WebFilterConfig wfc = new WebFilterConfig();
         wfc.useClient = useClient;
@@ -125,6 +128,7 @@ public final class WebFilterConfig {
         wfc.cookieSecure = cookieSecure;
         wfc.cookieHttpOnly = cookieHttpOnly;
         wfc.cookiePath = cookiePath;
+        wfc.cookieMaxAge = cookieMaxAge;
         return wfc;
     }
 
@@ -186,6 +190,10 @@ public final class WebFilterConfig {
 
     public String getCookiePath() {
         return cookiePath;
+    }
+
+    public int getCookieMaxAge() {
+        return cookieMaxAge;
     }
 
     private static boolean getBoolean(FilterConfig filterConfig, Properties properties, String paramName, boolean defaultValue) {

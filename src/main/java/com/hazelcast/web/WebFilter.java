@@ -364,7 +364,13 @@ public class WebFilter implements Filter {
             return hazelcastSession;
         }
 
+        @Override
+        public boolean isRequestedSessionIdValid() {
+            return hazelcastSession != null && hazelcastSession.isValid();
+        }
+
         private HazelcastHttpSession readSessionFromLocal() {
+            // following chunk is executed _only_ when session is invalidated and getSession is called on the request
             String invalidatedOriginalSessionId = null;
             if (hazelcastSession != null && !hazelcastSession.isValid()) {
                 LOGGER.finest("Session is invalid!");
@@ -374,9 +380,17 @@ public class WebFilter implements Filter {
             } else if (hazelcastSession != null) {
                 return hazelcastSession;
             }
+
             HttpSession originalSession = getOriginalSession(false);
             if (originalSession != null) {
                 String hazelcastSessionId = originalSessions.get(originalSession.getId());
+                String hazelcastSessionIdFromRequest = findHazelcastSessionIdFromRequest();
+                // hazelcast.sessionId from the request overrides hazelcast.sessionId corresponding to jsessionid from
+                // the request
+                if (hazelcastSessionIdFromRequest != null && !hazelcastSessionIdFromRequest.equals(hazelcastSessionId)) {
+                    hazelcastSessionId = hazelcastSessionIdFromRequest;
+                }
+
                 if (hazelcastSessionId != null) {
                     hazelcastSession = getSessionWithId(hazelcastSessionId);
 

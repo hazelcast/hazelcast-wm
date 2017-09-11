@@ -13,12 +13,8 @@
 
 	<annotation-driven />
 
-    <context:component-scan base-package="com.hazelcast.wm.test.spring" />
-
-	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
-	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<beans:property name="prefix" value="/WEB-INF/" />
-		<beans:property name="suffix" value=".jsp" />
-	</beans:bean>
+    <context:component-scan base-package="com.hazelcast.wm.test.spring" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
 </beans:beans>

@@ -56,8 +56,8 @@ import java.util.Random;
 public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
     protected enum RequestType {
-        GET_REQUEST,
-        POST_REQUEST
+        GET,
+        POST
     }
 
     static {
@@ -92,7 +92,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
     protected static final String HAZELCAST_SESSION_ATTRIBUTE_SEPARATOR = "::hz::";
 
-    protected static final RequestType DEFAULT_REQUEST_TYPE = RequestType.GET_REQUEST;
+    protected static final RequestType DEFAULT_REQUEST_TYPE = RequestType.GET;
 
     protected static final String DEFAULT_MAP_NAME = "default";
 
@@ -290,10 +290,10 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         HttpClient client = HttpClientBuilder.create().disableRedirectHandling().setDefaultCookieStore(cookieStore).build();
         HttpUriRequest request;
         switch (reqType) {
-            case GET_REQUEST:
+            case GET:
                 request = new HttpGet("http://localhost:" + serverPort + "/" + context);
                 break;
-            case POST_REQUEST:
+            case POST:
                 request = new HttpPost("http://localhost:" + serverPort + "/" + context);
                 List<NameValuePair> params = new ArrayList<NameValuePair>(requestParams.size());
                 for (Entry<String, String> reqParamEntry : requestParams.entrySet()) {

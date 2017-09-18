@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static com.hazelcast.wm.test.AbstractWebFilterTest.RequestType.POST_REQUEST;
+import static com.hazelcast.wm.test.AbstractWebFilterTest.RequestType.POST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -182,15 +182,15 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         requestParameters.put("email", "test@email.com");
         requestParameters.put("password", "password1");
 
-        assertEquals("true", executeRequest(POST_REQUEST, "login", serverPort1, cookieStore, requestParameters));
+        assertEquals("true", executeRequest(POST, "login", serverPort1, cookieStore, requestParameters));
     }
 
     @Test(timeout = 20000)
     public void testUseRequestParameterEnabled() throws Exception {
-        String hazelcastSessionId1 = executeRequest(POST_REQUEST, "useRequestParameter", serverPort1,
+        String hazelcastSessionId1 = executeRequest(POST, "useRequestParameter", serverPort1,
                 new BasicCookieStore());
 
-        String hazelcastSessionId2 = executeRequest(POST_REQUEST, "useRequestParameter", serverPort2,
+        String hazelcastSessionId2 = executeRequest(POST, "useRequestParameter", serverPort2,
                 new BasicCookieStore(), Collections.singletonMap("hazelcast.sessionId", hazelcastSessionId1));
 
         assertEquals(hazelcastSessionId1, hazelcastSessionId2);
@@ -198,10 +198,10 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
 
     @Test(timeout = 20000)
     public void testUseRequestParameterDisabled() throws Exception {
-        String hazelcastSessionId1 = executeRequest(POST_REQUEST, "useRequestParameter", serverPort2,
+        String hazelcastSessionId1 = executeRequest(POST, "useRequestParameter", serverPort2,
                 new BasicCookieStore());
 
-        String hazelcastSessionId2 = executeRequest(POST_REQUEST, "useRequestParameter", serverPort1,
+        String hazelcastSessionId2 = executeRequest(POST, "useRequestParameter", serverPort1,
                 new BasicCookieStore(), Collections.singletonMap("hazelcast.sessionId", hazelcastSessionId1));
 
         assertNotEquals(hazelcastSessionId1, hazelcastSessionId2);

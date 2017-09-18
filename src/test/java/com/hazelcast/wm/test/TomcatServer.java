@@ -1,12 +1,12 @@
 package com.hazelcast.wm.test;
 
 import org.apache.catalina.Context;
-import org.apache.catalina.Globals;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 
+import javax.servlet.ServletException;
 import java.io.File;
+import java.io.IOException;
 
 public class TomcatServer implements ServletContainer {
 
@@ -45,15 +45,17 @@ public class TomcatServer implements ServletContainer {
         start();
     }
 
-    public void buildTomcat(String sourceDir, String serverXml) throws LifecycleException {
+    public void buildTomcat(String sourceDir, String serverXml) throws LifecycleException, ServletException, IOException {
         tomcat = new Tomcat();
-        File baseDir = new File(System.getProperty("java.io.tmpdir"));
         tomcat.setPort(port);
-        tomcat.setBaseDir(baseDir.getAbsolutePath());
-        Context context = tomcat.addContext("/", sourceDir);
-        context.getServletContext().setAttribute(Globals.ALT_DD_ATTR, sourceDir + "/WEB-INF/" + serverXml);
-        ContextConfig contextConfig = new ContextConfig();
-        context.addLifecycleListener(contextConfig);
+
+
+        File baseDir = new File(System.getProperty("java.io.tmpdir"));
+        tomcat.setBaseDir(baseDir.getCanonicalPath());
+
+        Context context = tomcat.addWebapp("/", sourceDir);
+        context.setAltDDName(sourceDir + "/WEB-INF/" + serverXml);
+
         context.setCookies(true);
         context.setBackgroundProcessorDelay(1);
         context.setReloadable(true);

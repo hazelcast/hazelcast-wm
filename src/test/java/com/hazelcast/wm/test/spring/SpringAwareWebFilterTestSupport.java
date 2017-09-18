@@ -98,14 +98,14 @@ public abstract class SpringAwareWebFilterTestSupport extends AbstractWebFilterT
         }
 
         if (createSessionBeforeLogin) {
-            request(RequestType.POST_REQUEST,
+            request(RequestType.POST,
                     SPRING_SECURITY_LOGIN_URL,
                     serverPort1, springSecuritySession.cookieStore);
         }
 
         HttpResponse response =
             request(
-                RequestType.POST_REQUEST,
+                RequestType.POST,
                 SPRING_SECURITY_LOGIN_URL + "?" +
                     SPRING_SECURITY_LOGIN_USERNAME_PARAM + "=" + username + "&" +
                     SPRING_SECURITY_LOGIN_PASSWORD_PARAM + "=" + password,
@@ -120,7 +120,7 @@ public abstract class SpringAwareWebFilterTestSupport extends AbstractWebFilterT
         }
         HttpResponse response =
             request(
-                RequestType.POST_REQUEST,
+                RequestType.POST,
                 SPRING_SECURITY_LOGOUT_URL,
                 serverPort1, springSecuritySession.cookieStore);
         springSecuritySession.lastResponse = response;

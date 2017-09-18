@@ -37,12 +37,15 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import static com.hazelcast.util.StringUtil.isNullOrEmptyAfterTrim;
+import static com.hazelcast.web.Utils.getChangeSessionIdMethod;
+import static com.hazelcast.web.Utils.invokeChangeSessionId;
 
 /**
  * Provides clustered sessions by backing session data with an {@link IMap}.
@@ -190,7 +193,7 @@ public class WebFilter implements Filter {
             hazelcastSession.setClusterWideNew(true);
             // If the session is being created for the first time, add its initial reference in the cluster-wide map.
         }
-        updateSessionMaps(id, originalSession, hazelcastSession);
+        updateSessionMaps(originalSession.getId(), hazelcastSession);
         addSessionCookie(requestWrapper, id);
         return hazelcastSession;
     }
@@ -208,14 +211,14 @@ public class WebFilter implements Filter {
                 config.isStickySession(), config.getTransientAttributes());
     }
 
-    private void updateSessionMaps(String sessionId, HttpSession originalSession, HazelcastHttpSession hazelcastSession) {
+    private void updateSessionMaps(String originalSessionId, HazelcastHttpSession hazelcastSession) {
         sessions.put(hazelcastSession.getId(), hazelcastSession);
-        String oldHazelcastSessionId = originalSessions.put(originalSession.getId(), hazelcastSession.getId());
+        String oldHazelcastSessionId = originalSessions.put(originalSessionId, hazelcastSession.getId());
         if (LOGGER.isFinestEnabled()) {
             if (oldHazelcastSessionId != null) {
                 LOGGER.finest("!!! Overwrote an existing hazelcastSessionId " + oldHazelcastSessionId);
             }
-            LOGGER.finest("Created new session with id: " + sessionId);
+            LOGGER.finest("Created new session with id: " + hazelcastSession.getId());
             LOGGER.finest(sessions.size() + " is sessions.size and originalSessions.size: " + originalSessions.size());
         }
     }
@@ -322,15 +325,20 @@ public class WebFilter implements Filter {
 
         HttpSession getOriginalSession(boolean create) {
             // Find the top non-wrapped Http Servlet request
-            HttpServletRequest req = (HttpServletRequest) getRequest();
-            while (req instanceof HttpServletRequestWrapper) {
-                req = (HttpServletRequest) ((HttpServletRequestWrapper) req).getRequest();
-            }
+            HttpServletRequest req = getNonWrappedHttpServletRequest();
             if (req != null) {
                 return req.getSession(create);
             } else {
                 return super.getSession(create);
             }
+        }
+
+        private HttpServletRequest getNonWrappedHttpServletRequest() {
+            HttpServletRequest req = (HttpServletRequest) getRequest();
+            while (req instanceof HttpServletRequestWrapper) {
+                req = (HttpServletRequest) ((HttpServletRequestWrapper) req).getRequest();
+            }
+            return req;
         }
 
         @Override
@@ -367,6 +375,34 @@ public class WebFilter implements Filter {
         @Override
         public boolean isRequestedSessionIdValid() {
             return hazelcastSession != null && hazelcastSession.isValid();
+        }
+
+        // DO NOT DELETE THIS METHOD. USED IN SERVLET 3.1+ environments
+        public String changeSessionId() {
+            Method changeSessionIdMethod = getChangeSessionIdMethod();
+            if (changeSessionIdMethod == null) {
+                return "";
+            }
+            HttpServletRequest nonWrappedHttpServletRequest = getNonWrappedHttpServletRequest();
+            if (nonWrappedHttpServletRequest.getSession() == null) {
+                throw new IllegalStateException("changeSessionId requested for request with no session");
+            }
+            originalSessions.remove(nonWrappedHttpServletRequest.getSession().getId());
+
+            HazelcastHttpSession hazelcastHttpSession = getSession(false);
+            sessions.remove(hazelcastHttpSession.getId());
+            hazelcastHttpSession.destroy(true);
+
+            String newHazelcastSessionId = generateSessionId();
+            String newJSessionId = invokeChangeSessionId(nonWrappedHttpServletRequest, changeSessionIdMethod);
+            HttpSession originalSession = nonWrappedHttpServletRequest.getSession();
+
+            HazelcastHttpSession hazelcastSession = createHazelcastHttpSession(newHazelcastSessionId, originalSession);
+            hazelcastSession.setClusterWideNew(true);
+            updateSessionMaps(newJSessionId, hazelcastSession);
+            addSessionCookie(this, newHazelcastSessionId);
+
+            return newJSessionId;
         }
 
         private HazelcastHttpSession readSessionFromLocal() {

@@ -273,4 +273,9 @@ public class ServletContextStub implements ServletContext {
     public void declareRoles(String... roleNames) {
 
     }
+
+    // DO NOT DELETE THIS METHOD. USED IN SERVLET 3.1+ environments
+    public String getVirtualServerName() {
+        return null;
+    }
 }

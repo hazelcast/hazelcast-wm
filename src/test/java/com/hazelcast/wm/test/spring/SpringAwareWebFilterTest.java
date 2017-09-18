@@ -23,13 +23,13 @@ import com.hazelcast.wm.test.TomcatServer;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.cookie.Cookie;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.session.SessionRegistry;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -95,7 +95,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
         // Make a request to node 2 with the hazelcast session ID
         sss.cookieStore.clear();
         sss.cookieStore.addCookie(hazelcastCookiePreAuthentication);
-        request("hello.jsp", this.serverPort2, sss.cookieStore);
+        request("hello", this.serverPort2, sss.cookieStore);
 
         // Get the tomcat cookie for node 2
         Cookie node2InitialTomcatCookie = getCookie(sss, SESSION_ID_COOKIE_NAME);
@@ -110,18 +110,18 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
         // Get the new hazelcast cookie
         Cookie hazelcastAuthPostAuthentication = getCookie(sss, HZ_SESSION_ID_COOKIE_NAME);
 
-        HttpResponse node1Response = request("hello.jsp", this.serverPort1, sss.cookieStore);
+        HttpResponse node1Response = request("hello", this.serverPort1, sss.cookieStore);
         // Request should not be re-directed to login
-        Assert.assertNotEquals(302, node1Response.getStatusLine().getStatusCode());
+        assertNotEquals(302, node1Response.getStatusLine().getStatusCode());
 
         // Make a request to node 2
         sss.cookieStore.clear();
         sss.cookieStore.addCookie(node2InitialTomcatCookie);
         sss.cookieStore.addCookie(hazelcastAuthPostAuthentication);
 
-        HttpResponse node2Response = request("hello.jsp", this.serverPort2, sss.cookieStore);
+        HttpResponse node2Response = request("hello", this.serverPort2, sss.cookieStore);
         // Request should not be re-directed to login
-        Assert.assertNotEquals(302, node2Response.getStatusLine().getStatusCode());
+        assertNotEquals(302, node2Response.getStatusLine().getStatusCode());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
 
         SpringSecuritySession sss = login(null, false);
 
-        request("hello.jsp", serverPort1, sss.cookieStore);
+        request("hello", serverPort1, sss.cookieStore);
 
         String sessionId = sss.getSessionId();
         String hazelcastSessionId = sss.getHazelcastSessionId();
@@ -171,11 +171,37 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, sss.lastResponse.getStatusLine().getStatusCode());
     }
 
+    @Test
+    public void test_issue_53() throws Exception {
+        SpringSecuritySession sss = login(null, true);
+        HttpResponse node2Response = request("hello", this.serverPort2, sss.cookieStore);
+        // Request should not be re-directed to login
+        assertNotEquals(302, node2Response.getStatusLine().getStatusCode());
+    }
+
+    @Test
+    public void test_issue_53_2() throws Exception {
+        SpringSecuritySession sss = login(null, true);
+        logout(sss);
+        login(sss, false);
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("key", "someKey");
+        params.put("value", "someValue");
+        request(RequestType.POST, "updateAttribute", this.serverPort1, sss.cookieStore, params);
+
+        params.remove("value");
+        HttpResponse node2Response = request(RequestType.POST, "getAttribute", this.serverPort2, sss.cookieStore, params);
+        // Request should not be re-directed to login
+        assertNotEquals(302, node2Response.getStatusLine().getStatusCode());
+        assertEquals("someValue", responseToString(node2Response));
+    }
+
     // https://github.com/hazelcast/hazelcast-wm/issues/6
     @Test
     public void testChangeSessionIdAfterLogin() throws Exception {
         SpringSecuritySession sss = new SpringSecuritySession();
-        request(RequestType.POST_REQUEST,
+        request(RequestType.POST,
                 SPRING_SECURITY_LOGIN_URL,
                 serverPort1, sss.cookieStore);
 
@@ -205,7 +231,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
             springSecuritySession = new SpringSecuritySession();
         }
 
-        request(RequestType.POST_REQUEST, SPRING_SECURITY_LOGIN_URL, serverPort, springSecuritySession.cookieStore);
+        request(RequestType.POST, SPRING_SECURITY_LOGIN_URL, serverPort, springSecuritySession.cookieStore);
 
         return springSecuritySession;
     }

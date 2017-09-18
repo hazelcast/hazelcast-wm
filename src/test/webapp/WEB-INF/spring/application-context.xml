@@ -11,8 +11,6 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="com.hazelcast.wm.test.spring" />
-
     <bean id="springApplicationContextProvider"
                 class="com.hazelcast.wm.test.spring.SpringApplicationContextProvider" />
 

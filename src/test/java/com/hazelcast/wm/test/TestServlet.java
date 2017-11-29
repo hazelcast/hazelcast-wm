@@ -129,15 +129,19 @@ public class TestServlet extends HttpServlet {
                 Object value = req.getParameter(param);
                 session.setAttribute(param, value);
             }
-            resp.getWriter().write("true");
-        } else if (req.getRequestURI().contains("get")) {
+            resp.getWriter().write(session.getId());
+        } else if (req.getRequestURI().contains("getAttributes")) {
+            StringBuilder result = new StringBuilder();
             Enumeration<String> itParams = req.getParameterNames();
             while (itParams.hasMoreElements()) {
                 String param = itParams.nextElement();
-                Object value = req.getParameter(param);
-                session.setAttribute(param, value);
+                String value = req.getSession(false).getAttribute(req.getParameter(param)) + "";
+                result.append(param).append("=").append(value);
+                if (itParams.hasMoreElements()) {
+                    result.append("&");
+                }
             }
-            resp.getWriter().write("null");
+            resp.getWriter().write(result.toString());
         }
     }
 

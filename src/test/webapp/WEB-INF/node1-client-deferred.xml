@@ -46,6 +46,10 @@
             <param-name>client-config-location</param-name>
             <param-value>/WEB-INF/hazelcast-client.xml</param-value>
         </init-param>
+        <init-param>
+            <param-name>transient-attributes</param-name>
+            <param-value>issue-62</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>hazelcast-filter</filter-name>

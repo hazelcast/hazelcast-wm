@@ -1,4 +1,6 @@
 language: java
-script: mvn clean install 
+script: mvn clean install
+jdk:
+  - oraclejdk7
 after_success:
   - bash <(curl -s https://codecov.io/bash)

@@ -32,7 +32,9 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests to basic session methods. getAttribute,setAttribute,isNew,getAttributeNames etc.
@@ -144,8 +146,7 @@ public class DeferredWriteClusterTest extends AbstractWebFilterTest {
         //this test covers issue #62
         final String key = "issue-62";
         CookieStore cookieStore = new BasicCookieStore();
-        assertEquals(key + "=null", executeRequest("getAttributes?" + key, serverPort1, cookieStore));
-        final String sessionId = executeRequest("setAttribute?" + key + "=some-value", serverPort1, cookieStore);
+        final String sessionId = executeRequest("getAndSetAttribute?" + key + "=some-value", serverPort1, cookieStore);
         final SessionState state = (SessionState) hz.getMap(DEFAULT_MAP_NAME).get(sessionId);
         assertNotNull(state);
         assertNull(state.getAttributes().get(key));

@@ -7,11 +7,12 @@
 	    http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<http auto-config="true">
-        <intercept-url pattern="/**" access="ROLE_USER"/>
+        <intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
         <remember-me key="hazelcast-vm-spring-test"/>
 		<session-management>
      		<concurrency-control max-sessions="1"/>
  		</session-management>
+		<csrf disabled="true"/>
 	</http>
  
 	<authentication-manager>

@@ -12,7 +12,10 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
-  --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/maven-v4_0_0.xsd">
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
     <name>hazelcast-wm</name>
@@ -38,10 +41,11 @@
         <junit.version>4.12</junit.version>
 
         <jsp.api.version>2.2.1</jsp.api.version>
-        <servlet.api.version>3.0.1</servlet.api.version>
-        <org.springframework.version>3.2.1.RELEASE</org.springframework.version>
+        <servlet.api.version>3.1.0</servlet.api.version>
+        <org.springframework.version>4.3.9.RELEASE</org.springframework.version>
+        <spring-security.version>4.2.3.RELEASE</spring-security.version>
         <jetty.maven.plugin.version>8.1.2.v20120308</jetty.maven.plugin.version>
-        <tomcat.version>7.0.54</tomcat.version>
+        <tomcat.version>8.5.20</tomcat.version>
 
         <!-- Not using 3.1 at the moment since it recompiles all classes every time -->
         <!-- https://jira.codehaus.org/browse/MCOMPILER-205 -->
@@ -325,7 +329,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>${org.springframework.version}</version>
+            <version>${spring-security.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -343,7 +347,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>${org.springframework.version}</version>
+            <version>${spring-security.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -621,13 +625,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>servlet-3.1</id>
-            <properties>
-                <servlet.api.version>3.1.0</servlet.api.version>
-                <tomcat.version>8.5.20</tomcat.version>
-            </properties>
         </profile>
     </profiles>
 </project>

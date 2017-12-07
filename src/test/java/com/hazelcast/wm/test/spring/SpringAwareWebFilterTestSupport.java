@@ -26,11 +26,10 @@ public abstract class SpringAwareWebFilterTestSupport extends AbstractWebFilterT
 
     protected static final String DEFAULT_SPRING_CONTEXT_FILE_PATH = "spring/hazelcast-spring.xml";
 
-    protected static final String SPRING_SECURITY_LOGIN_URL = "j_spring_security_check";
-    protected static final String SPRING_SECURITY_LOGOUT_URL = "j_spring_security_logout";
-    protected static final String SPRING_SECURITY_LOGIN_USERNAME_PARAM = "j_username";
-    protected static final String SPRING_SECURITY_LOGIN_PASSWORD_PARAM = "j_password";
-    protected static final String SPRING_SECURITY_REMEMBER_ME_PARAM = "_spring_security_remember_me";
+    protected static final String SPRING_SECURITY_LOGIN_URL = "login";
+    protected static final String SPRING_SECURITY_LOGOUT_URL = "logout";
+    protected static final String SPRING_SECURITY_LOGIN_USERNAME_PARAM = "username";
+    protected static final String SPRING_SECURITY_LOGIN_PASSWORD_PARAM = "password";
 
     protected static final String SPRING_SECURITY_DEFAULT_USERNAME = "user";
     protected static final String SPRING_SECURITY_DEFAULT_PASSWORD = "password";

@@ -15,10 +15,10 @@
  */
 
 /**
+ * <p>
  * Provides Spring aware Hazelcast based session replication.
- * <p/>
+ * </p>
  * To use Spring aware Hazelcast to provide clustered sessions in a webapp, add the following components to your {@code web.xml}:
- * <code>
  * <pre>
  * &lt;filter&gt;
  *   &lt;filter-name&gt;springAwareHazelcastWebFilter&lt;/filter-name&gt;
@@ -36,8 +36,6 @@
  *   &lt;listener-class&gt;com.hazelcast.web.SessionListener&lt;/listener-class&gt;
  * &lt;/listener&gt;
  * </pre>
- * </code>
- * <p/>
  *
  * <p>
  * {@link com.hazelcast.web.spring.SpringAwareWebFilter SpringAwareWebFilter} should be <i>first</i>
@@ -52,10 +50,10 @@
  * as listener, which is used by Spring to be aware of session events, is not needed anymore
  * since {@link com.hazelcast.web.spring.SpringAwareWebFilter SpringAwareWebFilter}
  * already publishes events for Spring.
- * <p/>
+ * </p>
  *
  * <p>
  * For more information, see {@link com.hazelcast.web.WebFilter WebFilter}.
- * <p/>
+ * </p>
  */
 package com.hazelcast.web.spring;

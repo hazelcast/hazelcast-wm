@@ -48,13 +48,15 @@ import static com.hazelcast.web.Utils.getChangeSessionIdMethod;
 import static com.hazelcast.web.Utils.invokeChangeSessionId;
 
 /**
+ * <p>
  * Provides clustered sessions by backing session data with an {@link IMap}.
- * <p/>
+ * </p>
+ * <p>
  * Using this filter requires also registering a {@link SessionListener} to provide session timeout notifications.
  * Failure to register the listener when using this filter will result in session state getting out of sync between
  * the servlet container and Hazelcast.
- * <p/>
- * This filter supports the following {@code &lt;init-param&gt;} values:
+ * </p>
+ * This filter supports the following {@code <init-param>} values:
  * <ul>
  * <li>{@code use-client}: When enabled, a {@link com.hazelcast.client.HazelcastClient HazelcastClient} is
  * used to connect to the cluster, rather than joining as a full node. (Default: {@code false})</li>
@@ -71,7 +73,7 @@ import static com.hazelcast.web.Utils.invokeChangeSessionId;
  * destroyed (Default: {@code true})</li>
  * <li>{@code map-name}: Names the {@link IMap} the filter should use to persist session details (Default:
  * {@code "_web_" + ServletContext.getServletContextName()}; e.g. "_web_MyApp")</li>
- *  * <li>{@code session-ttl-seconds}: Sets the {@link MapConfig#setMaxIdleSeconds(int)} (int) time-to-live} for
+ * <li>{@code session-ttl-seconds}: Sets the {@link MapConfig#setMaxIdleSeconds(int)} (int) time-to-live} for
  * the {@link IMap} used to persist session details (Default: Uses the existing {@link MapConfig} setting
  * for the {@link IMap}, which defaults to infinite)</li>
  * <li>{@code sticky-session}: When enabled, optimizes {@link IMap} interactions by assuming individual sessions

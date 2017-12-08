@@ -18,7 +18,7 @@
  * Provides Entry Processors used in hazelcast-wm
  * <p>
  * For more information, see {@link com.hazelcast.web.ClusteredSessionService}.
- * <p/>
+ * </p>
  */
 
 package com.hazelcast.web.entryprocessor;

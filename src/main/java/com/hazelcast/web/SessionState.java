@@ -39,7 +39,7 @@ public class SessionState implements IdentifiedDataSerializable {
     }
 
     @Override
-    public int getId() {
+    public int getClassId() {
         return WebDataSerializerHook.SESSION_STATE;
     }
 

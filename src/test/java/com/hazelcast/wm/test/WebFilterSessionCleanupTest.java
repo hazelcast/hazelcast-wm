@@ -16,7 +16,7 @@
 
 package com.hazelcast.wm.test;
 
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import org.apache.http.client.CookieStore;

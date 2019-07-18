@@ -16,7 +16,6 @@
 
 package com.hazelcast.web.entryprocessor;
 
-import com.hazelcast.map.EntryBackupProcessor;
 import com.hazelcast.map.EntryProcessor;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -33,8 +32,7 @@ import java.util.Map;
  */
 
 public final class DeleteSessionEntryProcessor
-        implements EntryProcessor<String, SessionState>,
-        EntryBackupProcessor<String, SessionState>, IdentifiedDataSerializable {
+        implements EntryProcessor<String, SessionState, Object>, IdentifiedDataSerializable {
 
     private boolean invalidate;
     private boolean removed;
@@ -52,7 +50,7 @@ public final class DeleteSessionEntryProcessor
     }
 
     @Override
-    public int getId() {
+    public int getClassId() {
         return WebDataSerializerHook.SESSION_DELETE;
     }
 
@@ -73,11 +71,6 @@ public final class DeleteSessionEntryProcessor
     }
 
     @Override
-    public EntryBackupProcessor<String, SessionState> getBackupProcessor() {
-        return (removed) ? this : null;
-    }
-
-    @Override
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeBoolean(invalidate);
     }
@@ -85,13 +78,5 @@ public final class DeleteSessionEntryProcessor
     @Override
     public void readData(ObjectDataInput in) throws IOException {
         invalidate = in.readBoolean();
-    }
-
-    @Override
-    public void processBackup(Map.Entry<String, SessionState> entry) {
-        SessionState sessionState = entry.getValue();
-        if (sessionState != null) {
-            entry.setValue(null);
-        }
     }
 }

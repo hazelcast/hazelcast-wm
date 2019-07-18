@@ -16,7 +16,6 @@
 
 package com.hazelcast.web.entryprocessor;
 
-import com.hazelcast.map.EntryBackupProcessor;
 import com.hazelcast.map.EntryProcessor;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -32,7 +31,7 @@ import java.util.Map;
  * Entry processor which return attributes of SessionState values
  */
 
-public final class GetAttributeEntryProcessor implements EntryProcessor<String, SessionState>,
+public final class GetAttributeEntryProcessor implements EntryProcessor<String, SessionState, Data>,
         IdentifiedDataSerializable {
 
     String attributeName;
@@ -51,7 +50,7 @@ public final class GetAttributeEntryProcessor implements EntryProcessor<String, 
     }
 
     @Override
-    public int getId() {
+    public int getClassId() {
         return WebDataSerializerHook.GET_ATTRIBUTE;
     }
 
@@ -63,11 +62,6 @@ public final class GetAttributeEntryProcessor implements EntryProcessor<String, 
         }
         entry.setValue(sessionState);
         return sessionState.getAttributes().get(attributeName);
-    }
-
-    @Override
-    public EntryBackupProcessor<String, SessionState> getBackupProcessor() {
-        return null;
     }
 
     @Override

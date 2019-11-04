@@ -16,7 +16,7 @@
 
 package com.hazelcast.wm.test;
 
-import com.hazelcast.util.StringUtil;
+import com.hazelcast.internal.util.StringUtil;
 import com.hazelcast.web.WebFilter;
 import com.hazelcast.web.spring.SpringAwareWebFilter;
 

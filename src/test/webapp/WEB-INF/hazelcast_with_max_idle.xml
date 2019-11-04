@@ -15,13 +15,12 @@
   ~ limitations under the License.
   -->
 
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.6.xsd"
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config https://www.hazelcast.com/schema/client-config/hazelcast-client-config-4.0.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <group>
-        <name>dev</name>
-        <password>dev-pass</password>
-    </group>
+
+    <cluster-name>dev</cluster-name>
+
     <map name="default">
         <backup-count>1</backup-count>
         <max-idle-seconds>60</max-idle-seconds>

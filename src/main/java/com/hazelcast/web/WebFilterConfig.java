@@ -16,11 +16,11 @@
 
 package com.hazelcast.web;
 
-import com.hazelcast.config.ConfigLoader;
+import com.hazelcast.internal.config.ConfigLoader;
 import com.hazelcast.config.InvalidConfigurationException;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
-import com.hazelcast.util.StringUtil;
+import com.hazelcast.internal.util.StringUtil;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;

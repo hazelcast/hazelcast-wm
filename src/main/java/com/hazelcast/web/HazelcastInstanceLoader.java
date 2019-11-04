@@ -98,7 +98,14 @@ final class HazelcastInstanceLoader {
             }
         }
         if (filterConfig.isStickySession()) {
-            clientConfig.getNetworkConfig().setConnectionAttemptLimit(1);
+            int initialBackoffMillis = clientConfig.getConnectionStrategyConfig()
+                    .getConnectionRetryConfig().getInitialBackoffMillis();
+            double multiplier = clientConfig
+                    .getConnectionStrategyConfig().getConnectionRetryConfig().getMultiplier();
+
+            // Limit connection attempts by 1
+            clientConfig.getConnectionStrategyConfig().getConnectionRetryConfig()
+                    .setMaxBackoffMillis(initialBackoffMillis * (int) multiplier);
         }
 
         clientConfig.addListenerConfig(new ListenerConfig(new ClientLifecycleListener(sessionService)));

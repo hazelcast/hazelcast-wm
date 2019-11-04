@@ -21,7 +21,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
-import com.hazelcast.util.UuidUtil;
+import com.hazelcast.internal.util.UuidUtil;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
-import static com.hazelcast.util.StringUtil.isNullOrEmptyAfterTrim;
+import static com.hazelcast.internal.util.StringUtil.isNullOrEmptyAfterTrim;
 import static com.hazelcast.web.Utils.getChangeSessionIdMethod;
 import static com.hazelcast.web.Utils.invokeChangeSessionId;
 

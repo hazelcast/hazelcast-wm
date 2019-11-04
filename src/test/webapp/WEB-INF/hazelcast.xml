@@ -15,11 +15,12 @@
   ~ limitations under the License.
   -->
 
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config http://www.hazelcast.com/schema/config/hazelcast-config-3.6.xsd"
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config https://www.hazelcast.com/schema/config/hazelcast-config-4.0.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <partition-group enabled="false"/>
+    <cluster-name>dev</cluster-name>
+
     <map name="default">
         <!--
             Number of backups. If 1 is set as the backup-count for example,

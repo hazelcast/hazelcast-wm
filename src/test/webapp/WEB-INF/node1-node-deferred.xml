@@ -47,6 +47,10 @@
             <param-value>true</param-value>
         </init-param>
         <init-param>
+            <param-name>transient-attributes</param-name>
+            <param-value>transient1</param-value>
+        </init-param>
+        <init-param>
             <param-name>session-ttl-seconds</param-name>
            <param-value>20</param-value>
         </init-param>

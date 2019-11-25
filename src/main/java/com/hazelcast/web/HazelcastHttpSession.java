@@ -320,6 +320,7 @@ public class HazelcastHttpSession implements HttpSession {
             Set<String> attributeNames = null;
             try {
                 attributeNames = webFilter.getClusteredSessionService().getAttributeNames(id);
+                needNotify = false;
             } catch (Exception ignored) {
                 for (Map.Entry<String, LocalCacheEntry> entry : localCache.entrySet()) {
                     if (!entry.getValue().isRemoved() && entry.getValue().getValue() != null) {

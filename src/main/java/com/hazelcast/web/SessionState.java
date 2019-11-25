@@ -16,6 +16,7 @@
 
 package com.hazelcast.web;
 
+import com.hazelcast.internal.nio.IOUtil;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.Data;
@@ -56,7 +57,7 @@ public class SessionState implements IdentifiedDataSerializable {
         out.writeInt(attributes.size());
         for (Map.Entry<String, Data> entry : attributes.entrySet()) {
             out.writeUTF(entry.getKey());
-            out.writeData(entry.getValue());
+            IOUtil.writeData(out, entry.getValue());
         }
     }
 
@@ -64,7 +65,7 @@ public class SessionState implements IdentifiedDataSerializable {
     public void readData(ObjectDataInput in) throws IOException {
         int attCount = in.readInt();
         for (int i = 0; i < attCount; i++) {
-            attributes.put(in.readUTF(), in.readData());
+            attributes.put(in.readUTF(), IOUtil.readData(in));
         }
     }
 

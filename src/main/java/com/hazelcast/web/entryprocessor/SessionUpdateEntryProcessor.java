@@ -16,6 +16,7 @@
 
 package com.hazelcast.web.entryprocessor;
 
+import com.hazelcast.internal.nio.IOUtil;
 import com.hazelcast.map.EntryProcessor;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -91,7 +92,7 @@ public final class SessionUpdateEntryProcessor
         out.writeInt(attributes.size());
         for (Map.Entry<String, Data> entry : attributes.entrySet()) {
             out.writeUTF(entry.getKey());
-            out.writeData(entry.getValue());
+            IOUtil.writeData(out, entry.getValue());
         }
     }
 
@@ -100,7 +101,7 @@ public final class SessionUpdateEntryProcessor
         int attCount = in.readInt();
         attributes = new HashMap<String, Data>(attCount);
         for (int i = 0; i < attCount; i++) {
-            attributes.put(in.readUTF(), in.readData());
+            attributes.put(in.readUTF(), IOUtil.readData(in));
         }
     }
 }

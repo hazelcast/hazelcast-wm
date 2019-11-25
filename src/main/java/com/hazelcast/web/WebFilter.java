@@ -248,6 +248,13 @@ public class WebFilter implements Filter {
             destroySession(session, true);
             session = null;
         }
+
+        // When session is fetched from the local cache, the session on cluster map
+        // will not be aware of the updated idle time. To prevent the eviction of
+        // active sessions, update this flag to notify cluster at the end of request.
+        if (session != null) {
+            session.setNeedNotify(true);
+        }
         return session;
     }
 
@@ -298,11 +305,16 @@ public class WebFilter implements Filter {
         chain.doFilter(requestWrapper, res);
 
         HazelcastHttpSession session = requestWrapper.getSession(false);
-        if (session != null && session.isValid() && config.isDeferredWrite()) {
-            if (LOGGER.isFinestEnabled()) {
-                LOGGER.finest("UPDATING SESSION " + session.getId());
+        if (session != null && session.isValid()) {
+            if (config.isDeferredWrite()) {
+                if (LOGGER.isFinestEnabled()) {
+                    LOGGER.finest("UPDATING SESSION " + session.getId());
+                }
+                session.sessionDeferredWrite();
             }
-            session.sessionDeferredWrite();
+            if (config.isNotifyCluster() && session.isNeedNotify()) {
+                session.notifyCluster();
+            }
         }
     }
 

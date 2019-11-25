@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * HazelcastHttpSession is HttpSession implementation based on Hazelcast Imap.
  * It contains the methods used to get, put, manage the current state of the HttpSession.
  */
+@SuppressWarnings("checkstyle:methodcount")
 public class HazelcastHttpSession implements HttpSession {
     private static final ILogger LOGGER = Logger.getLogger(HazelcastHttpSession.class);
 
@@ -48,6 +49,8 @@ public class HazelcastHttpSession implements HttpSession {
 
     private final boolean stickySession;
     private final boolean deferredWrite;
+    // true when session is fetched from local cache
+    private boolean needNotify = true;
     // only true if session is created first time in the cluster
     private volatile boolean clusterWideNew;
     private Set<String> transientAttributes;
@@ -97,6 +100,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (!deferredWrite && !transientEntry) {
             try {
                 webFilter.getClusteredSessionService().setAttribute(id, name, value);
+                needNotify = false;
                 entry.setDirty(false);
             } catch (HazelcastSerializationException e) {
                 LOGGER.warning("Failed to serialize attribute [" + name + "]:" + e.getMessage(), e);
@@ -113,6 +117,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (cacheEntry == null || cacheEntry.isReload()) {
             try {
                 value = webFilter.getClusteredSessionService().getAttribute(id, name);
+                needNotify = false;
                 cacheEntry = new LocalCacheEntry(false, value);
                 cacheEntry.setReload(false);
                 localCache.put(name, cacheEntry);
@@ -200,6 +205,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (!deferredWrite) {
             try {
                 webFilter.getClusteredSessionService().deleteAttribute(id, name);
+                needNotify = false;
                 if (entry != null) {
                     entry.setDirty(false);
                 }
@@ -255,6 +261,7 @@ public class HazelcastHttpSession implements HttpSession {
         Set<Map.Entry<String, Object>> entrySet = null;
         try {
             entrySet = webFilter.getClusteredSessionService().getAttributes(id);
+            needNotify = false;
         } catch (Exception e) {
             return;
         }
@@ -298,6 +305,7 @@ public class HazelcastHttpSession implements HttpSession {
 
             try {
                 webFilter.getClusteredSessionService().updateAttributes(id, updates);
+                needNotify = false;
             } catch (HazelcastSerializationException e) {
                 LOGGER.warning("Failed to serialize session with ID [" + id + "]:" + e.getMessage(), e);
             } catch (Exception e) {
@@ -340,12 +348,33 @@ public class HazelcastHttpSession implements HttpSession {
         return stickySession;
     }
 
+    public boolean isNeedNotify() {
+        return needNotify;
+    }
+
+    public void setNeedNotify(boolean needNotify) {
+        this.needNotify = needNotify;
+    }
+
     public void updateReloadFlag() {
         for (Map.Entry<String, LocalCacheEntry> entry : localCache.entrySet()) {
             if (!entry.getValue().isDirty()) {
                 entry.getValue().setReload(true);
             }
         }
+    }
 
+    /**
+     *  To prevent the eviction of an active session from the distributed map,
+     *  reset the idle time for this session on cluster.
+     */
+    public void notifyCluster() {
+        try {
+            webFilter.getClusteredSessionService().containsSession(id);
+            needNotify = false;
+        } catch (Exception e) {
+            LOGGER.warning("Failed to notify the cluster for session with ID [" + id + "]:"
+                    + e.getMessage(), e);
+        }
     }
 } // END of HazelSession

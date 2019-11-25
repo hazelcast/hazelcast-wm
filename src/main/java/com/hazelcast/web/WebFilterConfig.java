@@ -53,6 +53,7 @@ public final class WebFilterConfig {
     private static final String DEFERRED_WRITE = "deferred-write";
     private static final String USE_REQUEST_PARAMETER = "use-request-parameter";
     private static final String TRANSIENT_ATTRIBUTES = "transient-attributes";
+    private static final String NOTIFY_CLUSTER = "notify-cluster";
 
     private static final String COOKIE_NAME = "cookie-name";
     private static final String COOKIE_DOMAIN = "cookie-domain";
@@ -71,6 +72,7 @@ public final class WebFilterConfig {
     private boolean deferredWrite;
     private boolean useRequestParameter;
     private Set<String> transientAttributes;
+    private boolean notifyCluster;
     private String cookieName;
     private String cookieDomain;
     private boolean cookieSecure;
@@ -105,6 +107,7 @@ public final class WebFilterConfig {
         boolean deferredWrite = getBoolean(filterConfig, properties, DEFERRED_WRITE, false);
         boolean useRequestParameter = getBoolean(filterConfig, properties, USE_REQUEST_PARAMETER, false);
         Set<String> transientAttributes = getStringSet(filterConfig, properties, TRANSIENT_ATTRIBUTES);
+        boolean notifyCluster = getBoolean(filterConfig, properties, NOTIFY_CLUSTER, false);
         String cookieName = getString(filterConfig, properties, COOKIE_NAME, "hazelcast.sessionId");
         String cookieDomain = getString(filterConfig, properties, COOKIE_DOMAIN, null);
         boolean cookieSecure = getBoolean(filterConfig, properties, COOKIE_SECURE, false);
@@ -123,6 +126,7 @@ public final class WebFilterConfig {
         wfc.deferredWrite = deferredWrite;
         wfc.useRequestParameter = useRequestParameter;
         wfc.transientAttributes = transientAttributes;
+        wfc.notifyCluster = notifyCluster;
         wfc.cookieName = cookieName;
         wfc.cookieDomain = cookieDomain;
         wfc.cookieSecure = cookieSecure;
@@ -194,6 +198,10 @@ public final class WebFilterConfig {
 
     public int getCookieMaxAge() {
         return cookieMaxAge;
+    }
+
+    public boolean isNotifyCluster() {
+        return notifyCluster;
     }
 
     private static boolean getBoolean(FilterConfig filterConfig, Properties properties, String paramName, boolean defaultValue) {

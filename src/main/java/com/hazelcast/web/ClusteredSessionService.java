@@ -241,6 +241,16 @@ public class ClusteredSessionService {
     }
 
     /**
+     * Make an async get call to the cluster map for the given session.
+     * Called to reset the idle time of a session hence the future is ignored.
+     *
+     * @param sessionId     the session Id
+     */
+    public void getSessionAsync(String sessionId) {
+        clusterMap.getAsync(sessionId);
+    }
+
+    /**
      * Delete session.
      *
      * @param sessionId  sessionId

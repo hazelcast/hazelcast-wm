@@ -253,7 +253,7 @@ public class WebFilter implements Filter {
         // will not be aware of the updated idle time. To prevent the eviction of
         // active sessions, update this flag to notify cluster at the end of request.
         if (session != null) {
-            session.setNeedNotify(true);
+            session.setNeedKeepRemoteActive(true);
         }
         return session;
     }
@@ -312,7 +312,7 @@ public class WebFilter implements Filter {
                 }
                 session.sessionDeferredWrite();
             }
-            if (config.isNotifyCluster() && session.isNeedNotify()) {
+            if (config.isNotifyCluster() && session.isNeedKeepRemoteActive()) {
                 session.notifyCluster();
             }
         }

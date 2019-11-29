@@ -50,7 +50,7 @@ public class HazelcastHttpSession implements HttpSession {
     private final boolean stickySession;
     private final boolean deferredWrite;
     // true when session is fetched from local cache
-    private boolean needNotify = true;
+    private boolean needKeepRemoteActive = true;
     // only true if session is created first time in the cluster
     private volatile boolean clusterWideNew;
     private Set<String> transientAttributes;
@@ -100,7 +100,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (!deferredWrite && !transientEntry) {
             try {
                 webFilter.getClusteredSessionService().setAttribute(id, name, value);
-                needNotify = false;
+                needKeepRemoteActive = false;
                 entry.setDirty(false);
             } catch (HazelcastSerializationException e) {
                 LOGGER.warning("Failed to serialize attribute [" + name + "]:" + e.getMessage(), e);
@@ -117,7 +117,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (cacheEntry == null || cacheEntry.isReload()) {
             try {
                 value = webFilter.getClusteredSessionService().getAttribute(id, name);
-                needNotify = false;
+                needKeepRemoteActive = false;
                 cacheEntry = new LocalCacheEntry(false, value);
                 cacheEntry.setReload(false);
                 localCache.put(name, cacheEntry);
@@ -205,7 +205,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (!deferredWrite) {
             try {
                 webFilter.getClusteredSessionService().deleteAttribute(id, name);
-                needNotify = false;
+                needKeepRemoteActive = false;
                 if (entry != null) {
                     entry.setDirty(false);
                 }
@@ -261,7 +261,7 @@ public class HazelcastHttpSession implements HttpSession {
         Set<Map.Entry<String, Object>> entrySet = null;
         try {
             entrySet = webFilter.getClusteredSessionService().getAttributes(id);
-            needNotify = false;
+            needKeepRemoteActive = false;
         } catch (Exception e) {
             return;
         }
@@ -305,7 +305,7 @@ public class HazelcastHttpSession implements HttpSession {
 
             try {
                 webFilter.getClusteredSessionService().updateAttributes(id, updates);
-                needNotify = false;
+                needKeepRemoteActive = false;
             } catch (HazelcastSerializationException e) {
                 LOGGER.warning("Failed to serialize session with ID [" + id + "]:" + e.getMessage(), e);
             } catch (Exception e) {
@@ -320,7 +320,7 @@ public class HazelcastHttpSession implements HttpSession {
             Set<String> attributeNames = null;
             try {
                 attributeNames = webFilter.getClusteredSessionService().getAttributeNames(id);
-                needNotify = false;
+                needKeepRemoteActive = false;
             } catch (Exception ignored) {
                 for (Map.Entry<String, LocalCacheEntry> entry : localCache.entrySet()) {
                     if (!entry.getValue().isRemoved() && entry.getValue().getValue() != null) {
@@ -349,12 +349,12 @@ public class HazelcastHttpSession implements HttpSession {
         return stickySession;
     }
 
-    public boolean isNeedNotify() {
-        return needNotify;
+    public boolean isNeedKeepRemoteActive() {
+        return needKeepRemoteActive;
     }
 
-    public void setNeedNotify(boolean needNotify) {
-        this.needNotify = needNotify;
+    public void setNeedKeepRemoteActive(boolean needKeepRemoteActive) {
+        this.needKeepRemoteActive = needKeepRemoteActive;
     }
 
     public void updateReloadFlag() {
@@ -371,8 +371,8 @@ public class HazelcastHttpSession implements HttpSession {
      */
     public void notifyCluster() {
         try {
-            webFilter.getClusteredSessionService().containsSession(id);
-            needNotify = false;
+            webFilter.getClusteredSessionService().getSessionAsync(id);
+            needKeepRemoteActive = false;
         } catch (Exception e) {
             LOGGER.warning("Failed to notify the cluster for session with ID [" + id + "]:"
                     + e.getMessage(), e);

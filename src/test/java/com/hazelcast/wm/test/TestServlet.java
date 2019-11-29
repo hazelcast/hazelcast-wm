@@ -109,6 +109,12 @@ public class TestServlet extends HttpServlet {
             session.setAttribute("key", "value");
             Object value = session.getAttribute("key");
             resp.getWriter().write(value == null ? "null" : value.toString());
+        } else if (req.getRequestURI().endsWith("writeTransient")) {
+            session.setAttribute("transient1", "value");
+            resp.getWriter().write("true");
+        } else if (req.getRequestURI().endsWith("readTransient")) {
+            Object value = session.getAttribute("transient1");
+            resp.getWriter().write(value == null ? "null" : value.toString());
         } else if (req.getRequestURI().endsWith("reload")) {
             session.invalidate();
             session = req.getSession();

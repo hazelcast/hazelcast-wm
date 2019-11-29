@@ -118,7 +118,7 @@ public class HazelcastHttpSession implements HttpSession {
             try {
                 value = webFilter.getClusteredSessionService().getAttribute(id, name);
                 keepRemoteActive = false;
-                cacheEntry = new LocalCacheEntry(false, value);
+                cacheEntry = new LocalCacheEntry(transientAttributes.contains(name), value);
                 cacheEntry.setReload(false);
                 localCache.put(name, cacheEntry);
             } catch (Exception e) {

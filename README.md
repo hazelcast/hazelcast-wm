@@ -57,7 +57,7 @@ To set up Hazelcast Session Clustering:
     <param-value>10</param-value>
   </init-param>
   <init-param>
-      <param-name>notify-cluster</param-name>
+      <param-name>keep-remote-active</param-name>
       <param-value>false</param-value>
   </init-param>
   <init-param>
@@ -139,7 +139,7 @@ Following are the descriptions of parameters included in the above XML.
 - `map-name`: Name of the distributed map storing your web session objects.
 - `session-ttl-seconds`: Time-to-live value (in seconds) of the distributed map storing your web session objects. It can be any integer between 0 and `Integer.MAX_VALUE`. Its default value is 1800, which is 30 minutes.
 - `sticky-session`: If set to true, all requests of a session are routed to the member where the session is first created. This provides better performance. If set to false, when a session is updated on a member, entry for this session on all members is invalidated. You have to know how your load balancer is configured before setting this parameter. Its default value is true.
-- `notify-cluster`: If set to true, it's guaranteed that whenever a session is used the idle-time of this session on the distributed map is reset. The cluster map is already notified for all modification operations but this option might be required when consecutive read-attribute operations are performed without any modification. Since these attributes will be fetched from the local cache, the session on the distributed map might be evicted even if the session is active. Note that this is useless when non-sticky sessions are used or max-idle-second is not set for the cluster map. Its default value is false.
+- `keep-remote-active`: If set to true, it's guaranteed that whenever a session is used the idle-time of this session on the distributed map is reset. The cluster map is already notified for all modification operations but this option might be required when consecutive read-attribute operations are performed without any modification. Since these attributes will be fetched from the local cache (for sticky sessions), the session on the distributed map might be evicted even if the session is active. Note that this is useless when non-sticky sessions are used or max-idle-second is not set for the cluster map. Its default value is false.
 - `cookie-name`: Name of the session ID cookie.
 - `cookie-domain`: Domain of the session ID cookie. Its default value is based on the incoming request.
 - `cookie-path`: Path of the session ID cookie. Its default value is based on the context path of the incoming request.

@@ -11,7 +11,7 @@ import java.util.Collection;
 @RunWith(WebTestRunner.class)
 @DelegatedRunWith(Parameterized.class)
 @Category(QuickTest.class)
-public class TomcatNotifyClusterTest extends NotifyClusterTest {
+public class JettyKeepRemoteActiveTest extends KeepRemoteActiveTest {
 
     @Parameterized.Parameters(name = "Executing: {0}")
     public static Collection<Object[]> parameters() {
@@ -21,13 +21,13 @@ public class TomcatNotifyClusterTest extends NotifyClusterTest {
         );
     }
 
-    public TomcatNotifyClusterTest(String serverXml1, String serverXml2) {
+    public JettyKeepRemoteActiveTest(String serverXml1, String serverXml2) {
         super(serverXml1,serverXml2);
     }
 
     @Override
     protected ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
-        return new TomcatServer(port,sourceDir,serverXml);
+        return new JettyServer(port,sourceDir,serverXml);
     }
 
 }

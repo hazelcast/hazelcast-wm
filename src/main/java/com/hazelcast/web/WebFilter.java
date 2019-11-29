@@ -251,9 +251,10 @@ public class WebFilter implements Filter {
 
         // When session is fetched from the local cache, the session on cluster map
         // will not be aware of the updated idle time. To prevent the eviction of
-        // active sessions, update this flag to notify cluster at the end of request.
+        // active sessions, update this flag to reset the idle-time for this session
+        // on cluster map at the end of request.
         if (session != null) {
-            session.setNeedKeepRemoteActive(true);
+            session.setKeepRemoteActive(true);
         }
         return session;
     }
@@ -312,8 +313,9 @@ public class WebFilter implements Filter {
                 }
                 session.sessionDeferredWrite();
             }
-            if (config.isNotifyCluster() && session.isNeedKeepRemoteActive()) {
-                session.notifyCluster();
+            if (config.isKeepRemoteActive() && session.isKeepRemoteActive()) {
+                // update the idle time of session on cluster map
+                session.keepRemoteActive();
             }
         }
     }

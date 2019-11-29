@@ -7,24 +7,24 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public abstract class NotifyClusterTest extends AbstractWebFilterTest {
+public abstract class KeepRemoteActiveTest extends AbstractWebFilterTest {
 
     String testName;
 
     // Both servers must use sticky sessions
-    // since notify-cluster is not needed for non-sticky sessions.
-    // server1 is supposed to use notify-cluster, server2 is not.
-    protected NotifyClusterTest(String serverXml1, String serverXml2) {
+    // since keep-remote-active is not needed for non-sticky sessions.
+    // server1 is supposed to use keep-remote-active, server2 is not.
+    protected KeepRemoteActiveTest(String serverXml1, String serverXml2) {
         super(serverXml1, serverXml2);
         testName = serverXml1;
     }
 
     @Test
-    public void testNotifyClusterWhenEnabled() throws Exception {
+    public void testKeepRemoteActiveWhenEnabled() throws Exception {
         // max-idle-second is 20 seconds on the map.
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
-        // notify-cluster is enabled on server1.xml
+        // keep-remote-active is enabled on server1.xml
         assertEquals("true", executeRequest("write", serverPort1, cookieStore));
         assertEquals(1, map.size());
 
@@ -38,11 +38,11 @@ public abstract class NotifyClusterTest extends AbstractWebFilterTest {
     }
 
     @Test
-    public void testNotifyClusterWhenDisabled() throws Exception {
+    public void testKeepRemoteActiveWhenDisabled() throws Exception {
         // max-idle-second is 20 seconds on the map.
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
-        // notify-cluster is disabled on server2.xml
+        // keep-remote-active is disabled on server2.xml
         assertEquals("true", executeRequest("write", serverPort2, cookieStore));
         assertEquals(1, map.size());
 

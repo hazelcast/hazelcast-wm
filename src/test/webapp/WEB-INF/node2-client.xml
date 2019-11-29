@@ -27,7 +27,7 @@
             <param-value>default</param-value>
         </init-param>
         <init-param>
-            <param-name>notify-cluster</param-name>
+            <param-name>keep-remote-active</param-name>
             <param-value>false</param-value>
         </init-param>
         <init-param>

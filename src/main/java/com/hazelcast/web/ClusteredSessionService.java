@@ -17,13 +17,13 @@
 package com.hazelcast.web;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.internal.serialization.Data;
 import com.hazelcast.map.IMap;
 import com.hazelcast.instance.impl.OutOfMemoryErrorDispatcher;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import com.hazelcast.map.EntryProcessor;
 import com.hazelcast.map.impl.MapEntrySimple;
-import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.spi.impl.SerializationServiceSupport;
 import com.hazelcast.internal.serialization.SerializationService;
 import com.hazelcast.internal.util.ExceptionUtil;

@@ -16,10 +16,10 @@
 
 package com.hazelcast.web.entryprocessor;
 
+import com.hazelcast.internal.serialization.Data;
 import com.hazelcast.map.EntryProcessor;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
-import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import com.hazelcast.web.SessionState;
 import com.hazelcast.web.WebDataSerializerHook;

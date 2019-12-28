@@ -21,6 +21,12 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <cluster-name>dev</cluster-name>
+    <!--
+        Enabled metrics will cause exception on Jmx leakage check
+        when HazelcastSerialClassRunner is used. They must be either
+        disabled or cleaned up explicitly after each test class.
+    -->
+    <metrics enabled="false"/>
 
     <network>
         <cluster-members>
@@ -30,5 +36,4 @@
         <redo-operation>true</redo-operation>
     </network>
 
-    <executor-pool-size>40</executor-pool-size>
 </hazelcast-client>

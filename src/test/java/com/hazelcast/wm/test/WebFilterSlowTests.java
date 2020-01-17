@@ -55,7 +55,6 @@ public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("true", executeRequest("write", serverPort1, cookieStore));
-        assertEquals(1, map.size());
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
         assertEquals("true", executeRequest("remove_set_null", serverPort2, cookieStore));
         assertEquals("null", executeRequest("read", serverPort1, cookieStore));
@@ -126,7 +125,6 @@ public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("true", executeRequest("write", serverPort1, cookieStore));
-        assertEquals(1, map.size());
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
         assertEquals("true", executeRequest("update", serverPort2, cookieStore));
         assertEquals("value-updated", executeRequest("read", serverPort1, cookieStore));

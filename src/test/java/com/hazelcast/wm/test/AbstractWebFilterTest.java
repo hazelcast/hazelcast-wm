@@ -195,8 +195,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         if (hz == null) {
             return true;
         }
-        Node node = TestUtil.getNode(hz);
-        return node == null || !node.isRunning();
+        return !hz.getLifecycleService().isRunning();
     }
 
     @AfterClass

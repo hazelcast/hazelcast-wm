@@ -1,22 +1,20 @@
 /*
- * Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
+ * Copyright 2020 Hazelcast Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Hazelcast Community License (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the
+ * License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://hazelcast.com/hazelcast-community-license
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package com.hazelcast.web.entryprocessor;
 
-import com.hazelcast.map.EntryBackupProcessor;
 import com.hazelcast.map.EntryProcessor;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -31,7 +29,7 @@ import java.util.Map;
  * Entry processor which return SessionState object stored in distributed map
  */
 
-public final class GetSessionStateEntryProcessor implements EntryProcessor<String, SessionState>,
+public final class GetSessionStateEntryProcessor implements EntryProcessor<String, SessionState, Object>,
         IdentifiedDataSerializable {
 
     public GetSessionStateEntryProcessor() {
@@ -43,7 +41,7 @@ public final class GetSessionStateEntryProcessor implements EntryProcessor<Strin
     }
 
     @Override
-    public int getId() {
+    public int getClassId() {
         return WebDataSerializerHook.GET_SESSION_STATE;
     }
 
@@ -55,11 +53,6 @@ public final class GetSessionStateEntryProcessor implements EntryProcessor<Strin
         }
         entry.setValue(sessionState);
         return sessionState;
-    }
-
-    @Override
-    public EntryBackupProcessor<String, SessionState> getBackupProcessor() {
-        return null;
     }
 
     @Override

@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2008-2016, Hazelcast, Inc. All Rights Reserved.
+  ~ Copyright 2020 Hazelcast Inc.
   ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
+  ~ Licensed under the Hazelcast Community License (the "License"); you may not use
+  ~ this file except in compliance with the License. You may obtain a copy of the
+  ~ License at
   ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ http://hazelcast.com/hazelcast-community-license
   ~
   ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  ~ WARRANTIES OF ANY KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations under the License.
   -->
 
 <hazelcast-client xsi:schemaLocation="http://www.hazelcast.com/schema/client-config
-            http://www.hazelcast.com/schema/client-config/hazelcast-client-config-3.3.xsd"
+            https://www.hazelcast.com/schema/client-config/hazelcast-client-config-4.0.xsd"
            xmlns="http://www.hazelcast.com/schema/client-config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <group>
-        <name>dev</name>
-        <password>dev-pass</password>
-    </group>
+
+    <cluster-name>dev</cluster-name>
+    <!--
+        Enabled metrics will cause exception on Jmx leakage check
+        when HazelcastSerialClassRunner is used. They must be either
+        disabled or cleaned up explicitly after each test class.
+    -->
+    <metrics enabled="false"/>
+
     <network>
         <cluster-members>
             <address>127.0.0.1</address>
@@ -31,5 +35,4 @@
         <redo-operation>true</redo-operation>
     </network>
 
-    <executor-pool-size>40</executor-pool-size>
 </hazelcast-client>

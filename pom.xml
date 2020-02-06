@@ -62,6 +62,13 @@
         <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
     </properties>
 
+    <licenses>
+        <license>
+            <name>The Hazelcast Community License</name>
+            <url>http://hazelcast.com/hazelcast-community-license</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <scm>
         <connection>scm:git:git://github.com/hazelcast/hazelcast-wm.git</connection>
         <developerConnection>scm:git:git@github.com:hazelcast/hazelcast-wm.git</developerConnection>

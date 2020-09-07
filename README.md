@@ -18,6 +18,7 @@
 
 ***Sample Code***: *Please see our <a href="https://github.com/hazelcast/hazelcast-code-samples/tree/master/hazelcast-integration/filter-based-session-replication" target="_blank">sample application</a> for Filter Based Web Session Replication.*
 <br></br>
+*You can also check [Hazelcast Guides: Session Replication with Spring Boot and Hazelcast](https://guides.hazelcast.org/springboot-webfilter-session-replication/).*
 
 ***Note***: *Hazelcast 4.0+ is compatible with Hazelcast-WM 4.x. For older Hazelcast versions, use the latest Hazelcast-WM 3.x.x release.*
 <br></br>

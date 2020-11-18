@@ -24,12 +24,12 @@ public class WebFilterConfigTest {
     public void testInstanceName_withConfigLocation() throws Exception {
         expectedException.expect(InvalidConfigurationException.class);
         expectedException.expectMessage(
-                allOf(containsString("session-ttl-seconds"), containsString("config-location")));
+                allOf(containsString(WebFilterConfig.SESSION_TTL_SECONDS), containsString(WebFilterConfig.CONFIG_LOCATION)));
 
         Properties properties = new Properties();
-        properties.setProperty("instance-name", "instance-1");
-        properties.setProperty("session-ttl-seconds", "20");
-        properties.setProperty("config-location", "some.xml");
+        properties.setProperty(WebFilterConfig.INSTANCE_NAME, "instance-1");
+        properties.setProperty(WebFilterConfig.SESSION_TTL_SECONDS, "20");
+        properties.setProperty(WebFilterConfig.CONFIG_LOCATION, "some.xml");
 
         WebFilterConfig.create(emptyFilterConfig, properties);
     }
@@ -37,8 +37,8 @@ public class WebFilterConfigTest {
     @Test
     public void testInstanceName_withoutConfigLocation() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("instance-name", "instance-1");
-        properties.setProperty("map-name", "map-1");
+        properties.setProperty(WebFilterConfig.INSTANCE_NAME, "instance-1");
+        properties.setProperty(WebFilterConfig.MAP_NAME, "map-1");
 
         WebFilterConfig.create(emptyFilterConfig, properties);
     }
@@ -46,8 +46,8 @@ public class WebFilterConfigTest {
     @Test
     public void testUseClient_withClientConfigLocation() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("use-client", "true");
-        properties.setProperty("client-config-location", "some.xml");
+        properties.setProperty(WebFilterConfig.USE_CLIENT, "true");
+        properties.setProperty(WebFilterConfig.CLIENT_CONFIG_LOCATION, "some.xml");
 
         WebFilterConfig.create(emptyFilterConfig, properties);
     }
@@ -55,11 +55,11 @@ public class WebFilterConfigTest {
     @Test
     public void testUseClient_withConfigLocation() throws Exception {
         expectedException.expect(InvalidConfigurationException.class);
-        expectedException.expectMessage(containsString("config-location"));
+        expectedException.expectMessage(containsString(WebFilterConfig.CONFIG_LOCATION));
 
         Properties properties = new Properties();
-        properties.setProperty("use-client", "true");
-        properties.setProperty("config-location", "some.xml");
+        properties.setProperty(WebFilterConfig.USE_CLIENT, "true");
+        properties.setProperty(WebFilterConfig.CONFIG_LOCATION, "some.xml");
 
         WebFilterConfig.create(emptyFilterConfig, properties);
     }
@@ -67,10 +67,10 @@ public class WebFilterConfigTest {
     @Test
     public void bothServletFilterConfigAndPropertiesAreUsed() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("cookie-name", "customcookiename");
+        properties.setProperty(WebFilterConfig.COOKIE_NAME, "customcookiename");
 
         MapBasedFilterConfig servletFilterConfig = new MapBasedFilterConfig();
-        servletFilterConfig.setParameter("use-client", "true");
+        servletFilterConfig.setParameter(WebFilterConfig.USE_CLIENT, "true");
 
         WebFilterConfig webFilterConfig = WebFilterConfig.create(servletFilterConfig, properties);
         Assert.assertEquals(true, webFilterConfig.isUseClient());
@@ -80,10 +80,10 @@ public class WebFilterConfigTest {
     @Test
     public void propertiesOverrideServletFilterConfiguration() throws Exception {
         Properties properties = new Properties();
-        properties.setProperty("cookie-name", "cookie1");
+        properties.setProperty(WebFilterConfig.COOKIE_NAME, "cookie1");
 
         MapBasedFilterConfig servletFilterConfig = new MapBasedFilterConfig();
-        servletFilterConfig.setParameter("cookie-name", "cookie2");
+        servletFilterConfig.setParameter(WebFilterConfig.COOKIE_NAME, "cookie2");
 
         WebFilterConfig webFilterConfig = WebFilterConfig.create(servletFilterConfig, properties);
         Assert.assertEquals("cookie1", webFilterConfig.getCookieName());

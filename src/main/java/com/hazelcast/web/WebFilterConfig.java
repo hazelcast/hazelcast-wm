@@ -38,41 +38,43 @@ import java.util.StringTokenizer;
  */
 public final class WebFilterConfig {
     /**
-     * Location of the client's configuration.
-     * It can be specified as a servlet resource, classpath resource or as a URL.
+     * Location of the client's configuration. It can be specified as a servlet
+     * resource, classpath resource or as a URL.
      * Its default value is null.
      */
     public static final String CLIENT_CONFIG_LOCATION = "client-config-location";
 
     /**
-     * Time-to-live value (in seconds) of the distributed map storing your web session objects.
-     * It can be any integer between 0 and {@link Integer#MAX_VALUE}.
-     * Its default value is 1800, which is 30 minutes and cannot be set
-     * when USE_CLIENT is true.
+     * Time-to-live value (in seconds) of the distributed map storing web session
+     * objects. It can be any integer between 0 and {@link Integer#MAX_VALUE}.
+     * Its default value is 1800, which is 30 minutes and cannot be set when
+     * USE_CLIENT is true.
      */
     public static final String SESSION_TTL_SECONDS = "session-ttl-seconds";
 
     /**
-     * Specifies whether you want to connect to an existing cluster as a client.
-     * Its default value is false.
+     * Specifies whether WebFilter will connect to an existing cluster as a
+     * client. Its default value is false.
      */
     public static final String USE_CLIENT = "use-client";
 
     /**
-     * Name of an existing Hazelcast instance, if you want to use it.
+     * Name of an existing Hazelcast instance to be used by WebFilter.
      * A new instance will be created if a name is not provided.
      */
     public static final String INSTANCE_NAME = "instance-name";
 
     /**
-     * Name of the distributed map storing your web session objects.
+     * Name of the distributed map storing web session objects.
      */
     public static final String MAP_NAME = "map-name";
 
     /**
-     * If set to true, all requests of a session are routed to the member where the session is first created.
-     * If set to false, when a session is updated on a member, the updated entry for this session on all members
-     * is invalidated. This option must be used in a compatible way with load balancer behavior.
+     * If set to true, all requests of a session are routed to the member where
+     * the session is first created. If set to false, when a session is updated
+     * on a member, the updated entry for this session on all members is
+     * invalidated. This option must be used in a compatible way with load
+     * balancer behavior.
      * Its default value is true.
      */
     public static final String STICKY_SESSION = "sticky-session";
@@ -80,23 +82,27 @@ public final class WebFilterConfig {
     /**
      * Location of Hazelcast configuration.
      * It can be specified as a servlet resource, classpath resource or as a URL.
-     * Its default value is hazelcast-default.xml or hazelcast.xml in the classpath.
+     * Its default value is hazelcast-default.xml or hazelcast.xml in the
+     * classpath.
      */
     public static final String CONFIG_LOCATION = "config-location";
 
     /**
-     * Specifies whether Hazelcast instance will be shutdown during the undeployment of web application.
+     * Specifies whether Hazelcast instance will be shutdown during the
+     * undeployment of web application.
      * Its default value is true.
      */
     public static final String SHUTDOWN_ON_DESTROY = "shutdown-on-destroy";
 
     /**
-     * Specifies whether the sessions in each instance will be cached locally. Its default value is false.
+     * Specifies whether the sessions in each instance will be cached locally.
+     * Its default value is false.
      */
     public static final String DEFERRED_WRITE = "deferred-write";
 
     /**
-     * Specifies whether a request parameter can be used by clients to send back the session ID value.
+     * Specifies whether a request parameter can be used by clients to send
+     * back the session ID value.
      * Its default value is false.
      */
     public static final String USE_REQUEST_PARAMETER = "use-request-parameter";
@@ -109,9 +115,10 @@ public final class WebFilterConfig {
     public static final String TRANSIENT_ATTRIBUTES = "transient-attributes";
 
     /**
-     * If set to true,
-     * it's guaranteed that whenever a session is used the idle-time of this session on the distributed map is reset.
-     * Note that this is useless when non-sticky sessions are used or max-idle-second is not set for the cluster map.
+     * If set to true, it's guaranteed that whenever a session is used the
+     * idle-time of this session on the distributed map is reset. Note that
+     * this is useless when non-sticky sessions are used or max-idle-second
+     * is not set for the cluster map.
      * Its default value is false.
      */
     public static final String KEEP_REMOTE_ACTIVE = "keep-remote-active";
@@ -122,7 +129,8 @@ public final class WebFilterConfig {
     public static final String COOKIE_NAME = "cookie-name";
 
     /**
-     * Domain of the session ID cookie. Its default value is based on the incoming request.
+     * Domain of the session ID cookie. Its default value is based on the
+     * incoming request.
      */
     public static final String COOKIE_DOMAIN = "cookie-domain";
 
@@ -145,9 +153,9 @@ public final class WebFilterConfig {
     public static final String COOKIE_PATH = "cookie-path";
 
     /**
-     * Specifies the maximum age of the cookie in seconds.
-     * Its default value is -1,
-     * meaning the cookie is not stored persistently and will be deleted when the browser exits.
+     * Specifies the maximum age of the cookie in seconds. Its default value is
+     * -1, meaning the cookie is not stored persistently and will be deleted
+     * when the browser exits.
      */
     public static final String COOKIE_MAX_AGE = "cookie-max-age";
 

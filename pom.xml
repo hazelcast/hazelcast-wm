@@ -17,7 +17,7 @@
     <name>hazelcast-wm</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-wm</artifactId>
-    <version>4.2-SNAPSHOT</version>
+    <version>4.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Hazelcast In-Memory DataGrid Web Module Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -31,7 +31,7 @@
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>4.0</hazelcast.version>
+        <hazelcast.version>4.1</hazelcast.version>
 
         <log4j.version>1.2.12</log4j.version>
         <junit.version>4.12</junit.version>

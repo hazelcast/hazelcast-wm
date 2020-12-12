@@ -88,4 +88,12 @@ public class WebFilterConfigTest {
         WebFilterConfig webFilterConfig = WebFilterConfig.create(servletFilterConfig, properties);
         Assert.assertEquals("cookie1", webFilterConfig.getCookieName());
     }
+
+    @Test
+    public void testBooleanConfigValue() {
+        Properties properties = new Properties();
+        properties.put(WebFilterConfig.COOKIE_HTTP_ONLY, true);
+        WebFilterConfig config = WebFilterConfig.create(emptyFilterConfig, properties);
+        Assert.assertEquals(true, config.isCookieHttpOnly());
+    }
 }

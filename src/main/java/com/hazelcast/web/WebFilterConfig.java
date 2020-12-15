@@ -369,7 +369,7 @@ public final class WebFilterConfig {
     private static String getValue(FilterConfig filterConfig, Properties properties, String paramName) {
         if (properties != null && properties.containsKey(paramName)) {
             Object property = properties.get(paramName);
-            return property.toString();
+            return property == null ? filterConfig.getInitParameter(paramName) : property.toString();
         } else {
             return filterConfig.getInitParameter(paramName);
         }

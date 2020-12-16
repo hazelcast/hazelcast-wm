@@ -368,10 +368,12 @@ public final class WebFilterConfig {
 
     private static String getValue(FilterConfig filterConfig, Properties properties, String paramName) {
         if (properties != null && properties.containsKey(paramName)) {
-            return properties.getProperty(paramName);
-        } else {
-            return filterConfig.getInitParameter(paramName);
+            Object property = properties.get(paramName);
+            if (property != null) {
+                return property.toString();
+            }
         }
+        return filterConfig.getInitParameter(paramName);
     }
 
     private static URL validateAndGetConfigUrl(ServletContext ctx, boolean useClient, String configLocation,

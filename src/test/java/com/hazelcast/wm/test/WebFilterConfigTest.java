@@ -88,4 +88,14 @@ public class WebFilterConfigTest {
         WebFilterConfig webFilterConfig = WebFilterConfig.create(servletFilterConfig, properties);
         Assert.assertEquals("cookie1", webFilterConfig.getCookieName());
     }
+
+    @Test
+    public void testNonStringConfigValues() {
+        Properties properties = new Properties();
+        properties.put(WebFilterConfig.COOKIE_HTTP_ONLY, true);
+        properties.put(WebFilterConfig.COOKIE_MAX_AGE, 160);
+        WebFilterConfig config = WebFilterConfig.create(emptyFilterConfig, properties);
+        Assert.assertEquals(true, config.isCookieHttpOnly());
+        Assert.assertEquals(160, config.getCookieMaxAge());
+    }
 }

@@ -36,7 +36,7 @@
         <log4j.version>1.2.12</log4j.version>
         <junit.version>4.13.1</junit.version>
 
-        <jsp.api.version>2.2.1</jsp.api.version>
+        <jsp.api.version>3.0.0</jsp.api.version>
         <servlet.api.version>6.0.0</servlet.api.version>
         <org.springframework.version>6.0.4</org.springframework.version>
         <spring-security.version>6.0.1</spring-security.version>
@@ -287,8 +287,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
             <version>${jsp.api.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -347,8 +347,8 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-jsp</artifactId>
-            <version>9.2.30.v20200428</version>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.maven.plugin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -379,6 +379,18 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jsp-api</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jasper</artifactId>
             <version>${tomcat.version}</version>
             <scope>test</scope>
         </dependency>

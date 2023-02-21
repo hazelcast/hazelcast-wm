@@ -25,12 +25,13 @@ import com.hazelcast.web.WebDataSerializerHook;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Entry processor which return attributes keySet of SessionState values
  */
 
-public final class GetAttributeNamesEntryProcessor implements EntryProcessor<String, SessionState, Object>,
+public final class GetAttributeNamesEntryProcessor implements EntryProcessor<String, SessionState, Set<String>>,
         IdentifiedDataSerializable {
 
     public GetAttributeNamesEntryProcessor() {
@@ -47,13 +48,13 @@ public final class GetAttributeNamesEntryProcessor implements EntryProcessor<Str
     }
 
     @Override
-    public Object process(Map.Entry<String, SessionState> entry) {
+    public Set<String> process(Map.Entry<String, SessionState> entry) {
         SessionState sessionState = entry.getValue();
         if (sessionState == null) {
             return null;
         }
         entry.setValue(sessionState);
-        return new HashSet<String>(sessionState.getAttributes().keySet());
+        return new HashSet<>(sessionState.getAttributes().keySet());
     }
 
     @Override

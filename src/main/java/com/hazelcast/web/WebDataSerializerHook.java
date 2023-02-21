@@ -72,30 +72,15 @@ public class WebDataSerializerHook implements DataSerializerHook {
     }
 
     private IdentifiedDataSerializable getIdentifiedDataSerializable(int typeId) {
-        IdentifiedDataSerializable dataSerializable;
-        switch (typeId) {
-            case SESSION_UPDATE:
-                dataSerializable = new SessionUpdateEntryProcessor();
-                break;
-            case SESSION_DELETE:
-                dataSerializable = new DeleteSessionEntryProcessor();
-                break;
-            case GET_ATTRIBUTE:
-                dataSerializable = new GetAttributeEntryProcessor();
-                break;
-            case GET_ATTRIBUTE_NAMES:
-                dataSerializable = new GetAttributeNamesEntryProcessor();
-                break;
-            case GET_SESSION_STATE:
-                dataSerializable = new GetSessionStateEntryProcessor();
-                break;
-            case SESSION_STATE:
-                dataSerializable =  new SessionState();
-                break;
-            default:
-                dataSerializable = null;
-        }
-        return dataSerializable;
+        return switch (typeId) {
+            case SESSION_UPDATE -> new SessionUpdateEntryProcessor();
+            case SESSION_DELETE -> new DeleteSessionEntryProcessor();
+            case GET_ATTRIBUTE -> new GetAttributeEntryProcessor();
+            case GET_ATTRIBUTE_NAMES -> new GetAttributeNamesEntryProcessor();
+            case GET_SESSION_STATE -> new GetSessionStateEntryProcessor();
+            case SESSION_STATE -> new SessionState();
+            default -> null;
+        };
     }
 
     @Override

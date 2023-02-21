@@ -29,7 +29,7 @@ import java.util.Map;
  * Entry processor which return SessionState object stored in distributed map
  */
 
-public final class GetSessionStateEntryProcessor implements EntryProcessor<String, SessionState, Object>,
+public final class GetSessionStateEntryProcessor implements EntryProcessor<String, SessionState, SessionState>,
         IdentifiedDataSerializable {
 
     public GetSessionStateEntryProcessor() {
@@ -46,7 +46,7 @@ public final class GetSessionStateEntryProcessor implements EntryProcessor<Strin
     }
 
     @Override
-    public Object process(Map.Entry<String, SessionState> entry) {
+    public SessionState process(Map.Entry<String, SessionState> entry) {
         SessionState sessionState = entry.getValue();
         if (sessionState == null) {
             return null;

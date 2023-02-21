@@ -63,14 +63,14 @@ public class ClusteredSessionService {
     private static final long CLUSTER_CHECK_INTERVAL = 5L;
     private static final long RETRY_MILLIS = 7000;
 
-    private volatile IMap clusterMap;
+    private volatile IMap<String, Object> clusterMap;
     private volatile SerializationServiceSupport sss;
     private volatile HazelcastInstance hazelcastInstance;
 
     private final WebFilterConfig filterConfig;
 
     private final Queue<AbstractMap.SimpleEntry<String, Boolean>> orphanSessions = new
-            LinkedBlockingQueue<AbstractMap.SimpleEntry<String, Boolean>>();
+            LinkedBlockingQueue<>();
 
     private volatile boolean failedConnection = true;
     private volatile long lastConnectionTry;
@@ -157,11 +157,11 @@ public class ClusteredSessionService {
      * @param sessionId the session id
      * @param processor the processor
      * @return the object
-     * @throws Exception
      */
-    Object executeOnKey(String sessionId, EntryProcessor processor) throws Exception {
+    @SuppressWarnings("unchecked")
+    <R, V> R executeOnKey(String sessionId, EntryProcessor<String, V, R> processor) throws Exception {
         try {
-            return clusterMap.executeOnKey(sessionId, processor);
+            return clusterMap.executeOnKey(sessionId, (EntryProcessor<String, Object, R>) processor);
         } catch (Exception e) {
             LOGGER.finest("Cannot connect hazelcast server", e);
             throw e;
@@ -177,16 +177,16 @@ public class ClusteredSessionService {
      */
     Set<Map.Entry<String, Object>> getAttributes(String sessionId) throws Exception {
         GetSessionStateEntryProcessor entryProcessor = new GetSessionStateEntryProcessor();
-        SessionState sessionState = (SessionState) executeOnKey(sessionId, entryProcessor);
+        SessionState sessionState = executeOnKey(sessionId, entryProcessor);
         if (sessionState == null) {
             return null;
         }
         Map<String, Data> dataAttributes = sessionState.getAttributes();
-        Set<Map.Entry<String, Object>> attributes = new HashSet<Map.Entry<String, Object>>(dataAttributes.size());
+        Set<Map.Entry<String, Object>> attributes = new HashSet<>(dataAttributes.size());
         for (Map.Entry<String, Data> entry : dataAttributes.entrySet()) {
             String key = entry.getKey();
             Object value = sss.getSerializationService().toObject(entry.getValue());
-            attributes.add(new MapEntrySimple<String, Object>(key, value));
+            attributes.add(new MapEntrySimple<>(key, value));
         }
         return attributes;
     }
@@ -262,7 +262,7 @@ public class ClusteredSessionService {
             doDeleteSession(sessionId, invalidate);
             return true;
         } catch (Exception e) {
-            orphanSessions.add(new AbstractMap.SimpleEntry(sessionId, invalidate));
+            orphanSessions.add(new AbstractMap.SimpleEntry<>(sessionId, invalidate));
             return false;
         }
     }
@@ -280,7 +280,7 @@ public class ClusteredSessionService {
      * @throws Exception the exception
      */
     public Set<String> getAttributeNames(String id) throws Exception {
-        return (Set<String>) executeOnKey(id, new GetAttributeNamesEntryProcessor());
+        return executeOnKey(id, new GetAttributeNamesEntryProcessor());
     }
 
     /**

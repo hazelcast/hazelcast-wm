@@ -31,7 +31,7 @@ import java.util.Map;
  */
 
 public final class DeleteSessionEntryProcessor
-        implements EntryProcessor<String, SessionState, Object>, IdentifiedDataSerializable {
+        implements EntryProcessor<String, SessionState, Boolean>, IdentifiedDataSerializable {
 
     private boolean invalidate;
     private boolean removed;
@@ -54,7 +54,7 @@ public final class DeleteSessionEntryProcessor
     }
 
     @Override
-    public Object process(Map.Entry<String, SessionState> entry) {
+    public Boolean process(Map.Entry<String, SessionState> entry) {
         SessionState sessionState = entry.getValue();
         if (sessionState == null) {
             return Boolean.FALSE;

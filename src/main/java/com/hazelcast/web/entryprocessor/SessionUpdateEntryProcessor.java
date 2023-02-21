@@ -41,11 +41,11 @@ public final class SessionUpdateEntryProcessor
     private Map<String, Data> attributes;
 
     public SessionUpdateEntryProcessor(int size) {
-        this.attributes = new HashMap<String, Data>(size);
+        this.attributes = new HashMap<>(size);
     }
 
     public SessionUpdateEntryProcessor(String key, Data value) {
-        attributes = new HashMap<String, Data>(1);
+        attributes = new HashMap<>(1);
         attributes.put(key, value);
     }
 
@@ -90,7 +90,7 @@ public final class SessionUpdateEntryProcessor
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeInt(attributes.size());
         for (Map.Entry<String, Data> entry : attributes.entrySet()) {
-            out.writeUTF(entry.getKey());
+            out.writeString(entry.getKey());
             IOUtil.writeData(out, entry.getValue());
         }
     }
@@ -98,9 +98,9 @@ public final class SessionUpdateEntryProcessor
     @Override
     public void readData(ObjectDataInput in) throws IOException {
         int attCount = in.readInt();
-        attributes = new HashMap<String, Data>(attCount);
+        attributes = new HashMap<>(attCount);
         for (int i = 0; i < attCount; i++) {
-            attributes.put(in.readUTF(), IOUtil.readData(in));
+            attributes.put(in.readString(), IOUtil.readData(in));
         }
     }
 }

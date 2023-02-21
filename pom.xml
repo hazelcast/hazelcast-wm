@@ -17,7 +17,7 @@
     <name>hazelcast-wm</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-wm</artifactId>
-    <version>4.1-SNAPSHOT</version>
+    <version>5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Hazelcast In-Memory DataGrid Web Module Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -31,17 +31,17 @@
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>4.1</hazelcast.version>
+        <hazelcast.version>5.2.1</hazelcast.version>
 
         <log4j.version>1.2.12</log4j.version>
         <junit.version>4.13.1</junit.version>
 
         <jsp.api.version>2.2.1</jsp.api.version>
-        <servlet.api.version>3.1.0</servlet.api.version>
-        <org.springframework.version>4.3.9.RELEASE</org.springframework.version>
-        <spring-security.version>4.2.3.RELEASE</spring-security.version>
-        <jetty.maven.plugin.version>8.1.2.v20120308</jetty.maven.plugin.version>
-        <tomcat.version>8.5.20</tomcat.version>
+        <servlet.api.version>6.0.0</servlet.api.version>
+        <org.springframework.version>6.0.4</org.springframework.version>
+        <spring-security.version>6.0.1</spring-security.version>
+        <jetty.maven.plugin.version>11.0.13</jetty.maven.plugin.version>
+        <tomcat.version>10.1.5</tomcat.version>
 
         <!-- Not using 3.1 at the moment since it recompiles all classes every time -->
         <!-- https://jira.codehaus.org/browse/MCOMPILER-205 -->
@@ -138,7 +138,7 @@
 
                     <!-- the argLine variable is needed for JaCoco -->
                     <argLine>
-                        -Xms128m -Xmx1G -XX:MaxPermSize=128M
+                        -Xms128m -Xmx1G
                         -Dhazelcast.phone.home.enabled=false
                         -Dhazelcast.mancenter.enabled=false
                         -Dhazelcast.logging.type=none
@@ -268,7 +268,7 @@
             </plugin>
 
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
+                <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.maven.plugin.version}</version>
                 <configuration>
@@ -293,8 +293,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <version>${servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -348,7 +348,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jsp</artifactId>
-            <version>${jetty.maven.plugin.version}</version>
+            <version>9.2.30.v20200428</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -438,7 +438,7 @@
             <id>test-coverage</id>
             <properties>
                 <argLine>
-                    -Xms128m -Xmx1G -XX:MaxPermSize=128M
+                    -Xms128m -Xmx1G
                     -Dhazelcast.version.check.enabled=false
                     -Dhazelcast.mancenter.enabled=false
                     -Dhazelcast.logging.type=none
@@ -597,7 +597,7 @@
                         <configuration combine.self="override">
                             <parallel>none</parallel>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <argLine>-Xms128m -Xmx1G -XX:MaxPermSize=128M
+                            <argLine>-Xms128m -Xmx1G
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
                                 -Dhazelcast.logging.type=none

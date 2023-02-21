@@ -41,9 +41,11 @@ public class JettyServer implements ServletContainer {
         context.setContextPath("/");
         context.setParentLoaderPriority(true);
 
+
         server.setHandler(context);
 
         server.start();
+        context.setAvailable(true);
     }
 
     @Override

@@ -41,7 +41,7 @@
         <org.springframework.version>4.3.9.RELEASE</org.springframework.version>
         <spring-security.version>4.2.3.RELEASE</spring-security.version>
         <jetty.maven.plugin.version>8.1.2.v20120308</jetty.maven.plugin.version>
-        <tomcat.version>8.5.20</tomcat.version>
+        <tomcat.version>8.5.96</tomcat.version>
 
         <!-- Not using 3.1 at the moment since it recompiles all classes every time -->
         <!-- https://jira.codehaus.org/browse/MCOMPILER-205 -->

@@ -31,7 +31,7 @@
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>4.1</hazelcast.version>
+        <hazelcast.version>5.3.7</hazelcast.version>
 
         <log4j.version>1.2.12</log4j.version>
         <junit.version>4.13.1</junit.version>
@@ -103,8 +103,18 @@
     <repositories>
         <repository>
             <id>snapshot-repository</id>
-            <name>Maven2 Snapshot Repository</name>
+            <name>Hazelcast Snapshot Repository</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>main-repo</id>
+            <name>Main Repository</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+            <id>backup-repo</id>
+            <name>Backup Repository</name>
+            <url>https://repo2.maven.org/maven2/</url>
         </repository>
     </repositories>
     
@@ -185,15 +195,6 @@
                         <version>1.0</version>
                     </signature>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>source-java6-check</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>

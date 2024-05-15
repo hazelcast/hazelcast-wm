@@ -26,7 +26,7 @@
         <main.basedir>${project.basedir}</main.basedir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jdk.version>17</jdk.version>
+        <jdk.version>1.8</jdk.version>
         <target.dir>target</target.dir>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -36,11 +36,10 @@
         <log4j.version>2.23.1</log4j.version>
         <junit.version>4.13.1</junit.version>
 
-        <jsp.api.version>2.2.1</jsp.api.version>
-        <servlet.api.version>3.1.0</servlet.api.version>
+        <jsp.api.version>6.0.0</jsp.api.version>
         <org.springframework.version>6.1.6</org.springframework.version>
         <spring-security.version>6.2.4</spring-security.version>
-        <jetty.maven.plugin.version>9.4.33.v20201020</jetty.maven.plugin.version>
+        <jetty.maven.plugin.version>11.0.20</jetty.maven.plugin.version>
         <tomcat.version>10.1.24</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
@@ -182,13 +181,13 @@
                 <configuration>
                     <signature>
                         <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>java16</artifactId>
+                        <artifactId>java18</artifactId>
                         <version>1.0</version>
                     </signature>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>source-java6-check</id>
+                        <id>source-java8-check</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>check</goal>
@@ -269,7 +268,7 @@
             </plugin>
 
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
+                <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.maven.plugin.version}</version>
                 <configuration>
@@ -288,15 +287,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>javax.servlet.jsp-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <version>${jsp.api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -348,7 +341,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-jsp</artifactId>
+            <artifactId>apache-jsp</artifactId>
             <version>${jetty.maven.plugin.version}</version>
             <scope>test</scope>
         </dependency>

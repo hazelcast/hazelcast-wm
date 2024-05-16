@@ -35,4 +35,9 @@
         <redo-operation>true</redo-operation>
     </network>
 
+    <connection-strategy>
+        <connection-retry>
+            <cluster-connect-timeout-millis>20000</cluster-connect-timeout-millis>
+        </connection-retry>
+    </connection-strategy>
 </hazelcast-client>

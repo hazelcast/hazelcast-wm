@@ -32,7 +32,7 @@ import com.hazelcast.web.entryprocessor.GetAttributeNamesEntryProcessor;
 import com.hazelcast.web.entryprocessor.GetSessionStateEntryProcessor;
 import com.hazelcast.web.entryprocessor.SessionUpdateEntryProcessor;
 
-import jakarta.servlet.ServletException;
+import javax.servlet.ServletException;
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;

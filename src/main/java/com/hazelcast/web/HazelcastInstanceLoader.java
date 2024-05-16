@@ -29,7 +29,7 @@ import com.hazelcast.logging.Logger;
 import com.hazelcast.web.listener.ClientLifecycleListener;
 import com.hazelcast.web.listener.ServerLifecycleListener;
 
-import jakarta.servlet.ServletException;
+import javax.servlet.ServletException;
 import java.io.IOException;
 
 final class HazelcastInstanceLoader {

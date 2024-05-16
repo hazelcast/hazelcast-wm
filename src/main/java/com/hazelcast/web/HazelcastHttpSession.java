@@ -19,8 +19,9 @@ import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.serialization.HazelcastSerializationException;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionContext;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -158,6 +159,12 @@ public class HazelcastHttpSession implements HttpSession {
 
     public ServletContext getServletContext() {
         return webFilter.servletContext;
+    }
+
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public HttpSessionContext getSessionContext() {
+        return originalSession.getSessionContext();
     }
 
     public Object getValue(final String name) {

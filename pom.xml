@@ -36,9 +36,10 @@
         <log4j.version>2.23.1</log4j.version>
         <junit.version>4.13.1</junit.version>
 
-        <jsp.api.version>6.0.0</jsp.api.version>
-        <org.springframework.version>6.1.6</org.springframework.version>
-        <spring-security.version>6.2.4</spring-security.version>
+        <jsp.api.version>2.2.1</jsp.api.version>
+        <servlet.api.version>3.1.0</servlet.api.version>
+        <org.springframework.version>5.3.34</org.springframework.version>
+        <spring-security.version>5.8.12</spring-security.version>
         <jetty.maven.plugin.version>11.0.20</jetty.maven.plugin.version>
         <tomcat.version>10.1.24</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
@@ -287,15 +288,22 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
             <version>${jsp.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
             <version>${hazelcast.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

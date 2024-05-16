@@ -21,8 +21,8 @@ import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import com.hazelcast.internal.util.StringUtil;
 
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletContext;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;

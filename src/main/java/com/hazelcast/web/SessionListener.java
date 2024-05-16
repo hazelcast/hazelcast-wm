@@ -18,10 +18,10 @@ package com.hazelcast.web;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpSessionEvent;
-import jakarta.servlet.http.HttpSessionListener;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 /**
  * Pairs with {@link WebFilter} to notify it of {@code HttpSession} timeouts.

@@ -55,8 +55,8 @@
 
         <maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
         <maven.checkstyle.plugin.version>2.15</maven.checkstyle.plugin.version>
-        <maven.findbugs.plugin.version>3.0.5</maven.findbugs.plugin.version>
         <maven.sonar.plugin.version>3.3.0.603</maven.sonar.plugin.version>
+        <maven.spotbugs.plugin.version>4.8.5.0</maven.spotbugs.plugin.version>
         <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
     </properties>
 
@@ -391,9 +391,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                        <version>${maven.findbugs.plugin.version}</version>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
+                        <version>${maven.spotbugs.plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>compile</phase>
@@ -403,8 +403,14 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <failOnError>true</failOnError>
-                            <excludeFilterFile>${main.basedir}/findbugs/findbugs-exclude.xml</excludeFilterFile>
+                            <excludeFilterFile>${main.basedir}/spotbugs/spotbugs-security-exclude.xml</excludeFilterFile>
+<!--                            <plugins>-->
+<!--                                <plugin>-->
+<!--                                    <groupId>com.h3xstream.findsecbugs</groupId>-->
+<!--                                    <artifactId>findsecbugs-plugin</artifactId>-->
+<!--                                    <version>1.12.0</version>-->
+<!--                                </plugin>-->
+<!--                            </plugins>-->
                         </configuration>
                     </plugin>
                 </plugins>

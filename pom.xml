@@ -26,12 +26,12 @@
         <main.basedir>${project.basedir}</main.basedir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>11</jdk.version>
         <target.dir>target</target.dir>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>5.0</hazelcast.version>
+        <hazelcast.version>5.3.7</hazelcast.version>
 
         <log4j.version>2.23.1</log4j.version>
         <junit.version>4.13.1</junit.version>
@@ -44,13 +44,10 @@
         <tomcat.version>8.5.20</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
-        <!-- Not using 3.1 at the moment since it recompiles all classes every time -->
-        <!-- https://jira.codehaus.org/browse/MCOMPILER-205 -->
-        <!--<maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>-->
-        <maven.compiler.plugin.version>2.5.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
         <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
         <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
-        <maven.bundle.plugin.version>2.3.7</maven.bundle.plugin.version>
+        <maven.bundle.plugin.version>5.1.9</maven.bundle.plugin.version>
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
         <maven.gpg.plugin.version>1.4</maven.gpg.plugin.version>
         <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
@@ -104,18 +101,8 @@
     <repositories>
         <repository>
             <id>snapshot-repository</id>
-            <name>Hazelcast Snapshot Repository</name>
+            <name>Maven Snapshot Repository</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>main-repo</id>
-            <name>Main Repository</name>
-            <url>https://repo1.maven.org/maven2</url>
-        </repository>
-        <repository>
-            <id>backup-repo</id>
-            <name>Backup Repository</name>
-            <url>https://repo2.maven.org/maven2/</url>
         </repository>
     </repositories>
     
@@ -126,8 +113,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <release>${jdk.version}</release>
                 </configuration>
             </plugin>
 
@@ -183,28 +169,6 @@
                     <enableRulesSummary>true</enableRulesSummary>
                     <propertyExpansion>main.basedir=${main.basedir}</propertyExpansion>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>${maven.animal.sniffer.plugin.version}</version>
-                <configuration>
-                    <signature>
-                        <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>java18</artifactId>
-                        <version>1.0</version>
-                    </signature>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>source-java8-check</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>

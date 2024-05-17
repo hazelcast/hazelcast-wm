@@ -42,7 +42,7 @@
         <org.springframework.version>5.3.34</org.springframework.version>
         <spring-security.version>5.8.12</spring-security.version>
         <jetty.maven.plugin.version>10.0.21</jetty.maven.plugin.version>
-        <tomcat.version>9.0.88</tomcat.version>
+        <tomcat.version>9.0.89</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
@@ -323,6 +323,12 @@
             <version>${jetty.maven.plugin.version}</version>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.jetty</groupId>-->
+<!--            <artifactId>apache-jsp</artifactId>-->
+<!--            <version>${jetty.maven.plugin.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
@@ -344,7 +350,19 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jasper</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-util</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
             <version>${tomcat.version}</version>
             <scope>test</scope>
         </dependency>

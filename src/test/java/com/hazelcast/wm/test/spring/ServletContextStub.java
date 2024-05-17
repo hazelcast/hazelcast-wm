@@ -175,6 +175,11 @@ public class ServletContextStub implements ServletContext {
     }
 
     @Override
+    public ServletRegistration.Dynamic addJspFile(String s, String s1) {
+        return null;
+    }
+
+    @Override
     public <T extends Servlet> T createServlet(Class<T> clazz) throws ServletException {
         return null;
     }
@@ -277,5 +282,35 @@ public class ServletContextStub implements ServletContext {
     // DO NOT DELETE THIS METHOD. USED IN SERVLET 3.1+ environments
     public String getVirtualServerName() {
         return null;
+    }
+
+    @Override
+    public int getSessionTimeout() {
+        return 0;
+    }
+
+    @Override
+    public void setSessionTimeout(int i) {
+
+    }
+
+    @Override
+    public String getRequestCharacterEncoding() {
+        return null;
+    }
+
+    @Override
+    public void setRequestCharacterEncoding(String s) {
+
+    }
+
+    @Override
+    public String getResponseCharacterEncoding() {
+        return null;
+    }
+
+    @Override
+    public void setResponseCharacterEncoding(String s) {
+
     }
 }

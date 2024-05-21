@@ -140,7 +140,7 @@
                         -Xms128m -Xmx1G -XX:MaxPermSize=128M
                         -Dhazelcast.phone.home.enabled=false
                         -Dhazelcast.mancenter.enabled=false
-                        -Dhazelcast.logging.type=none
+                        -Dhazelcast.logging.type=jdk
                         -Dhazelcast.test.use.network=false
                     </argLine>
                 </configuration>
@@ -386,6 +386,11 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
             <version>${bytebuddy.version}</version>
@@ -435,7 +440,7 @@
                     -Xms128m -Xmx1G -XX:MaxPermSize=128M
                     -Dhazelcast.version.check.enabled=false
                     -Dhazelcast.mancenter.enabled=false
-                    -Dhazelcast.logging.type=none
+                    -Dhazelcast.logging.type=jdk
                     -Dhazelcast.test.use.network=false
                 </argLine>
             </properties>
@@ -594,7 +599,7 @@
                             <argLine>-Xms128m -Xmx1G -XX:MaxPermSize=128M
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
-                                -Dhazelcast.logging.type=none
+                                -Dhazelcast.logging.type=jdk
                                 -Dhazelcast.test.use.network=true
                             </argLine>
                         </configuration>

@@ -26,12 +26,12 @@
         <main.basedir>${project.basedir}</main.basedir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>11</jdk.version>
         <target.dir>target</target.dir>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>5.2.0</hazelcast.version>
+        <hazelcast.version>5.3.0</hazelcast.version>
 
         <log4j.version>2.23.1</log4j.version>
         <junit.version>4.13.1</junit.version>
@@ -45,7 +45,7 @@
         <tomcat.version>9.0.89</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
-        <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.6.0</maven.compiler.plugin.version>
         <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
         <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
         <maven.bundle.plugin.version>2.3.7</maven.bundle.plugin.version>
@@ -114,8 +114,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <release>${jdk.version}</release>
                 </configuration>
             </plugin>
 
@@ -124,7 +123,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration combine.self="override">
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
                     <runOrder>failedfirst</runOrder>
 
                     <!-- 1C means 1 process per cpu core -->
@@ -187,44 +186,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>${maven.bundle.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                        <configuration>
-                            <instructions>
-                                <Import-Package>
-                                    !org.junit,
-                                    !org.apache.tomcat.*,
-                                    !org.apache.catalina.*,
-                                    !org.apache.juli.*,
-                                    !com.hazelcast.*,
-                                    org.apache.log4j;resolution:=optional,
-                                    org.apache.log4j.*;resolution:=optional,
-                                    org.apache.logging.log4j;resolution:=optional,
-                                    org.apache.logging.log4j.*;resolution:=optional,
-                                    org.slf4j;resolution:=optional,
-                                    org.springframework.context;resolution:=optional,
-                                    org.springframework.security.core.session;version="[5.8,6)";resolution:=optional,
-                                    org.springframework.security.web.session;version="[5.8,6)";resolution:=optional,
-                                    org.springframework.web.context;resolution:=optional,
-                                    org.springframework.web.context.support;resolution:=optional,
-                                    *
-                                </Import-Package>
-                                <Fragment-Host>com.hazelcast</Fragment-Host>
-                                <!--<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>-->
-                            </instructions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -268,6 +229,12 @@
             <artifactId>jakarta.servlet.jsp-api</artifactId>
             <version>${jsp.api.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.13</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -327,6 +294,12 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jsp</artifactId>
             <version>${jetty.maven.plugin.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId> org.mortbay.jasper</groupId>
+                    <artifactId>apache-jsp</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -370,13 +343,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
             <scope>test</scope>
             <optional>true</optional>
         </dependency>
@@ -447,7 +413,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${maven.surefire.plugin.version}</version>
                         <configuration combine.self="override">
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <testFailureIgnore>true</testFailureIgnore>
                         </configuration>
                     </plugin>
@@ -585,7 +551,7 @@
                         <version>${maven.surefire.plugin.version}</version>
                         <configuration combine.self="override">
                             <parallel>none</parallel>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <argLine>-Xms128m -Xmx1G -XX:MaxPermSize=128M
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false

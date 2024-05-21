@@ -15,6 +15,7 @@
 
 package com.hazelcast.wm.test;
 
+import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -215,6 +216,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         }
         // Shutdown all instances
         Hazelcast.shutdownAll();
+        HazelcastClient.shutdownAll();
     }
 
     protected int availablePort() throws IOException {

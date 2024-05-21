@@ -187,6 +187,44 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven.bundle.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <instructions>
+                                <Import-Package>
+                                    !org.junit,
+                                    !org.apache.tomcat.*,
+                                    !org.apache.catalina.*,
+                                    !org.apache.juli.*,
+                                    !com.hazelcast.*,
+                                    org.apache.log4j;resolution:=optional,
+                                    org.apache.log4j.*;resolution:=optional,
+                                    org.apache.logging.log4j;resolution:=optional,
+                                    org.apache.logging.log4j.*;resolution:=optional,
+                                    org.slf4j;resolution:=optional,
+                                    org.springframework.context;resolution:=optional,
+                                    org.springframework.security.core.session;version="[3.2,4)";resolution:=optional,
+                                    org.springframework.security.web.session;version="[3.2,4)";resolution:=optional,
+                                    org.springframework.web.context;resolution:=optional,
+                                    org.springframework.web.context.support;resolution:=optional,
+                                    *
+                                </Import-Package>
+                                <Fragment-Host>com.hazelcast</Fragment-Host>
+                                <!--<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>-->
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

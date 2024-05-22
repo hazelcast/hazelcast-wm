@@ -18,7 +18,7 @@ package com.hazelcast.wm.test.spring;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.wm.test.ServletContainer;
-import com.hazelcast.wm.test.TomcatServer;
+import com.hazelcast.wm.test.tomcat.TomcatServer;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.cookie.Cookie;

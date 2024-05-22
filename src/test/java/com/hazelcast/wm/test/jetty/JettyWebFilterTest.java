@@ -13,19 +13,37 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.hazelcast.wm.test;
+package com.hazelcast.wm.test.jetty;
 
 import com.hazelcast.test.annotation.QuickTest;
+import com.hazelcast.wm.test.DelegatedRunWith;
+import com.hazelcast.wm.test.ServletContainer;
+import com.hazelcast.wm.test.WebFilterSlowTests;
+import com.hazelcast.wm.test.WebTestRunner;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 @RunWith(WebTestRunner.class)
 @DelegatedRunWith(Parameterized.class)
 @Category(QuickTest.class)
-public class JettyClientFailOverTest extends  WebFilterClientFailOverTests {
+public class JettyWebFilterTest extends WebFilterSlowTests {
 
-    public JettyClientFailOverTest(String name, String serverXml1, String serverXml2) {
+    @Parameters(name = "Executing: {0}")
+    public static Collection<Object[]> parameters() {
+        return Arrays.asList(
+                new Object[]{"node - not deferred", "node1-node.xml", "node2-node.xml"}, //
+                new Object[]{"node - deferred", "node1-node-deferred.xml", "node2-node-deferred.xml"}, //
+                new Object[]{"client - not deferred", "node1-client.xml", "node2-client.xml"}, //
+                new Object[]{"client - deferred", "node1-client-deferred.xml", "node2-client-deferred.xml"} //
+        );
+    }
+
+    public JettyWebFilterTest(String name, String serverXml1, String serverXml2) {
         super(serverXml1, serverXml2);
     }
 

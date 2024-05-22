@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.hazelcast.wm.test;
+package com.hazelcast.wm.test.jetty;
 
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.Hazelcast;
@@ -21,6 +21,9 @@ import com.hazelcast.map.IMap;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.web.SessionState;
+import com.hazelcast.wm.test.AbstractWebFilterTest;
+import com.hazelcast.wm.test.ServletContainer;
+import com.hazelcast.wm.test.jetty.JettyServer;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.junit.Before;

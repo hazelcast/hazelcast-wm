@@ -1,5 +1,6 @@
-package com.hazelcast.wm.test;
+package com.hazelcast.wm.test.jetty;
 
+import com.hazelcast.wm.test.ServletContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;

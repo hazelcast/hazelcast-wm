@@ -55,7 +55,7 @@ import java.util.Random;
 
 public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
-    protected enum RequestType {
+    public enum RequestType {
         GET,
         POST
     }
@@ -312,7 +312,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                                                             String sourceDir,
                                                             String serverXml) throws Exception;
 
-    String getHazelcastSessionId(CookieStore cookieStore) {
+    public String getHazelcastSessionId(CookieStore cookieStore) {
         for (Cookie cookie : cookieStore.getCookies()) {
             String name = cookie.getName();
             if ("hazelcast.sessionId".equals(name)) return cookie.getValue();

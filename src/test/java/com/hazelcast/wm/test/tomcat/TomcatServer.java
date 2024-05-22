@@ -1,5 +1,6 @@
-package com.hazelcast.wm.test;
+package com.hazelcast.wm.test.tomcat;
 
+import com.hazelcast.wm.test.ServletContainer;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;

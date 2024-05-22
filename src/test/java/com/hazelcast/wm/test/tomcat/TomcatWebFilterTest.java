@@ -13,9 +13,13 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.hazelcast.wm.test;
+package com.hazelcast.wm.test.tomcat;
 
 import com.hazelcast.test.annotation.QuickTest;
+import com.hazelcast.wm.test.DelegatedRunWith;
+import com.hazelcast.wm.test.ServletContainer;
+import com.hazelcast.wm.test.WebFilterSlowTests;
+import com.hazelcast.wm.test.WebTestRunner;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -82,7 +82,7 @@ public class DisconnectedHazelcastTest extends AbstractWebFilterTest {
     }
 
     @Override
-    protected void ensureInstanceIsUp() throws Exception {
+    public void ensureInstanceIsUp() throws Exception {
         if (serverXml1 != null) {
             if (server1 == null) {
                 serverPort1 = availablePort();
@@ -126,7 +126,7 @@ public class DisconnectedHazelcastTest extends AbstractWebFilterTest {
     }
 
     @Override
-    protected ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
+    public ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
         return new JettyServer(port, sourceDir, serverXml);
     }
 }

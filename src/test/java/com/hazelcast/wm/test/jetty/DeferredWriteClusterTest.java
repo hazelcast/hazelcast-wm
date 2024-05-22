@@ -90,7 +90,7 @@ public class DeferredWriteClusterTest extends AbstractWebFilterTest {
     }
 
     @Override
-    protected void ensureInstanceIsUp() throws Exception {
+    public void ensureInstanceIsUp() throws Exception {
         if (isInstanceNotActive(hz)) {
             hz = Hazelcast.newHazelcastInstance(
                     new FileSystemXmlConfig(new File(sourceDir + "/WEB-INF/", "hazelcast.xml")));
@@ -142,7 +142,7 @@ public class DeferredWriteClusterTest extends AbstractWebFilterTest {
     }
 
     @Override
-    protected ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
+    public ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
         return new JettyServer(port, sourceDir, serverXml);
     }
 

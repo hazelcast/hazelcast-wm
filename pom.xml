@@ -17,7 +17,7 @@
     <name>hazelcast-wm</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-wm</artifactId>
-    <version>5.3.0-SNAPSHOT</version>
+    <version>5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Hazelcast In-Memory DataGrid Web Module Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -31,7 +31,7 @@
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>5.2.0</hazelcast.version>
+        <hazelcast.version>5.0.5</hazelcast.version>
 
         <log4j.version>2.23.1</log4j.version>
         <junit.version>4.13.1</junit.version>
@@ -586,6 +586,30 @@
             </build>
         </profile>
         <profile>
+            <id>5.1.z</id>
+            <properties>
+                <hazelcast.version>5.1.7</hazelcast.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>5.2.z</id>
+            <properties>
+                <hazelcast.version>5.2.5</hazelcast.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>5.3.z</id>
+            <properties>
+                <hazelcast.version>5.3.7</hazelcast.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>5.4.z</id>
+            <properties>
+                <hazelcast.version>5.4.0</hazelcast.version>
+            </properties>
+        </profile>
+        <profile>
             <id>master</id>
             <dependencies>
                 <dependency>
@@ -620,6 +644,60 @@
                                 -Dhazelcast.logging.type=jdk
                                 -Dhazelcast.test.use.network=true
                             </argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>tomcat-jdk8</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven.compiler.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>default-testCompile</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                                <configuration>
+                                    <testExcludes>
+                                        <exclude>
+                                            com/hazelcast/wm/test/jetty/**/*.java
+                                        </exclude>
+                                    </testExcludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <source>${jdk.version}</source>
+                            <target>${jdk.version}</target>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.plugin.version}</version>
+                        <configuration combine.self="override">
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <runOrder>failedfirst</runOrder>
+                            <argLine>
+                                -Xms128m -Xmx1G
+                                -Dhazelcast.phone.home.enabled=false
+                                -Dhazelcast.mancenter.enabled=false
+                                -Dhazelcast.logging.type=jdk
+                                -Dhazelcast.test.use.network=false
+                            </argLine>
+                            <excludes>
+                                <exclude>
+                                    com.hazelcast.wm.test.jetty.*
+                                </exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>

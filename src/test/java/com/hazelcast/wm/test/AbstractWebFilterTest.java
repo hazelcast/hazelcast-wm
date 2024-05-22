@@ -90,31 +90,31 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         }
     }
 
-    protected static final String HAZELCAST_SESSION_ATTRIBUTE_SEPARATOR = "::hz::";
+    public static final String HAZELCAST_SESSION_ATTRIBUTE_SEPARATOR = "::hz::";
 
-    protected static final RequestType DEFAULT_REQUEST_TYPE = RequestType.GET;
+    public static final RequestType DEFAULT_REQUEST_TYPE = RequestType.GET;
 
-    protected static final String DEFAULT_MAP_NAME = "default";
+    public static final String DEFAULT_MAP_NAME = "default";
 
-    protected static final Map<Class<? extends AbstractWebFilterTest>, ContainerContext> CONTAINER_CONTEXT_MAP =
+    public static final Map<Class<? extends AbstractWebFilterTest>, ContainerContext> CONTAINER_CONTEXT_MAP =
             new HashMap<Class<? extends AbstractWebFilterTest>, ContainerContext>();
 
-    protected static final String sourceDir;
+    public static final String sourceDir;
 
-    protected String serverXml1;
-    protected String serverXml2;
+    public String serverXml1;
+    public String serverXml2;
 
-    protected int serverPort1;
-    protected int serverPort2;
-    protected ServletContainer server1;
-    protected ServletContainer server2;
-    protected volatile HazelcastInstance hz;
+    public int serverPort1;
+    public int serverPort2;
+    public ServletContainer server1;
+    public ServletContainer server2;
+    public volatile HazelcastInstance hz;
 
-    protected AbstractWebFilterTest(String serverXml1) {
+    public AbstractWebFilterTest(String serverXml1) {
         this.serverXml1 = serverXml1;
     }
 
-    protected AbstractWebFilterTest(String serverXml1, String serverXml2) {
+    public AbstractWebFilterTest(String serverXml1, String serverXml2) {
         this.serverXml1 = serverXml1;
         this.serverXml2 = serverXml2;
     }
@@ -168,7 +168,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         map.clear();
     }
 
-    protected void ensureInstanceIsUp() throws Exception {
+    public void ensureInstanceIsUp() throws Exception {
         if (isInstanceNotActive(hz)) {
             hz = Hazelcast.newHazelcastInstance(
                     new FileSystemXmlConfig(new File(sourceDir + "/WEB-INF/", "hazelcast.xml")));
@@ -191,7 +191,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         }
     }
 
-    protected boolean isInstanceNotActive(HazelcastInstance hz) {
+    public boolean isInstanceNotActive(HazelcastInstance hz) {
         if (hz == null) {
             return true;
         }
@@ -219,7 +219,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         HazelcastClient.shutdownAll();
     }
 
-    protected int availablePort() throws IOException {
+    public int availablePort() throws IOException {
         while (true) {
             int port = (int) (65536 * Math.random());
             try {
@@ -232,7 +232,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         }
     }
 
-    protected String findHazelcastSessionId(IMap<String, Object> map) {
+    public String findHazelcastSessionId(IMap<String, Object> map) {
         for (Entry<String, Object> entry : map.entrySet()) {
             if (!entry.getKey().contains(HAZELCAST_SESSION_ATTRIBUTE_SEPARATOR)) {
                 return entry.getKey();
@@ -241,38 +241,38 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         return null;
     }
 
-    protected String responseToString(HttpResponse response) throws IOException {
+    public String responseToString(HttpResponse response) throws IOException {
         HttpEntity entity = response.getEntity();
         return EntityUtils.toString(entity);
     }
 
-    protected String executeRequest(String context,
+    public String executeRequest(String context,
                                     int serverPort,
                                     CookieStore cookieStore) throws Exception {
         return responseToString(request(context, serverPort, cookieStore));
     }
 
-    protected HttpResponse request(String context,
+    public HttpResponse request(String context,
                                    int serverPort,
                                    CookieStore cookieStore) throws Exception {
         return request(DEFAULT_REQUEST_TYPE, context, serverPort, cookieStore);
     }
 
-    protected String executeRequest(RequestType reqType,
+    public String executeRequest(RequestType reqType,
                                     String context,
                                     int serverPort,
                                     CookieStore cookieStore) throws Exception {
         return responseToString(request(reqType, context, serverPort, cookieStore));
     }
 
-    protected HttpResponse request(RequestType reqType,
+    public HttpResponse request(RequestType reqType,
                                    String context,
                                    int serverPort,
                                    CookieStore cookieStore) throws Exception {
         return request(reqType, context, serverPort, cookieStore, Collections.<String, String>emptyMap());
     }
 
-    protected String executeRequest(RequestType reqType,
+    public String executeRequest(RequestType reqType,
                                    String context,
                                    int serverPort,
                                    CookieStore cookieStore,
@@ -280,7 +280,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         return responseToString(request(reqType, context, serverPort, cookieStore, requestParams));
     }
 
-    protected HttpResponse request(RequestType reqType,
+    public HttpResponse request(RequestType reqType,
                                    String context,
                                    int serverPort,
                                    CookieStore cookieStore,
@@ -308,7 +308,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         return client.execute(request);
     }
 
-    protected abstract ServletContainer getServletContainer(int port,
+    public abstract ServletContainer getServletContainer(int port,
                                                             String sourceDir,
                                                             String serverXml) throws Exception;
 
@@ -320,17 +320,17 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         return null;
     }
 
-    protected static class ContainerContext {
+    public static class ContainerContext {
 
-        protected AbstractWebFilterTest test;
+        public AbstractWebFilterTest test;
 
-        protected String serverXml1;
-        protected String serverXml2;
-        protected int serverPort1;
-        protected int serverPort2;
-        protected ServletContainer server1;
-        protected ServletContainer server2;
-        protected HazelcastInstance hz;
+        public String serverXml1;
+        public String serverXml2;
+        public int serverPort1;
+        public int serverPort2;
+        public ServletContainer server1;
+        public ServletContainer server2;
+        public HazelcastInstance hz;
 
         public ContainerContext(AbstractWebFilterTest test,
                                 String serverXml1,
@@ -350,7 +350,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
             this.hz = hz;
         }
 
-        protected void copyInto(AbstractWebFilterTest awft) {
+        public void copyInto(AbstractWebFilterTest awft) {
             awft.serverXml1 = serverXml1;
             awft.serverXml2 = serverXml2;
             awft.serverPort1 = serverPort1;
@@ -360,7 +360,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
             awft.hz = hz;
         }
 
-        protected void copyFrom(AbstractWebFilterTest awft) {
+        public void copyFrom(AbstractWebFilterTest awft) {
             serverXml1 = awft.serverXml1;
             serverXml2 = awft.serverXml2;
             serverPort1 = awft.serverPort1;

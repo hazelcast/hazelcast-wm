@@ -210,7 +210,7 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
     }
 
     @Override
-    protected ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
+    public ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
         return new JettyServer(port, sourceDir, serverXml);
     }
 }

@@ -643,7 +643,7 @@
             </build>
         </profile>
         <profile>
-        <!-- HSBC's case. Tomcat 9.0.z and 5.3.z hazelcast. Using jdk 1.8 because tomcat supports 1.8.
+        <!-- SUP-420 case. Tomcat 9.0.z and 5.3.z hazelcast. Using jdk 1.8 because tomcat supports 1.8.
          Therefore we have to exclude jetty tests because it requires jdk 11. -->
             <id>tomcat-jdk8</id>
             <properties>

@@ -138,7 +138,7 @@
 
                     <!-- the argLine variable is needed for JaCoco -->
                     <argLine>
-                        -Xms128m -Xmx1G
+                        -Xms128m -Xmx2G
                         -Dhazelcast.phone.home.enabled=false
                         -Dhazelcast.mancenter.enabled=false
                         -Dhazelcast.logging.type=none
@@ -447,7 +447,7 @@
             <id>test-coverage</id>
             <properties>
                 <argLine>
-                    -Xms128m -Xmx1G
+                    -Xms128m -Xmx2G
                     -Dhazelcast.version.check.enabled=false
                     -Dhazelcast.mancenter.enabled=false
                     -Dhazelcast.logging.type=none
@@ -638,7 +638,7 @@
                         <configuration combine.self="override">
                             <parallel>none</parallel>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <argLine>-Xms128m -Xmx1G
+                            <argLine>-Xms128m -Xmx2G
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
                                 -Dhazelcast.logging.type=none
@@ -692,7 +692,7 @@
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
                             <runOrder>failedfirst</runOrder>
                             <argLine>
-                                -Xms128m -Xmx1G
+                                -Xms128m -Xmx2G
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
                                 -Dhazelcast.logging.type=none

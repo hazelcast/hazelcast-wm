@@ -31,7 +31,7 @@
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>5.0.5</hazelcast.version>
+        <hazelcast.version>5.4.0</hazelcast.version>
 
         <log4j.version>2.23.1</log4j.version>
         <junit.version>4.13.1</junit.version>
@@ -39,12 +39,11 @@
 
         <jsp.api.version>2.3.6</jsp.api.version>
         <servlet.api.version>4.0.4</servlet.api.version>
-        <org.springframework.version>5.3.34</org.springframework.version>
+        <org.springframework.version>5.3.36</org.springframework.version>
         <spring-security.version>5.8.12</spring-security.version>
         <jetty.maven.plugin.version>10.0.21</jetty.maven.plugin.version>
         <tomcat.version>9.0.89</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <slf4j.simple.version>2.0.13</slf4j.simple.version>
 
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
@@ -141,7 +140,6 @@
                         -Xms128m -Xmx2G
                         -Dhazelcast.phone.home.enabled=false
                         -Dhazelcast.mancenter.enabled=false
-                        -Dhazelcast.logging.type=none
                         -Dhazelcast.test.use.network=false
                     </argLine>
                 </configuration>
@@ -279,9 +277,9 @@
         </dependency>
 <!--        Needed to make Tomcat log in tests-->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.simple.version}</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>${log4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -394,6 +392,11 @@
             <version>${log4j.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
             <version>${bytebuddy.version}</version>
@@ -443,7 +446,6 @@
                     -Xms128m -Xmx2G
                     -Dhazelcast.version.check.enabled=false
                     -Dhazelcast.mancenter.enabled=false
-                    -Dhazelcast.logging.type=none
                     -Dhazelcast.test.use.network=false
                 </argLine>
             </properties>
@@ -634,7 +636,6 @@
                             <argLine>-Xms128m -Xmx2G
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
-                                -Dhazelcast.logging.type=none
                                 -Dhazelcast.test.use.network=true
                             </argLine>
                         </configuration>
@@ -644,7 +645,8 @@
         </profile>
         <profile>
         <!-- SUP-420 case. Tomcat 9.0.z and 5.3.z hazelcast. Using jdk 1.8 because tomcat supports 1.8.
-         Therefore we have to exclude jetty tests because it requires jdk 11. -->
+         Therefore we have to exclude jetty tests from compiling/running and jetty classes from classpath
+          because they require jdk 11. -->
             <id>tomcat-jdk8</id>
             <properties>
                 <hazelcast.version>5.3.7</hazelcast.version>
@@ -688,7 +690,6 @@
                                 -Xms128m -Xmx2G
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
-                                -Dhazelcast.logging.type=none
                                 -Dhazelcast.test.use.network=false
                             </argLine>
                             <excludes>
@@ -696,6 +697,11 @@
                                     com.hazelcast.wm.test.jetty.*
                                 </exclude>
                             </excludes>
+                            <classpathDependencyExcludes>
+                                <classpathDependencyExclude>
+                                    org.eclipse.jetty:apache-jsp
+                                </classpathDependencyExclude>
+                            </classpathDependencyExcludes>
                         </configuration>
                     </plugin>
                 </plugins>

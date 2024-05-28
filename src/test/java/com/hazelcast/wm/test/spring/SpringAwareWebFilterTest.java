@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Hazelcast Inc.
+ * Copyright 2024 Hazelcast Inc.
  *
  * Licensed under the Hazelcast Community License (the "License"); you may not use
  * this file except in compliance with the License. You may obtain a copy of the
@@ -18,7 +18,7 @@ package com.hazelcast.wm.test.spring;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.wm.test.ServletContainer;
-import com.hazelcast.wm.test.TomcatServer;
+import com.hazelcast.wm.test.tomcat.TomcatServer;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.cookie.Cookie;
@@ -42,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
 
     @Override
-    protected ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
+    public ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
         return new TomcatServer(port, sourceDir, serverXml);
     }
 

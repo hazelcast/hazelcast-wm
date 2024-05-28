@@ -20,7 +20,7 @@
 <br></br>
 *You can also check [Hazelcast Guides: Session Replication with Spring Boot and Hazelcast](https://guides.hazelcast.org/springboot-webfilter-session-replication/).*
 
-***Note***: *Hazelcast 4.0+ is compatible with Hazelcast-WM 4.x. For older Hazelcast versions, use the latest Hazelcast-WM 3.x.x release.*
+***Note***: *Hazelcast 5.0+ is compatible with Hazelcast-WM 5.0. For older Hazelcast versions, use the latest Hazelcast-WM 3.x.x or 4.x.x releases.*
 <br></br>
 
 Assume that you have more than one web server (A, B, C) with a load balancer in front of it. If server A goes down, your users on that server will be directed to one of the live servers (B or C), but their sessions will be lost.
@@ -31,9 +31,9 @@ We need to have all these sessions backed up somewhere if we do not want to lose
 
 The following are required before you can enable Hazelcast Session Clustering:
 
--   Target application or web server should support Java 1.6 or higher.
+-   Target application or web server should support Java 1.8 or higher.
 
--   Target application or web server should support Servlet 3.0 or higher spec.
+-   Target application or web server should support Servlet 4.0 or higher spec. Note that this library supports, "javax" namespace, not the new "jakarta" one. 
 
 -   Session objects that need to be clustered have to be Serializable.
 

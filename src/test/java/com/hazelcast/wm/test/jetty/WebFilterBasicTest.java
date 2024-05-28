@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Hazelcast Inc.
+ * Copyright 2024 Hazelcast Inc.
  *
  * Licensed under the Hazelcast Community License (the "License"); you may not use
  * this file except in compliance with the License. You may obtain a copy of the
@@ -13,13 +13,15 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package com.hazelcast.wm.test;
+package com.hazelcast.wm.test.jetty;
 
 import com.hazelcast.map.IMap;
 import com.hazelcast.internal.serialization.SerializationService;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.web.SessionState;
+import com.hazelcast.wm.test.AbstractWebFilterTest;
+import com.hazelcast.wm.test.ServletContainer;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.junit.Test;
@@ -208,7 +210,7 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
     }
 
     @Override
-    protected ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
+    public ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
         return new JettyServer(port, sourceDir, serverXml);
     }
 }

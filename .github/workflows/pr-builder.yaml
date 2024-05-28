@@ -1,4 +1,4 @@
-name: PR builder is just a magic
+name: PR builder is asd just a magic
 
 on:
   pull_request:

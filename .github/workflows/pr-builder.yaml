@@ -19,5 +19,5 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Maven, now you do the magic! I enchant you the Bash way!
-        run: |
+        run: | foo change
           mvn --batch-mode --update-snapshots install

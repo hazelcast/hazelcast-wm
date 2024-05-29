@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy release
     steps:
-      - name: Determine tag to be released
+      - name: Extract the tag and version to be released
         run: |
           TAG=${GITHUB_REF:10}
           if [ -n "${{ github.event.inputs.tag }}" ]; then
@@ -41,5 +41,8 @@ jobs:
           # We want to create draft release to be able to edit body before actually releasing it.
           # There is no automatic drafter in this repo.
           draft: true
-          files: '**/target/hazelcast-wm-${{ env.VERSION }}*.jar'
+          files: |
+            **/target/hazelcast-wm-${{ env.VERSION }}.jar
+            **/target/hazelcast-wm-${{ env.VERSION }}-sources.jar
           name: "${{ env.VERSION }}"
+          fail_on_unmatched_files: true

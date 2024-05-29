@@ -17,7 +17,7 @@ jobs:
         with:
           ssh-key: "${{ secrets.COMMIT_KEY }}"
       - name: Setup JDK
-        uses: ./.github/workflows/setup-jdk.yml
+        uses: ./.github/actions/setup-jdk.yml
       - name: Prepare release
         run: |
           if [ -n "${{ github.event.inputs.next-version }}" ]; then

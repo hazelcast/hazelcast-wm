@@ -13,7 +13,7 @@ jobs:
       - name: Get all the letters, words and paragraphs needed for the spell!
         uses: actions/checkout@v3
       - name: Setup JDK
-        uses: ./.github/workflows/setup-jdk.yml
+        uses: ./.github/actions/setup-jdk.yml
       - name: Maven, now you do the magic! I enchant you the Bash way!
         run: |
           mvn --batch-mode --update-snapshots install

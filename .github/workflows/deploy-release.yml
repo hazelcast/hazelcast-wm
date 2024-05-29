@@ -17,11 +17,13 @@ jobs:
     steps:
       - name: Extract the tag and version to be released
         run: |
+          # The 10 is for stripping the initial part form GITHUB_REF e.g, (refs/tags/)v5.4.4
           TAG=${GITHUB_REF:10}
           if [ -n "${{ github.event.inputs.tag }}" ]; then
             TAG="${{ github.event.inputs.tag }}" 
           fi
           echo "TAG=${TAG}" >> $GITHUB_ENV
+          # 1 is for removing the v at the beginning of the tag v5.4.4 -> 5.4.4
           echo "VERSION=${TAG:1}" >> $GITHUB_ENV
       - uses: actions/checkout@v4
         with:

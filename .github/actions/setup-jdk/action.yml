@@ -1,4 +1,8 @@
 name: 'Setup JDK'
+inputs:
+  gpg-private-key:  # id of input
+    description: 'gpg private key used to release'
+    required: false
 runs:
   using: "composite"
   steps:
@@ -11,5 +15,5 @@ runs:
         server-id: release-repository
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
-        gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+        gpg-private-key: ${{ inputs.gpg-private-key }}
         gpg-passphrase: MAVEN_GPG_PASSPHRASE

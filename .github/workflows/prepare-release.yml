@@ -18,6 +18,8 @@ jobs:
           ssh-key: "${{ secrets.COMMIT_KEY }}"
       - name: Setup JDK
         uses: ./.github/actions/setup-jdk
+        with:
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
       - name: Prepare release
         run: |
           if [ -n "${{ github.event.inputs.next-version }}" ]; then

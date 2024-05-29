@@ -29,7 +29,7 @@ jobs:
         with:
           ref: "${{ env.TAG }}"
       - name: Setup JDK
-        uses: ./.github/actions/setup-jdk.yml
+        uses: ./.github/actions/setup-jdk
       - name: Deploy release
         run: ./mvnw deploy -Prelease --batch-mode -DskipTests -DretryFailedDeploymentCount=3
         env:

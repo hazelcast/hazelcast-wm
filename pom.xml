@@ -41,7 +41,7 @@
         <servlet.api.version>4.0.4</servlet.api.version>
         <org.springframework.version>5.3.36</org.springframework.version>
         <spring-security.version>5.8.12</spring-security.version>
-        <jetty.maven.plugin.version>10.0.21</jetty.maven.plugin.version>
+        <jetty.maven.plugin.version>11.0.21</jetty.maven.plugin.version>
         <tomcat.version>9.0.89</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 

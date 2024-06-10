@@ -106,9 +106,9 @@ public class WebFilter implements Filter {
 
     private final Properties properties;
 
-    private final ConcurrentMap<String, String> originalSessions = new ConcurrentHashMap<String, String>(1000);
+    private final ConcurrentMap<String, String> originalSessions = new ConcurrentHashMap<>(1000);
     private final ConcurrentMap<String, HazelcastHttpSession> sessions =
-            new ConcurrentHashMap<String, HazelcastHttpSession>(1000);
+            new ConcurrentHashMap<>(1000);
 
     private ClusteredSessionService clusteredSessionService;
 
@@ -393,6 +393,7 @@ public class WebFilter implements Filter {
         }
 
         // DO NOT DELETE THIS METHOD. USED IN SERVLET 3.1+ environments
+        @Override
         public String changeSessionId() {
             Method changeSessionIdMethod = getChangeSessionIdMethod();
             if (changeSessionIdMethod == null) {

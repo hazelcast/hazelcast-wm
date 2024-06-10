@@ -22,7 +22,6 @@ import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import com.hazelcast.web.SessionState;
 import com.hazelcast.web.WebDataSerializerHook;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -53,14 +52,14 @@ public final class GetAttributeNamesEntryProcessor implements EntryProcessor<Str
             return null;
         }
         entry.setValue(sessionState);
-        return new HashSet<String>(sessionState.getAttributes().keySet());
+        return new HashSet<>(sessionState.getAttributes().keySet());
     }
 
     @Override
-    public void writeData(ObjectDataOutput out) throws IOException {
+    public void writeData(ObjectDataOutput out) {
     }
 
     @Override
-    public void readData(ObjectDataInput in) throws IOException {
+    public void readData(ObjectDataInput in) {
     }
 }

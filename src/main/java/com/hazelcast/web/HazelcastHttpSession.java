@@ -44,7 +44,7 @@ public class HazelcastHttpSession implements HttpSession {
     private volatile boolean valid = true;
     private final String id;
     private final HttpSession originalSession;
-    private final Map<String, LocalCacheEntry> localCache = new ConcurrentHashMap<String, LocalCacheEntry>();
+    private final Map<String, LocalCacheEntry> localCache = new ConcurrentHashMap<>();
 
     private final boolean stickySession;
     private final boolean deferredWrite;
@@ -284,7 +284,7 @@ public class HazelcastHttpSession implements HttpSession {
 
     void sessionDeferredWrite() {
         if (sessionChanged() || isNew()) {
-            Map<String, Object> updates = new HashMap<String, Object>();
+            Map<String, Object> updates = new HashMap<>();
 
             Iterator<Map.Entry<String, LocalCacheEntry>> iterator = localCache.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -314,7 +314,7 @@ public class HazelcastHttpSession implements HttpSession {
     }
 
     private Set<String> selectKeys() {
-        Set<String> keys = new HashSet<String>();
+        Set<String> keys = new HashSet<>();
         if (!deferredWrite) {
             Set<String> attributeNames = null;
             try {

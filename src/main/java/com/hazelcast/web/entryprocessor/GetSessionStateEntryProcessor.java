@@ -22,7 +22,6 @@ import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import com.hazelcast.web.SessionState;
 import com.hazelcast.web.WebDataSerializerHook;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -56,10 +55,10 @@ public final class GetSessionStateEntryProcessor implements EntryProcessor<Strin
     }
 
     @Override
-    public void writeData(ObjectDataOutput out) throws IOException {
+    public void writeData(ObjectDataOutput out) {
     }
 
     @Override
-    public void readData(ObjectDataInput in) throws IOException {
+    public void readData(ObjectDataInput in) {
     }
 }

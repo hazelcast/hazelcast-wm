@@ -340,7 +340,7 @@ public final class WebFilterConfig {
         if (StringUtil.isNullOrEmptyAfterTrim(value)) {
             return Collections.emptySet();
         } else {
-            HashSet<String> transientAttributes = new HashSet<String>();
+            HashSet<String> transientAttributes = new HashSet<>();
             StringTokenizer st = new StringTokenizer(value, ",");
             while (st.hasMoreTokens()) {
                 String token = st.nextToken();
@@ -433,7 +433,7 @@ public final class WebFilterConfig {
 
     private static List<String> parametersExist(FilterConfig filterConfig, Properties properties,
                                                 String... parameterNames) {
-        ArrayList<String> parameters = new ArrayList<String>(parameterNames.length);
+        ArrayList<String> parameters = new ArrayList<>(parameterNames.length);
         for (String pName : parameterNames) {
             if (paramExists(filterConfig, properties, pName)) {
                 parameters.add(pName);

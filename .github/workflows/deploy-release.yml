@@ -31,6 +31,7 @@ jobs:
       - name: Setup JDK
         uses: ./.github/actions/setup-jdk
         with:
+          server-id: release-repository
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
       - name: Deploy release
         run: ./mvnw deploy -Prelease --batch-mode -DskipTests -DretryFailedDeploymentCount=3

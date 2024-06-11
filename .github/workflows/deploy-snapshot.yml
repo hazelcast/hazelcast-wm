@@ -16,8 +16,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup JDK
         uses: ./.github/actions/setup-jdk
+        with:
+          server-id: snapshot-repository
       - name: Deploy snapshot
         run: ./mvnw deploy -Prelease-snapshot --batch-mode --update-snapshots -DskipTests -DretryFailedDeploymentCount=3
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

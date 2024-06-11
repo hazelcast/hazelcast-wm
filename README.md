@@ -11,7 +11,7 @@
 * [Defining Session Expiry](#defining-session-expiry)
 * [Using Sticky Sessions](#using-sticky-sessions)
 * [Marking Transient Attributes](#marking-transient-attributes)
-
+* [Upgrading from v4.0](#upgrading-from-v40)
 
 # Filter Based Web Session Replication
 
@@ -310,3 +310,7 @@ request parameter. You can enable it in your `web.xml` file:
 Note that this causes Hazelcast's `WebFilter` to consume the `ServletRequest#getInputStream` (as it
 needs to examine request parameters) so it will not be available to any servlet that is filtered by this `WebFilter`.
 
+# Upgrading from v4.0
+
+There is a guide from available to help you upgrade your hazelcast-wm from v4.0 to v5.0. You can find it
+[here](./upgrade-guides/v4.0-v5.0.md).

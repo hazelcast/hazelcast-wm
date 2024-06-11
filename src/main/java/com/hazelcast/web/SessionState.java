@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class SessionState implements IdentifiedDataSerializable {
 
-    private final Map<String, Data> attributes = new HashMap<>(1);
+    private final Map<String, Data> attributes = new HashMap<String, Data>(1);
 
     @Override
     public int getFactoryId() {

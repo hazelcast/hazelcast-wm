@@ -18,8 +18,6 @@ jobs:
         uses: ./.github/actions/setup-jdk
         with:
           server-id: snapshot-repository
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
       - name: Deploy snapshot
         run: ./mvnw deploy -Prelease-snapshot --batch-mode --update-snapshots -DskipTests -DretryFailedDeploymentCount=3
         env:

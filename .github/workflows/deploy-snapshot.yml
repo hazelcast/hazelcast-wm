@@ -1,0 +1,23 @@
+name: Deploy Snapshot
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Deploy snapshot
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: ./.github/actions/setup-jdk
+      - name: Deploy snapshot
+        run: ./mvnw deploy -Prelease-snapshot --batch-mode --update-snapshots -DskipTests -DretryFailedDeploymentCount=3
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}

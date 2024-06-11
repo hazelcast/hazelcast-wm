@@ -312,5 +312,5 @@ needs to examine request parameters) so it will not be available to any servlet 
 
 # Upgrading from v4.0
 
-There is a guide from available to help you upgrade your hazelcast-wm from v4.0 to v5.0. You can find it
+There is a guide available to help you upgrade your hazelcast-wm from v4.0 to v5.0. You can find it
 [here](./upgrade-guides/v4.0-v5.0.md).

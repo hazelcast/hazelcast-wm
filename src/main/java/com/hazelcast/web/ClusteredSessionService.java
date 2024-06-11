@@ -70,7 +70,7 @@ public class ClusteredSessionService {
     private final WebFilterConfig filterConfig;
 
     private final Queue<AbstractMap.SimpleEntry<String, Boolean>> orphanSessions = new
-            LinkedBlockingQueue<>();
+            LinkedBlockingQueue<AbstractMap.SimpleEntry<String, Boolean>>();
 
     private volatile boolean failedConnection = true;
     private volatile long lastConnectionTry;
@@ -110,7 +110,7 @@ public class ClusteredSessionService {
     }
 
 
-    private void ensureInstance() {
+    private void ensureInstance() throws Exception {
         if (failedConnection && System.currentTimeMillis() > lastConnectionTry + RETRY_MILLIS) {
             synchronized (this) {
                 try {
@@ -157,8 +157,9 @@ public class ClusteredSessionService {
      * @param sessionId the session id
      * @param processor the processor
      * @return the object
+     * @throws Exception
      */
-    Object executeOnKey(String sessionId, EntryProcessor processor) {
+    Object executeOnKey(String sessionId, EntryProcessor processor) throws Exception {
         try {
             return clusterMap.executeOnKey(sessionId, processor);
         } catch (Exception e) {
@@ -172,19 +173,20 @@ public class ClusteredSessionService {
      *
      * @param sessionId the session id
      * @return the attributes
+     * @throws Exception the exception
      */
-    Set<Map.Entry<String, Object>> getAttributes(String sessionId) {
+    Set<Map.Entry<String, Object>> getAttributes(String sessionId) throws Exception {
         GetSessionStateEntryProcessor entryProcessor = new GetSessionStateEntryProcessor();
         SessionState sessionState = (SessionState) executeOnKey(sessionId, entryProcessor);
         if (sessionState == null) {
             return null;
         }
         Map<String, Data> dataAttributes = sessionState.getAttributes();
-        Set<Map.Entry<String, Object>> attributes = new HashSet<>(dataAttributes.size());
+        Set<Map.Entry<String, Object>> attributes = new HashSet<Map.Entry<String, Object>>(dataAttributes.size());
         for (Map.Entry<String, Data> entry : dataAttributes.entrySet()) {
             String key = entry.getKey();
             Object value = sss.getSerializationService().toObject(entry.getValue());
-            attributes.add(new MapEntrySimple<>(key, value));
+            attributes.add(new MapEntrySimple<String, Object>(key, value));
         }
         return attributes;
     }
@@ -195,8 +197,9 @@ public class ClusteredSessionService {
      * @param sessionId     the session id
      * @param attributeName the attribute name
      * @return the attribute
+     * @throws Exception the exception
      */
-    Object getAttribute(String sessionId, String attributeName) {
+    Object getAttribute(String sessionId, String attributeName) throws Exception {
         GetAttributeEntryProcessor entryProcessor = new GetAttributeEntryProcessor(attributeName);
         return executeOnKey(sessionId, entryProcessor);
     }
@@ -206,8 +209,9 @@ public class ClusteredSessionService {
      *
      * @param sessionId     the session id
      * @param attributeName the attribute name
+     * @throws Exception the exception
      */
-    void deleteAttribute(String sessionId, String attributeName) {
+    void deleteAttribute(String sessionId, String attributeName) throws Exception {
         setAttribute(sessionId, attributeName, null);
     }
 
@@ -217,8 +221,9 @@ public class ClusteredSessionService {
      * @param sessionId     the session id
      * @param attributeName the attribute name
      * @param value         the value
+     * @throws Exception the exception
      */
-    void setAttribute(String sessionId, String attributeName, Object value) {
+    void setAttribute(String sessionId, String attributeName, Object value) throws Exception {
         Data dataValue = (value == null) ? null : sss.getSerializationService().toData(value);
         SessionUpdateEntryProcessor sessionUpdateProcessor = new SessionUpdateEntryProcessor(attributeName, dataValue);
         executeOnKey(sessionId, sessionUpdateProcessor);
@@ -262,7 +267,7 @@ public class ClusteredSessionService {
         }
     }
 
-    private void doDeleteSession(String sessionId, boolean invalidate) {
+    private void doDeleteSession(String sessionId, boolean invalidate) throws Exception {
         DeleteSessionEntryProcessor entryProcessor = new DeleteSessionEntryProcessor(invalidate);
         executeOnKey(sessionId, entryProcessor);
     }
@@ -272,8 +277,9 @@ public class ClusteredSessionService {
      *
      * @param id the id
      * @return the attribute names
+     * @throws Exception the exception
      */
-    public Set<String> getAttributeNames(String id) {
+    public Set<String> getAttributeNames(String id) throws Exception {
         return (Set<String>) executeOnKey(id, new GetAttributeNamesEntryProcessor());
     }
 
@@ -282,8 +288,9 @@ public class ClusteredSessionService {
      *
      * @param id      the id
      * @param updates the updates
+     * @throws Exception the exception
      */
-    public void updateAttributes(String id, Map<String, Object> updates) {
+    public void updateAttributes(String id, Map<String, Object> updates) throws Exception {
         SerializationService ss = sss.getSerializationService();
         SessionUpdateEntryProcessor sessionUpdate = new SessionUpdateEntryProcessor(updates.size());
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
@@ -329,7 +336,6 @@ public class ClusteredSessionService {
             super(target, name);
         }
 
-        @Override
         public void run() {
             try {
                 super.run();

@@ -34,8 +34,8 @@ jobs:
           fi
           git config user.name "devopsHazelcast"
           git config user.email "<devops@hazelcast.com>"
-          ./mvnw --batch-mode release:prepare -Prelease -Darguments="-DskipTests" $EXTRA_ARGS 
-          ./mvnw --batch-mode release:clean
+          ./mvnw --batch-mode release:prepare -Prelease -Darguments="-DskipTests" $EXTRA_ARGS -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          ./mvnw --batch-mode release:clean -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}

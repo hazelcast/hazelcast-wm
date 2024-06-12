@@ -17,7 +17,16 @@ jobs:
         with:
           token: "${{ secrets.GH_PAT }}"
       - name: Setup JDK
-        uses: ./.github/actions/setup-jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: 'snapshot-repository'
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Prepare release
         run: |
           if [ -n "${{ github.event.inputs.next-version }}" ]; then
@@ -25,8 +34,10 @@ jobs:
           fi
           git config user.name "devopsHazelcast"
           git config user.email "<devops@hazelcast.com>"
-          ./mvnw --batch-mode release:prepare -Prelease -Darguments="-DskipTests" -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} $EXTRA_ARGS
-          ./mvnw --batch-mode release:clean -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          ./mvnw --batch-mode release:prepare -Prelease -Darguments="-DskipTests" $EXTRA_ARGS
+          ./mvnw --batch-mode release:clean
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Push changes
         run: |
           git push

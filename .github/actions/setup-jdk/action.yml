@@ -6,7 +6,7 @@ inputs:
     required: false
   server-id:
     description: 'server id to deploy'
-    default: ''
+    default: 'snapshot-repository'
     required: false
 
 runs:

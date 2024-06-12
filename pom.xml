@@ -50,7 +50,7 @@
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
         <maven.bundle.plugin.version>2.3.7</maven.bundle.plugin.version>
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
-        <maven.gpg.plugin.version>1.4</maven.gpg.plugin.version>
+        <maven.gpg.plugin.version>3.2.4</maven.gpg.plugin.version>
         <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
         <bytebuddy.version>1.6.12</bytebuddy.version>
 

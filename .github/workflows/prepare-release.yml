@@ -27,6 +27,8 @@ jobs:
           git config user.email "<devops@hazelcast.com>"
           ./mvnw --batch-mode release:prepare -Prelease -Darguments="-DskipTests" $EXTRA_ARGS
           ./mvnw --batch-mode release:clean
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Push changes
         run: |
           git push

@@ -37,6 +37,8 @@ jobs:
           ./mvnw --batch-mode release:prepare -Prelease -Darguments="-DskipTests" $EXTRA_ARGS 
           ./mvnw --batch-mode release:clean
         env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       - name: Push changes
         run: |

@@ -8,7 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import javax.servlet.FilterConfig;
+import jakarta.servlet.FilterConfig;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.allOf;

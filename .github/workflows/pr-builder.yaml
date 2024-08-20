@@ -11,13 +11,9 @@ jobs:
 
     steps:
       - name: Get all the letters, words and paragraphs needed for the spell!
-        uses: actions/checkout@v3
-      - name: Prepare the cauldron and the wand!
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'maven'
+        uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: ./.github/actions/setup-jdk
       - name: Maven, now you do the magic! I enchant you the Bash way!
         run: |
           mvn --batch-mode --update-snapshots install

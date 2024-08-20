@@ -30,11 +30,9 @@ public class SessionListener implements HttpSessionListener {
 
     private static final ILogger LOGGER = Logger.getLogger(SessionListener.class);
 
-    @Override
     public void sessionCreated(HttpSessionEvent event) {
     }
 
-    @Override
     public void sessionDestroyed(HttpSessionEvent event) {
         HttpSession session = event.getSession();
         ServletContext servletContext = session.getServletContext();

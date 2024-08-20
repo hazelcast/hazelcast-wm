@@ -1,0 +1,58 @@
+name: Deploy Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to be released, e.g. v1.2.3, v2.2.2, v3.0.0'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Deploy release
+    steps:
+      - name: Extract the tag and version to be released
+        run: |
+          # The 10 is for stripping the initial part form GITHUB_REF e.g, (refs/tags/)v5.4.4
+          TAG=${GITHUB_REF:10}
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}" 
+          fi
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+          # 1 is for removing the v at the beginning of the tag v5.4.4 -> 5.4.4
+          echo "VERSION=${TAG:1}" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+        with:
+          ref: "${{ env.TAG }}"
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: 'release-repository'
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Deploy release
+        run: ./mvnw --batch-mode deploy -Prelease -DskipTests -DretryFailedDeploymentCount=3 -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # We want to create draft release to be able to edit body before actually releasing it.
+          # There is no automatic drafter in this repo.
+          draft: true
+          files: |
+            **/target/hazelcast-wm-${{ env.VERSION }}.jar
+            **/target/hazelcast-wm-${{ env.VERSION }}-sources.jar
+          name: "${{ env.VERSION }}"
+          fail_on_unmatched_files: true

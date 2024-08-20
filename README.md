@@ -31,9 +31,9 @@ We need to have all these sessions backed up somewhere if we do not want to lose
 
 The following are required before you can enable Hazelcast Session Clustering:
 
--   Target application or web server should support Java 1.8 or higher.
+-   Target application or web server should support Java 17 or higher.
 
--   Target application or web server should support Servlet 4.0 or higher spec. Note that this library supports, "javax" namespace, not the new "jakarta" one. 
+-   Target application or web server should support Servlet 6.1 or higher spec. Note that this library supports, "jakarta" namespace. 
 
 -   Session objects that need to be clustered have to be Serializable.
 

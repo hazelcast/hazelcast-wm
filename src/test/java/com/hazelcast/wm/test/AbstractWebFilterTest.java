@@ -20,8 +20,6 @@ import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.hazelcast.instance.impl.Node;
-import com.hazelcast.instance.impl.TestUtil;
 import com.hazelcast.test.HazelcastTestSupport;
 import com.hazelcast.test.TestEnvironment;
 import org.apache.http.HttpEntity;
@@ -43,8 +41,10 @@ import org.junit.Before;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -82,8 +82,11 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         System.setProperty("hazelcast.multicast.group", "224." + g1 + "." + g2 + "." + g3);
         try {
             final URL root = new URL(TestServlet.class.getResource("/"), "../test-classes");
-            final String baseDir = URLDecoder.decode(root.getFile(), "UTF-8");
-            sourceDir = baseDir + "/../../src/test/webapp";
+            URI uri = root.toURI();
+            Path path = Paths.get(uri);
+            Path baseDir = path.toAbsolutePath();
+
+            sourceDir = baseDir.resolve("../../src/test/webapp").normalize().toString();
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalStateException("Couldn't initialize AbstractWebFilterTest");

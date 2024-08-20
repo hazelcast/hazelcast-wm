@@ -19,6 +19,7 @@ import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.wm.test.AbstractWebFilterTest;
 import com.hazelcast.wm.test.ServletContainer;
+import com.hazelcast.wm.test.jetty.JettyServer;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.junit.Test;
@@ -40,11 +41,14 @@ public class ConcurrentRequestTest extends AbstractWebFilterTest {
     public void test_multipleRequest() throws Exception {
         final CookieStore cookieStore = new BasicCookieStore();
         executeRequest("read", serverPort1, cookieStore);
-        Thread thread = new Thread(() -> {
-            try {
-                executeRequest("write_wait", serverPort1, cookieStore);
-            } catch (Exception e) {
-                e.printStackTrace();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    executeRequest("write_wait", serverPort1, cookieStore);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         thread.start();

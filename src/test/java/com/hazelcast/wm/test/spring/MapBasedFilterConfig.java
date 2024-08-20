@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MapBasedFilterConfig implements FilterConfig {
     private final ServletContext emptyServletContext = new ServletContextStub();
-    private final Map<String, String> parameters = new HashMap<>();
+    private final Map<String, String> parameters = new HashMap<String, String>();
 
     @Override
     public String getFilterName() {

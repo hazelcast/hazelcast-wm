@@ -23,6 +23,7 @@ import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.web.SessionState;
 import com.hazelcast.wm.test.AbstractWebFilterTest;
 import com.hazelcast.wm.test.ServletContainer;
+import com.hazelcast.wm.test.jetty.JettyServer;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.junit.After;
@@ -146,7 +147,7 @@ public class DeferredWriteClusterTest extends AbstractWebFilterTest {
     }
 
     @After
-    public void shutdown() {
+    public void shutdown() throws Exception {
         teardownClass();
     }
 }

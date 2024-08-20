@@ -184,7 +184,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
         logout(sss);
         login(sss, false);
 
-        HashMap<String, String> params = new HashMap<>();
+        HashMap<String, String> params = new HashMap<String, String>();
         params.put("key", "someKey");
         params.put("value", "someValue");
         request(RequestType.POST, "updateAttribute", this.serverPort1, sss.cookieStore, params);

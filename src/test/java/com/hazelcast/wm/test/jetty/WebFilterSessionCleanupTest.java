@@ -22,6 +22,7 @@ import com.hazelcast.wm.test.AbstractWebFilterTest;
 import com.hazelcast.wm.test.DelegatedRunWith;
 import com.hazelcast.wm.test.ServletContainer;
 import com.hazelcast.wm.test.WebTestRunner;
+import com.hazelcast.wm.test.jetty.JettyServer;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.junit.Test;

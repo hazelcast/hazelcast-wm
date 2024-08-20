@@ -3,7 +3,6 @@ package com.hazelcast.wm.test;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;

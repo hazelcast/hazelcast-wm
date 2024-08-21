@@ -180,7 +180,7 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
  	public void testInputStreamOfRequestNotConsumed() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
 
-        HashMap<String, String> requestParameters = new HashMap<String, String>();
+        HashMap<String, String> requestParameters = new HashMap<>();
         requestParameters.put("email", "test@email.com");
         requestParameters.put("password", "password1");
 

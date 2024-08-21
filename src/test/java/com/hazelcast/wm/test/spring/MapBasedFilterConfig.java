@@ -1,7 +1,7 @@
 package com.hazelcast.wm.test.spring;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class MapBasedFilterConfig implements FilterConfig {
     private final ServletContext emptyServletContext = new ServletContextStub();
-    private final Map<String, String> parameters = new HashMap<String, String>();
+    private final Map<String, String> parameters = new HashMap<>();
 
     @Override
     public String getFilterName() {
@@ -28,7 +28,7 @@ public class MapBasedFilterConfig implements FilterConfig {
 
     @Override
     public Enumeration<String> getInitParameterNames() {
-        return new Enumeration<String>() {
+        return new Enumeration<>() {
 
             private Iterator<String> iterator = parameters.keySet().iterator();
 

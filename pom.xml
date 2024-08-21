@@ -26,36 +26,36 @@
         <main.basedir>${project.basedir}</main.basedir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>17</jdk.version>
         <target.dir>target</target.dir>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
         <hazelcast.version>5.4.0</hazelcast.version>
 
-        <log4j.version>2.23.1</log4j.version>
-        <junit.version>4.13.1</junit.version>
-        <assertj.version>3.24.2</assertj.version>
+        <log4j.version>3.0.0-beta2</log4j.version>
+        <junit.version>4.13.2</junit.version>
+        <assertj.version>3.26.0</assertj.version>
 
-        <jsp.api.version>2.3.6</jsp.api.version>
-        <servlet.api.version>4.0.4</servlet.api.version>
-        <org.springframework.version>5.3.36</org.springframework.version>
-        <spring-security.version>5.8.12</spring-security.version>
-        <jetty.maven.plugin.version>10.0.21</jetty.maven.plugin.version>
-        <tomcat.version>9.0.89</tomcat.version>
+        <jsp.api.version>4.0.0</jsp.api.version>
+        <servlet.api.version>6.1.0</servlet.api.version>
+        <org.springframework.version>6.1.10</org.springframework.version>
+        <spring-security.version>6.3.0</spring-security.version>
+        <jetty.maven.plugin.version>11.0.21</jetty.maven.plugin.version>
+        <tomcat.version>11.0.0-M22</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
-        <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
-        <maven.bundle.plugin.version>2.3.7</maven.bundle.plugin.version>
+        <maven.bundle.plugin.version>5.1.9</maven.bundle.plugin.version>
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
         <maven.gpg.plugin.version>3.2.4</maven.gpg.plugin.version>
         <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
-        <bytebuddy.version>1.6.12</bytebuddy.version>
+        <bytebuddy.version>1.14.17</bytebuddy.version>
 
         <maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
-        <maven.checkstyle.plugin.version>2.15</maven.checkstyle.plugin.version>
+        <maven.checkstyle.plugin.version>3.4.0</maven.checkstyle.plugin.version>
         <maven.spotbugs.plugin.version>4.8.5.0</maven.spotbugs.plugin.version>
         <maven.sonar.plugin.version>3.3.0.603</maven.sonar.plugin.version>
         <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
@@ -113,6 +113,11 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>maven_central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
     </repositories>
 
     <build>
@@ -122,8 +127,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <release>${jdk.version}</release>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -284,7 +291,6 @@
     </build>
 
     <dependencies>
-<!--        Note that we are using 2.3.z version under jakarta groupId, which still uses the javax. package name in code.-->
         <dependency>
             <groupId>jakarta.servlet.jsp</groupId>
             <artifactId>jakarta.servlet.jsp-api</artifactId>
@@ -653,7 +659,7 @@
         </profile>
         <profile>
         <!-- SUP-420 case. Tomcat 9.0.z and 5.3.z hazelcast. Using jdk 1.8 because tomcat supports 1.8.
-         Therefore we have to exclude jetty tests from compiling/running and jetty classes from classpath
+         Therefore, we have to exclude jetty tests from compiling/running and jetty classes from classpath
           because they require jdk 11. -->
             <id>tomcat-jdk8</id>
             <properties>

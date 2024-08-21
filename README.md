@@ -31,9 +31,9 @@ We need to have all these sessions backed up somewhere if we do not want to lose
 
 The following are required before you can enable Hazelcast Session Clustering:
 
--   Target application or web server should support Java 1.8 or higher.
+-   Target application or web server should support Java 17 or higher.
 
--   Target application or web server should support Servlet 4.0 or higher spec. Note that this library supports, "javax" namespace, not the new "jakarta" one. 
+-   Target application or web server should support Servlet 6.1 or higher spec. Note that this library supports, "jakarta" namespace. 
 
 -   Session objects that need to be clustered have to be Serializable.
 
@@ -256,7 +256,7 @@ When called by the target application, the value of `HttpSession.getId()` is the
 
 Hazelcast automatically removes sessions from the cluster if sessions are expired on the Web Container. This 
 removal is done by `com.hazelcast.web.SessionListener`, which is an implementation of 
-`javax.servlet.http.HttpSessionListener`. Session is not removed instantly because it might be active in other nodes of
+`jakarta.servlet.http.HttpSessionListener`. Session is not removed instantly because it might be active in other nodes of
 the cluster. It's done after the period of time specified by `session-ttl-seconds` on `WebFilter` passes (or 
 `max-idle-seconds` element in your `hazelcast.xml` on the server side [if client/server mode is used](#client-mode-vs-p2p-mode)). 
 

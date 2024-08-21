@@ -15,11 +15,10 @@
 
 package com.hazelcast.wm.test;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,7 +29,7 @@ import java.util.List;
 public class TestServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (req.getRequestURI().endsWith("redirect")) {
             //Don't touch session before redirect
             resp.sendRedirect("/");
@@ -52,7 +51,7 @@ public class TestServlet extends HttpServlet {
             session.setAttribute("key", "value");
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("write_wait")) {
-            session.putValue("key", "value");
+            session.setAttribute("key", "value");
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -60,7 +59,7 @@ public class TestServlet extends HttpServlet {
             }
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("putValue")) {
-            session.putValue("key", "value");
+            session.setAttribute("key", "value");
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("nullkey")) {
             session.setAttribute(null, "value");
@@ -69,7 +68,7 @@ public class TestServlet extends HttpServlet {
             Object value = session.getAttribute("key");
             resp.getWriter().write(value == null ? "null" : value.toString());
         } else if (req.getRequestURI().endsWith("getValue")) {
-            Object value = session.getValue("key");
+            Object value = session.getAttribute("key");
             resp.getWriter().write(value == null ? "null" : value.toString());
         } else if (req.getRequestURI().endsWith("remove")) {
             session.removeAttribute("key");
@@ -79,7 +78,7 @@ public class TestServlet extends HttpServlet {
             session.removeAttribute("key");
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("removeValue")) {
-            session.removeValue("key");
+            session.removeAttribute("key");
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("remove_set_null")) {
             session.setAttribute("key", null);
@@ -147,7 +146,7 @@ public class TestServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         session.setAttribute("attr1", "val1");
 

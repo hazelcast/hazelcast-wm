@@ -21,7 +21,7 @@ public class WebFilterConfigTest {
     private final FilterConfig emptyFilterConfig = new MapBasedFilterConfig();
 
     @Test
-    public void testInstanceName_withConfigLocation() throws Exception {
+    public void testInstanceName_withConfigLocation() {
         expectedException.expect(InvalidConfigurationException.class);
         expectedException.expectMessage(
                 allOf(containsString(WebFilterConfig.SESSION_TTL_SECONDS), containsString(WebFilterConfig.CONFIG_LOCATION)));
@@ -35,7 +35,7 @@ public class WebFilterConfigTest {
     }
 
     @Test
-    public void testInstanceName_withoutConfigLocation() throws Exception {
+    public void testInstanceName_withoutConfigLocation() {
         Properties properties = new Properties();
         properties.setProperty(WebFilterConfig.INSTANCE_NAME, "instance-1");
         properties.setProperty(WebFilterConfig.MAP_NAME, "map-1");
@@ -44,7 +44,7 @@ public class WebFilterConfigTest {
     }
 
     @Test
-    public void testUseClient_withClientConfigLocation() throws Exception {
+    public void testUseClient_withClientConfigLocation() {
         Properties properties = new Properties();
         properties.setProperty(WebFilterConfig.USE_CLIENT, "true");
         properties.setProperty(WebFilterConfig.CLIENT_CONFIG_LOCATION, "some.xml");
@@ -53,7 +53,7 @@ public class WebFilterConfigTest {
     }
 
     @Test
-    public void testUseClient_withConfigLocation() throws Exception {
+    public void testUseClient_withConfigLocation() {
         expectedException.expect(InvalidConfigurationException.class);
         expectedException.expectMessage(containsString(WebFilterConfig.CONFIG_LOCATION));
 
@@ -65,7 +65,7 @@ public class WebFilterConfigTest {
     }
 
     @Test
-    public void bothServletFilterConfigAndPropertiesAreUsed() throws Exception {
+    public void bothServletFilterConfigAndPropertiesAreUsed() {
         Properties properties = new Properties();
         properties.setProperty(WebFilterConfig.COOKIE_NAME, "customcookiename");
 
@@ -78,7 +78,7 @@ public class WebFilterConfigTest {
     }
 
     @Test
-    public void propertiesOverrideServletFilterConfiguration() throws Exception {
+    public void propertiesOverrideServletFilterConfiguration() {
         Properties properties = new Properties();
         properties.setProperty(WebFilterConfig.COOKIE_NAME, "cookie1");
 

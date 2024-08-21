@@ -18,14 +18,17 @@ package com.hazelcast.wm.test;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Value implements Serializable {
+    @Serial
     private void writeObject(ObjectOutputStream stream)
             throws IOException {
         System.out.println("WRITE OBJECT");
     }
 
+    @Serial
     private void readObject(ObjectInputStream stream)
             throws IOException {
         System.out.println("READ OBJECT");

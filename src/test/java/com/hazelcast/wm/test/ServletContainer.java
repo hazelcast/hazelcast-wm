@@ -2,12 +2,12 @@ package com.hazelcast.wm.test;
 
 public interface ServletContainer {
 
-    public void restart() throws Exception;
+    void restart() throws Exception;
 
-    public void stop() throws Exception;
+    void stop() throws Exception;
 
-    public void start() throws Exception;
+    void start() throws Exception;
 
-    public boolean isRunning();
+    boolean isRunning();
 
 }

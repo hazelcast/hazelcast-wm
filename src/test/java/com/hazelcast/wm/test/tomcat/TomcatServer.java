@@ -5,7 +5,6 @@ import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 
-import jakarta.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 
@@ -46,7 +45,7 @@ public class TomcatServer implements ServletContainer {
         start();
     }
 
-    public void buildTomcat(String sourceDir, String serverXml) throws LifecycleException, ServletException, IOException {
+    public void buildTomcat(String sourceDir, String serverXml) throws LifecycleException, IOException {
         tomcat = new Tomcat();
         tomcat.setPort(port);
 

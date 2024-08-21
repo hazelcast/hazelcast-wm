@@ -100,7 +100,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
     public static final String DEFAULT_MAP_NAME = "default";
 
     public static final Map<Class<? extends AbstractWebFilterTest>, ContainerContext> CONTAINER_CONTEXT_MAP =
-            new HashMap<Class<? extends AbstractWebFilterTest>, ContainerContext>();
+            new HashMap<>();
 
     public static final String sourceDir;
 
@@ -203,7 +203,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
     }
 
     @AfterClass
-    public static void teardownClass() throws Exception {
+    public static void teardownClass() {
         for (Entry<Class<? extends AbstractWebFilterTest>, ContainerContext> ccEntry :
                 CONTAINER_CONTEXT_MAP.entrySet()) {
             ContainerContext cc = ccEntry.getValue();
@@ -222,7 +222,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         HazelcastClient.shutdownAll();
     }
 
-    public int availablePort() throws IOException {
+    public int availablePort() {
         while (true) {
             int port = (int) (65536 * Math.random());
             try {
@@ -299,7 +299,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                 break;
             case POST:
                 request = new HttpPost("http://localhost:" + serverPort + "/" + context);
-                List<NameValuePair> params = new ArrayList<NameValuePair>(requestParams.size());
+                List<NameValuePair> params = new ArrayList<>(requestParams.size());
                 for (Entry<String, String> reqParamEntry : requestParams.entrySet()) {
                     params.add(new BasicNameValuePair(reqParamEntry.getKey(), reqParamEntry.getValue()));
                 }

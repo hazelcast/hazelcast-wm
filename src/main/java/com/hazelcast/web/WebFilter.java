@@ -36,15 +36,12 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import static com.hazelcast.internal.util.StringUtil.isNullOrEmptyAfterTrim;
-import static com.hazelcast.web.Utils.getChangeSessionIdMethod;
-import static com.hazelcast.web.Utils.invokeChangeSessionId;
 
 /**
  * <p>
@@ -392,12 +389,8 @@ public class WebFilter implements Filter {
             return hazelcastSession != null && hazelcastSession.isValid();
         }
 
-        // DO NOT DELETE THIS METHOD. USED IN SERVLET 3.1+ environments
+        @Override
         public String changeSessionId() {
-            Method changeSessionIdMethod = getChangeSessionIdMethod();
-            if (changeSessionIdMethod == null) {
-                return "";
-            }
             HttpServletRequest nonWrappedHttpServletRequest = getNonWrappedHttpServletRequest();
             if (nonWrappedHttpServletRequest.getSession() == null) {
                 throw new IllegalStateException("changeSessionId requested for request with no session");
@@ -409,7 +402,7 @@ public class WebFilter implements Filter {
             hazelcastHttpSession.destroy(true);
 
             String newHazelcastSessionId = generateSessionId();
-            String newJSessionId = invokeChangeSessionId(nonWrappedHttpServletRequest, changeSessionIdMethod);
+            String newJSessionId = nonWrappedHttpServletRequest.changeSessionId();
             HttpSession originalSession = nonWrappedHttpServletRequest.getSession();
 
             HazelcastHttpSession hazelcastSession = createHazelcastHttpSession(newHazelcastSessionId, originalSession);

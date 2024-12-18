@@ -45,6 +45,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +53,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import static org.awaitility.Awaitility.await;
 
 public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
@@ -156,7 +159,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                             hz));
         } else {
             // For every test method a different test class can be constructed for parallel runs by JUnit.
-            // So container can be exist, but configurations of current test may not be exist.
+            // So container can exist, but configurations of current test may not be exist.
             // For this reason, we should copy container context information (such as ports, servers, ...)
             // to current test.
             cc.copyInto(this);
@@ -169,12 +172,18 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         // Clear map
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         map.clear();
+        await()
+                .atMost(Duration.ofMinutes(5))
+                .pollInterval(Duration.ofSeconds(1))
+                .logging()
+                .until(() -> hz.getCluster().getMembers().size() >= 2);
     }
 
     public void ensureInstanceIsUp() throws Exception {
         if (isInstanceNotActive(hz)) {
             hz = Hazelcast.newHazelcastInstance(
                     new FileSystemXmlConfig(new File(sourceDir + "/WEB-INF/", "hazelcast.xml")));
+            System.out.println("New Hazelcast: " + hz.getLocalEndpoint().toString());
         }
         if (serverXml1 != null) {
             if (server1 == null) {

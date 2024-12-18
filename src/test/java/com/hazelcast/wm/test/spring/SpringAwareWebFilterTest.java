@@ -50,8 +50,8 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
     @Test
     public void testSessionFixationProtectionLostTomcatSessionId() throws Exception {
         // Scenario: An initial request is made to the server before authentication that creates a tomcat session ID and
-        // a hazlecast session ID (e.g. a login page). Next, an authentication request is made but only the Hazelcast
-        // session ID is provided. It is expected that the original hazlecast session should be destroyed.
+        // a hazelcast session ID (e.g. a login page). Next, an authentication request is made but only the Hazelcast
+        // session ID is provided. It is expected that the original hazelcast session should be destroyed.
 
         // Create a session so that a Tomcat and Hazelcast session ID is created
         SpringSecuritySession sss = createSession(null, this.serverPort1);
@@ -173,6 +173,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
     @Test
     public void test_issue_53() throws Exception {
         SpringSecuritySession sss = login(null, true);
+
         HttpResponse node2Response = request("hello", this.serverPort2, sss.cookieStore);
         // Request should not be re-directed to login
         assertNotEquals(302, node2Response.getStatusLine().getStatusCode());

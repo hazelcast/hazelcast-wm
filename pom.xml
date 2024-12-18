@@ -36,13 +36,14 @@
         <log4j.version>3.0.0-beta2</log4j.version>
         <junit.version>4.13.2</junit.version>
         <assertj.version>3.26.0</assertj.version>
+        <opentest4j.version>1.3.0</opentest4j.version>
 
         <jsp.api.version>4.0.0</jsp.api.version>
         <servlet.api.version>6.1.0</servlet.api.version>
         <org.springframework.version>6.1.10</org.springframework.version>
         <spring-security.version>6.3.0</spring-security.version>
         <jetty.maven.plugin.version>11.0.21</jetty.maven.plugin.version>
-        <tomcat.version>11.0.0-M22</tomcat.version>
+        <tomcat.version>11.0.2</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
@@ -303,6 +304,7 @@
             <version>${servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
+
 <!--        Needed to make Tomcat log in tests-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -441,6 +443,11 @@
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opentest4j</groupId>
+            <artifactId>opentest4j</artifactId>
+            <version>${opentest4j.version}</version>
         </dependency>
     </dependencies>
     <profiles>
@@ -634,9 +641,8 @@
                 </dependency>
             </dependencies>
             <properties>
-                <hazelcast.version>5.5.0-SNAPSHOT</hazelcast.version>
+                <hazelcast.version>5.5.0</hazelcast.version>
                 <mockito.version>5.12.0</mockito.version>
-                <opentest4j.version>1.3.0</opentest4j.version>
             </properties>
             <build>
                 <plugins>

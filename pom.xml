@@ -40,25 +40,25 @@
 
         <jsp.api.version>4.0.0</jsp.api.version>
         <servlet.api.version>6.1.0</servlet.api.version>
-        <org.springframework.version>6.1.10</org.springframework.version>
+        <org.springframework.version>6.2.1</org.springframework.version>
         <spring-security.version>6.3.0</spring-security.version>
         <jetty.maven.plugin.version>11.0.21</jetty.maven.plugin.version>
         <tomcat.version>11.0.2</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
-        <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
+        <maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
-        <maven.bundle.plugin.version>5.1.9</maven.bundle.plugin.version>
+        <maven.bundle.plugin.version>6.0.0</maven.bundle.plugin.version>
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
         <maven.gpg.plugin.version>3.2.4</maven.gpg.plugin.version>
-        <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
+        <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
         <bytebuddy.version>1.14.17</bytebuddy.version>
 
-        <maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
+        <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
         <maven.checkstyle.plugin.version>3.4.0</maven.checkstyle.plugin.version>
-        <maven.spotbugs.plugin.version>4.8.5.0</maven.spotbugs.plugin.version>
-        <maven.sonar.plugin.version>3.3.0.603</maven.sonar.plugin.version>
+        <maven.spotbugs.plugin.version>4.8.6.6</maven.spotbugs.plugin.version>
+        <maven.sonar.plugin.version>5.0.0.4389</maven.sonar.plugin.version>
         <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
         <maven-release-plugin-version>3.0.1</maven-release-plugin-version>
     </properties>
@@ -177,7 +177,6 @@
                     <configLocation>${main.basedir}/checkstyle/checkstyle.xml</configLocation>
                     <suppressionsLocation>${main.basedir}/checkstyle/suppressions.xml</suppressionsLocation>
                     <headerLocation>${main.basedir}/checkstyle/ClassHeader.txt</headerLocation>
-                    <enableRSS>false</enableRSS>
                     <linkXRef>true</linkXRef>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
@@ -266,10 +265,10 @@
                 <configuration>
                     <webAppSourceDirectory>${basedir}/src/test/webapp</webAppSourceDirectory>
                     <useTestScope>true</useTestScope>
-                    <webAppConfig>
+                    <webApp>
                         <contextPath>/</contextPath>
                         <descriptor>${basedir}/src/test/webapp/WEB-INF/web.xml</descriptor>
-                    </webAppConfig>
+                    </webApp>
                     <stopPort>9966</stopPort>
                     <stopKey>stop</stopKey>
                 </configuration>
@@ -503,7 +502,7 @@
                     </plugin>
 
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
+                        <groupId>org.sonarsource.scanner.maven </groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
                         <version>${maven.sonar.plugin.version}</version>
                     </plugin>

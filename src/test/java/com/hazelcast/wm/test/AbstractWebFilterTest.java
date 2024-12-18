@@ -172,18 +172,12 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         // Clear map
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         map.clear();
-        await()
-                .atMost(Duration.ofMinutes(5))
-                .pollInterval(Duration.ofSeconds(1))
-                .logging()
-                .until(() -> hz.getCluster().getMembers().size() >= 2);
     }
 
     public void ensureInstanceIsUp() throws Exception {
         if (isInstanceNotActive(hz)) {
             hz = Hazelcast.newHazelcastInstance(
                     new FileSystemXmlConfig(new File(sourceDir + "/WEB-INF/", "hazelcast.xml")));
-            System.out.println("New Hazelcast: " + hz.getLocalEndpoint().toString());
         }
         if (serverXml1 != null) {
             if (server1 == null) {
@@ -201,6 +195,14 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                 server2.start();
             }
         }
+    }
+
+    protected void waitForCluster() {
+        await()
+                .atMost(Duration.ofMinutes(5))
+                .pollInterval(Duration.ofSeconds(1))
+                .logging()
+                .until(() -> hz.getCluster().getMembers().size() >= 2);
     }
 
     public boolean isInstanceNotActive(HazelcastInstance hz) {

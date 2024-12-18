@@ -452,11 +452,13 @@
             <groupId>org.opentest4j</groupId>
             <artifactId>opentest4j</artifactId>
             <version>${opentest4j.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>4.2.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <profiles>
@@ -491,6 +493,7 @@
                     -Dhazelcast.version.check.enabled=false
                     -Dhazelcast.mancenter.enabled=false
                     -Dhazelcast.test.use.network=false
+                    -Djava.net.preferIPv4Stack=true
                 </argLine>
             </properties>
             <build>
@@ -721,6 +724,7 @@
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
                                 -Dhazelcast.test.use.network=false
+                                -Djava.net.preferIPv4Stack=true
                             </argLine>
                             <excludes>
                                 <exclude>

@@ -172,6 +172,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
 
     @Test
     public void test_issue_53() throws Exception {
+        waitForCluster();
         SpringSecuritySession sss = login(null, true);
 
         HttpResponse node2Response = request("hello", this.serverPort2, sss.cookieStore);
@@ -181,6 +182,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
 
     @Test
     public void test_issue_53_2() throws Exception {
+        waitForCluster();
         SpringSecuritySession sss = login(null, true);
         logout(sss);
         login(sss, false);
@@ -200,6 +202,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
     // https://github.com/hazelcast/hazelcast-wm/issues/6
     @Test
     public void testChangeSessionIdAfterLogin() throws Exception {
+        waitForCluster();
         SpringSecuritySession sss = new SpringSecuritySession();
         request(RequestType.POST,
                 SPRING_SECURITY_LOGIN_URL,

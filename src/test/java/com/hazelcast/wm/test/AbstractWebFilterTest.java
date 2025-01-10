@@ -64,7 +64,6 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
     }
 
     static {
-
         final String logging = "hazelcast.logging.type";
         if (System.getProperty(logging) == null) {
             System.setProperty(logging, "log4j2");
@@ -91,8 +90,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
             sourceDir = baseDir.resolve("../../src/test/webapp").normalize().toString();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalStateException("Couldn't initialize AbstractWebFilterTest");
+            throw new IllegalStateException("Couldn't initialize AbstractWebFilterTest", e);
         }
     }
 
@@ -183,6 +181,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
             if (server1 == null) {
                 serverPort1 = availablePort();
                 server1 = getServletContainer(serverPort1, sourceDir, serverXml1);
+                server1.start();
             } else if (!server1.isRunning()) {
                 server1.start();
             }
@@ -191,6 +190,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
             if (server2 == null) {
                 serverPort2 = availablePort();
                 server2 = getServletContainer(serverPort2, sourceDir, serverXml2);
+                server2.start();
             } else if (!server2.isRunning()) {
                 server2.start();
             }
@@ -210,7 +210,6 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
             return true;
         }
         return !hz.getLifecycleService().isRunning();
-
     }
 
     @AfterClass

@@ -97,7 +97,7 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         CookieStore cookieStore = new BasicCookieStore();
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         executeRequest("write", serverPort1, cookieStore);
-        assertEquals(1, map.size());
+        assertTrueEventually(() -> assertEquals(1, map.size()));
     }
 
     @Test(timeout = 20000)
@@ -118,7 +118,6 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("value-updated", executeRequest("read", serverPort1, cookieStore));
         String newSessionId = map.keySet().iterator().next();
         SessionState sessionState = (SessionState) map.get(newSessionId);
-        SerializationService ss = getNode(hz).getSerializationService();
         assertSizeEventually(1, map);
         assertSizeEventually(1, sessionState.getAttributes());
     }

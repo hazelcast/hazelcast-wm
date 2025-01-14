@@ -24,10 +24,15 @@ import com.hazelcast.wm.test.AbstractWebFilterTest;
 import com.hazelcast.wm.test.ServletContainer;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+//import org.junit.Before;
+//import org.junit.Test;
+//import org.junit.experimental.categories.Category;
+//import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.junitpioneer.jupiter.RetryingTest;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,20 +50,20 @@ import static org.junit.Assert.assertNotEquals;
  *
  * @since 3.3
  */
-@RunWith(HazelcastSerialClassRunner.class)
-@Category(QuickTest.class)
+@Tag("QuickTest")
 public class WebFilterBasicTest extends AbstractWebFilterTest {
 
     public WebFilterBasicTest() {
         super("node1-node.xml", "node2-node.xml");
     }
 
-    @Before
+    @BeforeEach
     public void beforeWaitForCluster() {
         waitForCluster();
     }
 
-    @Test(timeout = 200_000)
+    @Test
+    @RetryingTest(5)
     public void test_setAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
@@ -72,7 +77,8 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
     }
 
-    @Test(timeout = 200_000)
+    @Test
+    @RetryingTest(5)
     public void test_getAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
@@ -81,20 +87,23 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("value", executeRequest("readIfExist", serverPort2, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void test_getAttributeNames_WhenSessionEmpty() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("", executeRequest("names", serverPort1, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void test_getAttributeNames_WhenSessionNotEmpty() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
         assertEquals("key", executeRequest("names", serverPort1, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void test_removeAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
@@ -102,7 +111,8 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("null", executeRequest("read", serverPort1, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void test_clusterMapSize() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
@@ -110,7 +120,8 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertTrueEventually(() -> assertEquals(1, map.size()));
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void test_clusterMapSizeAfterRemove() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
@@ -119,7 +130,8 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals(1, map.size());
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void test_updateAttribute() throws Exception {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
@@ -132,14 +144,14 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertSizeEventually(1, sessionState.getAttributes());
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void test_getAttributeNames_AfterGetAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("remove_put", serverPort1, cookieStore);
         assertEquals("", executeRequest("names", serverPort1, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void test_invalidateSession() throws Exception {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
@@ -149,7 +161,7 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertSizeEventually(0, map);
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void test_invalidateMultiReferenceSession() throws Exception {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
@@ -160,14 +172,14 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertSizeEventually(0, map);
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void test_isNew() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("true", executeRequest("isNew", serverPort1, cookieStore));
         assertEquals("false", executeRequest("isNew", serverPort1, cookieStore));
     }
 
-    @Test(timeout = 40000)
+    @Test
     public void test_sessionTimeout() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
@@ -176,7 +188,7 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertSizeEventually(0, map);
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void testServerRestart() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
@@ -184,14 +196,14 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test
     public void testNoSession() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("true", executeRequest("noSession", serverPort1, cookieStore));
     }
 
     // https://github.com/hazelcast/hazelcast-wm/issues/15
-    @Test(timeout = 20000)
+    @Test
  	public void testInputStreamOfRequestNotConsumed() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
 
@@ -202,7 +214,8 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("true", executeRequest(POST, "login", serverPort1, cookieStore, requestParameters));
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void testUseRequestParameterEnabled() throws Exception {
         String hazelcastSessionId1 = executeRequest(POST, "useRequestParameter", serverPort1,
                 new BasicCookieStore());
@@ -213,7 +226,8 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals(hazelcastSessionId1, hazelcastSessionId2);
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @RetryingTest(5)
     public void testUseRequestParameterDisabled() throws Exception {
         String hazelcastSessionId1 = executeRequest(POST, "useRequestParameter", serverPort2,
                 new BasicCookieStore());

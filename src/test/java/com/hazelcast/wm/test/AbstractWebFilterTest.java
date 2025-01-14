@@ -35,6 +35,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,7 +123,7 @@ public abstract class AbstractWebFilterTest {
         this.serverXml2 = serverXml2;
     }
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         ContainerContext cc = CONTAINER_CONTEXT_MAP.get(getClass());
 
@@ -210,7 +212,7 @@ public abstract class AbstractWebFilterTest {
         return !hz.getLifecycleService().isRunning();
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardownClass() {
         for (Entry<Class<? extends AbstractWebFilterTest>, ContainerContext> ccEntry :
                 CONTAINER_CONTEXT_MAP.entrySet()) {

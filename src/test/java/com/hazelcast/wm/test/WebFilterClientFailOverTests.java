@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static com.hazelcast.test.HazelcastTestSupport.assertClusterSizeEventually;
 import static org.junit.Assert.assertEquals;
 
 public abstract class WebFilterClientFailOverTests extends AbstractWebFilterTest {

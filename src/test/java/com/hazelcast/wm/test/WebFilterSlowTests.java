@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.junit.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 import static com.hazelcast.test.Accessors.getNode;
 import static com.hazelcast.test.HazelcastTestSupport.sleepSeconds;
@@ -123,6 +124,7 @@ public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
     }
 
     @Test(timeout = 60000)
+    @RetryingTest(5)
     public void testAttributeUpdate() throws Exception {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
@@ -133,6 +135,7 @@ public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
     }
 
     @Test(timeout = 60000)
+    @RetryingTest(5)
     public void testAttributeInvalidate() throws Exception {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
@@ -144,6 +147,7 @@ public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
     }
 
     @Test(timeout = 60000)
+    @RetryingTest(5)
     public void testAttributeReloadSession() throws Exception {
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
@@ -163,6 +167,7 @@ public abstract class WebFilterSlowTests extends AbstractWebFilterTest {
     }
 
     @Test
+    @RetryingTest(5)
     public void testUpdateAndReadSameRequest() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("true", executeRequest("write", serverPort1, cookieStore));

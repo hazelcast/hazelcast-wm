@@ -22,7 +22,6 @@ import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import com.hazelcast.web.SessionState;
 import com.hazelcast.web.WebDataSerializerHook;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**

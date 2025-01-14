@@ -20,6 +20,7 @@ import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
+import com.hazelcast.test.HazelcastTestSupport;
 import com.hazelcast.test.TestEnvironment;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -54,7 +55,7 @@ import java.util.Random;
 
 import static org.awaitility.Awaitility.await;
 
-public abstract class AbstractWebFilterTest {
+public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
     public enum RequestType {
         GET,
@@ -172,7 +173,7 @@ public abstract class AbstractWebFilterTest {
 
     public void ensureInstanceIsUp() throws Exception {
         if (isInstanceNotActive(hz)) {
-            hz = Hazelcast.newHazelcastInstance(
+            hz = createHazelcastInstance(
                     new FileSystemXmlConfig(new File(sourceDir + "/WEB-INF/", "hazelcast.xml")));
         }
         if (serverXml1 != null) {

@@ -651,6 +651,9 @@
         </profile>
         <profile>
             <id>master</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.opentest4j</groupId>

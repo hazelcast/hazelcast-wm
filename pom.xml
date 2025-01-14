@@ -157,6 +157,8 @@
                         -Dhazelcast.phone.home.enabled=false
                         -Dhazelcast.mancenter.enabled=false
                         -Dhazelcast.test.use.network=false
+                        -Djava.net.preferIPv4Stack=true
+                        -Dhazelcast.logging.type=log4j2
                     </argLine>
                 </configuration>
             </plugin>

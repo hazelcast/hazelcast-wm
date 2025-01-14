@@ -307,6 +307,7 @@ public class ClusteredSessionService {
     }
 
     public void initSession(HazelcastHttpSession hazelcastSession) {
+        ensureInstance();
         String key = hazelcastSession.getId();
         if (!clusterMap.containsKey(key)) {
             clusterMap.set(key, new SessionState());

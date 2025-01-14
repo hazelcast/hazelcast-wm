@@ -99,10 +99,8 @@ public class HazelcastHttpSession implements HttpSession {
                 entry.setDirty(false);
             } catch (HazelcastSerializationException e) {
                 LOGGER.warning("Failed to serialize attribute [" + name + "]:" + e.getMessage(), e);
-                throw e;
             } catch (Exception e) {
                 LOGGER.warning("Unexpected error occurred.", e);
-                throw e;
             }
         }
     }
@@ -110,10 +108,9 @@ public class HazelcastHttpSession implements HttpSession {
     public Object getAttribute(final String name) {
         LocalCacheEntry cacheEntry = localCache.get(name);
         Object value;
-
-                value = webFilter.getClusteredSessionService().getAttribute(id, name);
         if (cacheEntry == null || cacheEntry.isReload()) {
             try {
+                value = webFilter.getClusteredSessionService().getAttribute(id, name);
                 keepRemoteActive = false;
                 cacheEntry = new LocalCacheEntry(transientAttributes.contains(name), value);
                 cacheEntry.setReload(false);

@@ -212,7 +212,7 @@ public class WebFilter implements Filter {
 
     private void updateSessionMaps(String originalSessionId, HazelcastHttpSession hazelcastSession) {
         sessions.put(hazelcastSession.getId(), hazelcastSession);
-        clusteredSessionService.initSession(hazelcastSession);
+//        clusteredSessionService.initSession(hazelcastSession);
         String oldHazelcastSessionId = originalSessions.put(originalSessionId, hazelcastSession.getId());
         if (LOGGER.isFinestEnabled()) {
             if (oldHazelcastSessionId != null) {
@@ -382,13 +382,6 @@ public class WebFilter implements Filter {
             String hazelcastSessionId = findHazelcastSessionIdFromRequest();
             if (hazelcastSession == null && !res.isCommitted() && (create || hazelcastSessionId != null)) {
                 hazelcastSession = createNewSession(HazelcastRequestWrapper.this, create, hazelcastSessionId);
-            }
-            if (hazelcastSession == null) {
-                if (create) {
-                    throw new IllegalStateException("Session does not exists, yet was requested to be created");
-                }
-            } else {
-                clusteredSessionService.initSession(hazelcastSession);
             }
             return hazelcastSession;
         }

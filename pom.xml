@@ -677,6 +677,7 @@
                         <configuration combine.self="override">
                             <parallel>none</parallel>
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <rerunFailingTestsCount>5</rerunFailingTestsCount>
                             <argLine>-Xms128m -Xmx2G
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false

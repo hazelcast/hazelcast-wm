@@ -20,13 +20,11 @@ import com.hazelcast.config.FileSystemXmlConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
-import com.hazelcast.test.HazelcastTestSupport;
 import com.hazelcast.test.TestEnvironment;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -56,7 +54,7 @@ import java.util.Random;
 
 import static org.awaitility.Awaitility.await;
 
-public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
+public abstract class AbstractWebFilterTest {
 
     public enum RequestType {
         GET,
@@ -224,6 +222,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                     cc.server2.stop();
                 }
             } catch (Throwable t) {
+                //noinspection CallToPrintStackTrace
                 t.printStackTrace();
             }
         }
@@ -282,7 +281,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                                    String context,
                                    int serverPort,
                                    CookieStore cookieStore) throws Exception {
-        return request(reqType, context, serverPort, cookieStore, Collections.<String, String>emptyMap());
+        return request(reqType, context, serverPort, cookieStore, Collections.emptyMap());
     }
 
     public String executeRequest(RequestType reqType,
@@ -301,24 +300,25 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         if (reqType == null) {
             throw new IllegalArgumentException("Request type paramater cannot be empty !");
         }
-        HttpClient client = HttpClientBuilder.create().disableRedirectHandling().setDefaultCookieStore(cookieStore).build();
-        HttpUriRequest request;
-        switch (reqType) {
-            case GET:
-                request = new HttpGet("http://localhost:" + serverPort + "/" + context);
-                break;
-            case POST:
-                request = new HttpPost("http://localhost:" + serverPort + "/" + context);
-                List<NameValuePair> params = new ArrayList<>(requestParams.size());
-                for (Entry<String, String> reqParamEntry : requestParams.entrySet()) {
-                    params.add(new BasicNameValuePair(reqParamEntry.getKey(), reqParamEntry.getValue()));
-                }
-                ((HttpPost)request).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-                break;
-            default:
-                throw new IllegalArgumentException(reqType + " typed request is not supported");
+        try (var client = HttpClientBuilder.create().disableRedirectHandling().setDefaultCookieStore(cookieStore).build()) {
+            HttpUriRequest request;
+            switch (reqType) {
+                case GET:
+                    request = new HttpGet("http://localhost:" + serverPort + "/" + context);
+                    break;
+                case POST:
+                    request = new HttpPost("http://localhost:" + serverPort + "/" + context);
+                    List<NameValuePair> params = new ArrayList<>(requestParams.size());
+                    for (Entry<String, String> reqParamEntry : requestParams.entrySet()) {
+                        params.add(new BasicNameValuePair(reqParamEntry.getKey(), reqParamEntry.getValue()));
+                    }
+                    ((HttpPost)request).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+                    break;
+                default:
+                    throw new IllegalArgumentException(reqType + " typed request is not supported");
+            }
+            return client.execute(request);
         }
-        return client.execute(request);
     }
 
     public abstract ServletContainer getServletContainer(int port,

@@ -103,9 +103,9 @@ public class WebFilter implements Filter {
 
     private final Properties properties;
 
-    private final ConcurrentMap<String, String> originalSessions = new ConcurrentHashMap<String, String>(1000);
+    private final ConcurrentMap<String, String> originalSessions = new ConcurrentHashMap<>(1000);
     private final ConcurrentMap<String, HazelcastHttpSession> sessions =
-            new ConcurrentHashMap<String, HazelcastHttpSession>(1000);
+            new ConcurrentHashMap<>(1000);
 
     private ClusteredSessionService clusteredSessionService;
 
@@ -180,10 +180,11 @@ public class WebFilter implements Filter {
         if (!create && !sessionExistsInTheCluster) {
             return null;
         }
+        LOGGER.fine("Session " + existingSessionId + " exists in cluster: " + sessionExistsInTheCluster);
         String id = sessionExistsInTheCluster ? existingSessionId : generateSessionId();
 
         if (requestWrapper.getOriginalSession(false) != null) {
-            LOGGER.finest("Original session exists!!!");
+            LOGGER.finest("Original session exists!");
         }
         HttpSession originalSession = requestWrapper.getOriginalSession(true);
         HazelcastHttpSession hazelcastSession = createHazelcastHttpSession(id, originalSession);
@@ -211,6 +212,7 @@ public class WebFilter implements Filter {
 
     private void updateSessionMaps(String originalSessionId, HazelcastHttpSession hazelcastSession) {
         sessions.put(hazelcastSession.getId(), hazelcastSession);
+        clusteredSessionService.initSession(hazelcastSession);
         String oldHazelcastSessionId = originalSessions.put(originalSessionId, hazelcastSession.getId());
         if (LOGGER.isFinestEnabled()) {
             if (oldHazelcastSessionId != null) {
@@ -380,6 +382,13 @@ public class WebFilter implements Filter {
             String hazelcastSessionId = findHazelcastSessionIdFromRequest();
             if (hazelcastSession == null && !res.isCommitted() && (create || hazelcastSessionId != null)) {
                 hazelcastSession = createNewSession(HazelcastRequestWrapper.this, create, hazelcastSessionId);
+            }
+            if (hazelcastSession == null) {
+                if (create) {
+                    throw new IllegalStateException("Session does not exists, yet was requested to be created");
+                }
+            } else {
+                clusteredSessionService.initSession(hazelcastSession);
             }
             return hazelcastSession;
         }

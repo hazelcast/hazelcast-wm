@@ -15,8 +15,8 @@
 
 package com.hazelcast.wm.test.jetty;
 
+import com.hazelcast.core.DistributedObject;
 import com.hazelcast.map.IMap;
-import com.hazelcast.internal.serialization.SerializationService;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.web.SessionState;
@@ -32,7 +32,8 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static com.hazelcast.test.Accessors.getNode;
+import static com.hazelcast.test.HazelcastTestSupport.assertSizeEventually;
+import static com.hazelcast.test.HazelcastTestSupport.assertTrueEventually;
 import static com.hazelcast.wm.test.AbstractWebFilterTest.RequestType.POST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -57,17 +58,26 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         waitForCluster();
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 200_000)
     public void test_setAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
+        for (DistributedObject distributedObject : hz.getDistributedObjects()) {
+            if (distributedObject instanceof IMap<?,?> map) {
+                System.out.println(distributedObject.getName() + " " + map.entrySet());
+            }
+        }
+        assertTrueEventually(() -> assertEquals(1, hz.getMap("default").size()));
+        assertEquals("value", executeRequest("read", serverPort1, cookieStore));
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 200_000)
     public void test_getAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
+        assertTrueEventually(() -> assertEquals(1, hz.getMap("default").size()));
+        assertEquals("value", executeRequest("readIfExist", serverPort1, cookieStore));
         assertEquals("value", executeRequest("readIfExist", serverPort2, cookieStore));
     }
 

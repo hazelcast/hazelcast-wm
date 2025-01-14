@@ -63,14 +63,14 @@ public class ClusteredSessionService {
     private static final long CLUSTER_CHECK_INTERVAL = 5L;
     private static final long RETRY_MILLIS = 7000;
 
-    private volatile IMap clusterMap;
+    private volatile IMap<String, SessionState> clusterMap;
     private volatile SerializationServiceSupport sss;
     private volatile HazelcastInstance hazelcastInstance;
 
     private final WebFilterConfig filterConfig;
 
     private final Queue<AbstractMap.SimpleEntry<String, Boolean>> orphanSessions = new
-            LinkedBlockingQueue<AbstractMap.SimpleEntry<String, Boolean>>();
+            LinkedBlockingQueue<>();
 
     private volatile boolean failedConnection = true;
     private volatile long lastConnectionTry;
@@ -96,21 +96,19 @@ public class ClusteredSessionService {
 
     public void init() throws Exception {
         ensureInstance();
-        es.scheduleWithFixedDelay(new Runnable() {
-            public void run() {
-                try {
-                    ensureInstance();
-                } catch (Exception e) {
-                    if (LOGGER.isFinestEnabled()) {
-                        LOGGER.finest("Cannot connect hazelcast server", e);
-                    }
+        es.scheduleWithFixedDelay(() -> {
+            try {
+                ensureInstance();
+            } catch (Exception e) {
+                if (LOGGER.isFinestEnabled()) {
+                    LOGGER.finest("Cannot connect hazelcast server", e);
                 }
             }
         }, 2 * CLUSTER_CHECK_INTERVAL, CLUSTER_CHECK_INTERVAL, TimeUnit.SECONDS);
     }
 
 
-    private void ensureInstance() throws Exception {
+    private void ensureInstance() {
         if (failedConnection && System.currentTimeMillis() > lastConnectionTry + RETRY_MILLIS) {
             synchronized (this) {
                 try {
@@ -157,9 +155,8 @@ public class ClusteredSessionService {
      * @param sessionId the session id
      * @param processor the processor
      * @return the object
-     * @throws Exception
      */
-    Object executeOnKey(String sessionId, EntryProcessor processor) throws Exception {
+    <R> R executeOnKey(String sessionId, EntryProcessor<String, SessionState, R> processor) {
         try {
             return clusterMap.executeOnKey(sessionId, processor);
         } catch (Exception e) {
@@ -173,20 +170,19 @@ public class ClusteredSessionService {
      *
      * @param sessionId the session id
      * @return the attributes
-     * @throws Exception the exception
      */
-    Set<Map.Entry<String, Object>> getAttributes(String sessionId) throws Exception {
+    Set<Map.Entry<String, Object>> getAttributes(String sessionId) {
         GetSessionStateEntryProcessor entryProcessor = new GetSessionStateEntryProcessor();
         SessionState sessionState = (SessionState) executeOnKey(sessionId, entryProcessor);
         if (sessionState == null) {
             return null;
         }
         Map<String, Data> dataAttributes = sessionState.getAttributes();
-        Set<Map.Entry<String, Object>> attributes = new HashSet<Map.Entry<String, Object>>(dataAttributes.size());
+        Set<Map.Entry<String, Object>> attributes = new HashSet<>(dataAttributes.size());
         for (Map.Entry<String, Data> entry : dataAttributes.entrySet()) {
             String key = entry.getKey();
             Object value = sss.getSerializationService().toObject(entry.getValue());
-            attributes.add(new MapEntrySimple<String, Object>(key, value));
+            attributes.add(new MapEntrySimple<>(key, value));
         }
         return attributes;
     }
@@ -197,9 +193,8 @@ public class ClusteredSessionService {
      * @param sessionId     the session id
      * @param attributeName the attribute name
      * @return the attribute
-     * @throws Exception the exception
      */
-    Object getAttribute(String sessionId, String attributeName) throws Exception {
+    Object getAttribute(String sessionId, String attributeName) {
         GetAttributeEntryProcessor entryProcessor = new GetAttributeEntryProcessor(attributeName);
         return executeOnKey(sessionId, entryProcessor);
     }
@@ -209,9 +204,8 @@ public class ClusteredSessionService {
      *
      * @param sessionId     the session id
      * @param attributeName the attribute name
-     * @throws Exception the exception
      */
-    void deleteAttribute(String sessionId, String attributeName) throws Exception {
+    void deleteAttribute(String sessionId, String attributeName) {
         setAttribute(sessionId, attributeName, null);
     }
 
@@ -221,9 +215,8 @@ public class ClusteredSessionService {
      * @param sessionId     the session id
      * @param attributeName the attribute name
      * @param value         the value
-     * @throws Exception the exception
      */
-    void setAttribute(String sessionId, String attributeName, Object value) throws Exception {
+    void setAttribute(String sessionId, String attributeName, Object value) {
         Data dataValue = (value == null) ? null : sss.getSerializationService().toData(value);
         SessionUpdateEntryProcessor sessionUpdateProcessor = new SessionUpdateEntryProcessor(attributeName, dataValue);
         executeOnKey(sessionId, sessionUpdateProcessor);
@@ -262,12 +255,12 @@ public class ClusteredSessionService {
             doDeleteSession(sessionId, invalidate);
             return true;
         } catch (Exception e) {
-            orphanSessions.add(new AbstractMap.SimpleEntry(sessionId, invalidate));
+            orphanSessions.add(new AbstractMap.SimpleEntry<>(sessionId, invalidate));
             return false;
         }
     }
 
-    private void doDeleteSession(String sessionId, boolean invalidate) throws Exception {
+    private void doDeleteSession(String sessionId, boolean invalidate) {
         DeleteSessionEntryProcessor entryProcessor = new DeleteSessionEntryProcessor(invalidate);
         executeOnKey(sessionId, entryProcessor);
     }
@@ -277,10 +270,9 @@ public class ClusteredSessionService {
      *
      * @param id the id
      * @return the attribute names
-     * @throws Exception the exception
      */
-    public Set<String> getAttributeNames(String id) throws Exception {
-        return (Set<String>) executeOnKey(id, new GetAttributeNamesEntryProcessor());
+    public Set<String> getAttributeNames(String id) {
+        return executeOnKey(id, new GetAttributeNamesEntryProcessor());
     }
 
     /**
@@ -288,9 +280,8 @@ public class ClusteredSessionService {
      *
      * @param id      the id
      * @param updates the updates
-     * @throws Exception the exception
      */
-    public void updateAttributes(String id, Map<String, Object> updates) throws Exception {
+    public void updateAttributes(String id, Map<String, Object> updates) {
         SerializationService ss = sss.getSerializationService();
         SessionUpdateEntryProcessor sessionUpdate = new SessionUpdateEntryProcessor(updates.size());
         for (Map.Entry<String, Object> entry : updates.entrySet()) {
@@ -312,6 +303,13 @@ public class ClusteredSessionService {
             } catch (Exception e) {
                 LOGGER.warning("Unexpected error occurred.", e);
             }
+        }
+    }
+
+    public void initSession(HazelcastHttpSession hazelcastSession) {
+        String key = hazelcastSession.getId();
+        if (!clusterMap.containsKey(key)) {
+            clusterMap.set(key, new SessionState());
         }
     }
 

@@ -425,7 +425,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.11.4</version>
+            <version>${junit.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -529,7 +529,7 @@
                     </plugin>
 
                     <plugin>
-                        <groupId>org.sonarsource.scanner.maven </groupId>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
                         <version>${maven.sonar.plugin.version}</version>
                     </plugin>

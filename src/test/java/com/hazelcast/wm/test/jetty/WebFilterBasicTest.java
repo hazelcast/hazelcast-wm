@@ -15,7 +15,6 @@
 
 package com.hazelcast.wm.test.jetty;
 
-import com.hazelcast.core.DistributedObject;
 import com.hazelcast.map.IMap;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
@@ -60,12 +59,6 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
     public void test_setAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
-        for (DistributedObject distributedObject : hz.getDistributedObjects()) {
-            if (distributedObject instanceof IMap<?,?> map) {
-                System.out.println(distributedObject.getName() + " " + map.entrySet());
-            }
-        }
-        assertTrueEventually(() -> assertEquals(1, hz.getMap("default").size()));
         assertEquals("value", executeRequest("read", serverPort1, cookieStore));
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
     }

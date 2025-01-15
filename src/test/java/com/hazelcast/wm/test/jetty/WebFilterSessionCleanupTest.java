@@ -52,6 +52,7 @@ public class WebFilterSessionCleanupTest extends AbstractWebFilterTest {
 
     @Test(timeout = 130000)
     public void testSessionTimeout() throws Exception {
+        waitForCluster();
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();
 

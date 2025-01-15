@@ -39,11 +39,11 @@ public class HazelcastHttpSession implements HttpSession {
 
     volatile String invalidatedOriginalSessionId;
 
-    private WebFilter webFilter;
+    private final WebFilter webFilter;
     private volatile boolean valid = true;
     private final String id;
     private final HttpSession originalSession;
-    private final Map<String, LocalCacheEntry> localCache = new ConcurrentHashMap<String, LocalCacheEntry>();
+    private final Map<String, LocalCacheEntry> localCache = new ConcurrentHashMap<>();
 
     private final boolean stickySession;
     private final boolean deferredWrite;
@@ -51,7 +51,7 @@ public class HazelcastHttpSession implements HttpSession {
     private boolean keepRemoteActive = true;
     // only true if session is created first time in the cluster
     private volatile boolean clusterWideNew;
-    private Set<String> transientAttributes;
+    private final Set<String> transientAttributes;
 
     public HazelcastHttpSession(WebFilter webFilter, final String sessionId, final HttpSession originalSession,
                                 final boolean deferredWrite, final boolean stickySession,
@@ -82,10 +82,7 @@ public class HazelcastHttpSession implements HttpSession {
             removeAttribute(name);
             return;
         }
-        boolean transientEntry = false;
-        if (transientAttributes.contains(name)) {
-            transientEntry = true;
-        }
+        boolean transientEntry = transientAttributes.contains(name);
         LocalCacheEntry entry = localCache.get(name);
         if (entry == null || entry == WebFilter.NULL_ENTRY) {
             entry = new LocalCacheEntry(transientEntry);
@@ -110,8 +107,7 @@ public class HazelcastHttpSession implements HttpSession {
 
     public Object getAttribute(final String name) {
         LocalCacheEntry cacheEntry = localCache.get(name);
-        Object value = null;
-
+        Object value;
         if (cacheEntry == null || cacheEntry.isReload()) {
             try {
                 value = webFilter.getClusteredSessionService().getAttribute(id, name);
@@ -137,7 +133,7 @@ public class HazelcastHttpSession implements HttpSession {
     public Enumeration<String> getAttributeNames() {
         final Set<String> keys = selectKeys();
         return new Enumeration<String>() {
-            private final String[] elements = keys.toArray(new String[keys.size()]);
+            private final String[] elements = keys.toArray(new String[0]);
             private int index;
 
             @Override
@@ -167,9 +163,10 @@ public class HazelcastHttpSession implements HttpSession {
 
     public String[] getValueNames() {
         final Set<String> keys = selectKeys();
-        return keys.toArray(new String[keys.size()]);
+        return keys.toArray(new String[0]);
     }
 
+    @Override
     public void invalidate() {
         // we must invalidate hazelcast session first
         // invalidating original session will trigger another

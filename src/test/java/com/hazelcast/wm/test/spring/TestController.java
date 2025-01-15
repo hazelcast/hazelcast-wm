@@ -23,4 +23,10 @@ public class TestController {
     public Object getAttribute(HttpServletRequest req, @RequestParam String key) {
         return req.getSession().getAttribute(key);
     }
+
+    @RequestMapping(value = "/hello", method = RequestMethod.GET)
+    @ResponseBody
+    public Object hello() {
+        return "hello";
+    }
 }

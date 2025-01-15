@@ -125,7 +125,7 @@ public class TestServlet extends HttpServlet {
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("isNew")) {
             session = req.getSession();
-            resp.getWriter().write(session.isNew() == true ? "true" : "false");
+            resp.getWriter().write(session.isNew() ? "true" : "false");
         } else if (req.getRequestURI().contains("setAttribute")) {
             Enumeration<String> itParams = req.getParameterNames();
             while (itParams.hasMoreElements()) {

@@ -196,12 +196,16 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         }
     }
 
-    protected void waitForCluster() {
+    protected void waitForCluster(int expectedClusterSize) {
         await()
                 .atMost(Duration.ofMinutes(5))
                 .pollInterval(Duration.ofSeconds(1))
                 .logging()
-                .until(() -> hz.getCluster().getMembers().size() >= 2);
+                .until(() -> hz.getCluster().getMembers().size() == expectedClusterSize);
+    }
+
+    protected void waitForCluster() {
+        waitForCluster(2);
     }
 
     public boolean isInstanceNotActive(HazelcastInstance hz) {

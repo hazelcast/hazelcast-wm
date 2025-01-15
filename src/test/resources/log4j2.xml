@@ -26,5 +26,8 @@
         </Root>
         <Logger name="org.apache.http" level="trace" />
         <Logger name="com.hazelcast.wm" level="trace" />
+        <Logger name="com.hazelcast" level="debug" />
+        <Logger name="com.hazelcast.internal.metrics.impl" level="WARN" />
+        <Logger name="com.hazelcast.internal.partition" level="WARN" />
     </Loggers>
 </Configuration>

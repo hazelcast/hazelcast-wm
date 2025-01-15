@@ -21,7 +21,6 @@ public abstract class KeepRemoteActiveTest extends AbstractWebFilterTest {
 
     @Test
     public void testKeepRemoteActiveWhenEnabled() throws Exception {
-        waitForCluster();
         // max-idle-second is 20 seconds on the map.
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         CookieStore cookieStore = new BasicCookieStore();

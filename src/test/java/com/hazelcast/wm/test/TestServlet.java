@@ -19,6 +19,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,6 +30,8 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class TestServlet extends HttpServlet {
+
+    private static final Logger logger = LoggerFactory.getLogger(TestServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -55,7 +60,7 @@ public class TestServlet extends HttpServlet {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Interrupted waiting", e);
             }
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("putValue")) {
@@ -125,7 +130,7 @@ public class TestServlet extends HttpServlet {
             resp.getWriter().write("true");
         } else if (req.getRequestURI().endsWith("isNew")) {
             session = req.getSession();
-            resp.getWriter().write(session.isNew() ? "true" : "false");
+            resp.getWriter().write(Boolean.toString(session.isNew()));
         } else if (req.getRequestURI().contains("setAttribute")) {
             Enumeration<String> itParams = req.getParameterNames();
             while (itParams.hasMoreElements()) {
@@ -158,7 +163,7 @@ public class TestServlet extends HttpServlet {
                 result.append(line);
             }
 
-            resp.getWriter().write(result.length() > 0 ? "true" : "false");
+            resp.getWriter().write(Boolean.toString(!result.isEmpty()));
         } else if (req.getRequestURI().endsWith("useRequestParameter")) {
             resp.getWriter().write(session.getId());
         }

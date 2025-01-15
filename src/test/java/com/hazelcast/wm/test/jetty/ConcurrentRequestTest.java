@@ -38,7 +38,6 @@ public class ConcurrentRequestTest extends AbstractWebFilterTest {
 
     @Test(timeout = 60000)
     public void test_multipleRequest() throws Exception {
-        waitForCluster();
         final CookieStore cookieStore = new BasicCookieStore();
         executeRequest("read", serverPort1, cookieStore);
         Thread thread = new Thread(() -> {

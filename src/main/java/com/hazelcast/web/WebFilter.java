@@ -212,7 +212,6 @@ public class WebFilter implements Filter {
 
     private void updateSessionMaps(String originalSessionId, HazelcastHttpSession hazelcastSession) {
         sessions.put(hazelcastSession.getId(), hazelcastSession);
-//        clusteredSessionService.initSession(hazelcastSession);
         String oldHazelcastSessionId = originalSessions.put(originalSessionId, hazelcastSession.getId());
         if (LOGGER.isFinestEnabled()) {
             if (oldHazelcastSessionId != null) {

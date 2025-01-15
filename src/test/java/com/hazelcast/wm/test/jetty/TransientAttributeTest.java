@@ -22,7 +22,6 @@ public class TransientAttributeTest extends AbstractWebFilterTest {
 
     @Test
     public void testExcludeTransientAttributesFromCluster() throws Exception {
-        waitForCluster();
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("true", executeRequest("write", serverPort1, cookieStore));
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
@@ -32,7 +31,6 @@ public class TransientAttributeTest extends AbstractWebFilterTest {
 
     @Test
     public void test_issue_62() throws Exception {
-        waitForCluster();
         // Reproducer case for the issue#62.
         CookieStore cookieStore = new BasicCookieStore();
         assertEquals("null", executeRequest("readTransient", serverPort1, cookieStore));

@@ -23,7 +23,6 @@ import com.hazelcast.wm.test.AbstractWebFilterTest;
 import com.hazelcast.wm.test.ServletContainer;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -48,11 +47,6 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
 
     public WebFilterBasicTest() {
         super("node1-node.xml", "node2-node.xml");
-    }
-
-    @Before
-    public void beforeWaitForCluster() {
-        waitForCluster();
     }
 
     @Test(timeout = 200_000)

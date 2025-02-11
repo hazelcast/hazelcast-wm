@@ -31,7 +31,7 @@
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <hazelcast.version>5.4.0</hazelcast.version>
+        <hazelcast.version>5.5.0</hazelcast.version>
 
         <log4j.version>3.0.0-beta2</log4j.version>
         <junit.version>4.13.2</junit.version>
@@ -156,6 +156,7 @@
                         -Dhazelcast.phone.home.enabled=false
                         -Dhazelcast.mancenter.enabled=false
                         -Dhazelcast.test.use.network=false
+                        -Djava.net.preferIPv4Stack=true
                     </argLine>
                 </configuration>
             </plugin>
@@ -475,6 +476,7 @@
                     -Dhazelcast.version.check.enabled=false
                     -Dhazelcast.mancenter.enabled=false
                     -Dhazelcast.test.use.network=false
+                    -Djava.net.preferIPv4Stack=true
                 </argLine>
             </properties>
             <build>
@@ -651,6 +653,7 @@
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
                                 -Dhazelcast.test.use.network=true
+                                -Djava.net.preferIPv4Stack=true
                             </argLine>
                         </configuration>
                     </plugin>
@@ -705,6 +708,7 @@
                                 -Dhazelcast.phone.home.enabled=false
                                 -Dhazelcast.mancenter.enabled=false
                                 -Dhazelcast.test.use.network=false
+                                -Djava.net.preferIPv4Stack=true
                             </argLine>
                             <excludes>
                                 <exclude>

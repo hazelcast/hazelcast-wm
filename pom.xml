@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2024 Hazelcast Inc.
+  ~ Copyright 2025 Hazelcast Inc.
   ~
   ~ Licensed under the Hazelcast Community License (the "License"); you may not use
   ~ this file except in compliance with the License. You may obtain a copy of the
@@ -157,6 +157,7 @@
                         -Dhazelcast.mancenter.enabled=false
                         -Dhazelcast.test.use.network=false
                         -Djava.net.preferIPv4Stack=true
+                        -Dhazelcast.logging.type=log4j2
                     </argLine>
                 </configuration>
             </plugin>
@@ -177,7 +178,6 @@
                     <configLocation>${main.basedir}/checkstyle/checkstyle.xml</configLocation>
                     <suppressionsLocation>${main.basedir}/checkstyle/suppressions.xml</suppressionsLocation>
                     <headerLocation>${main.basedir}/checkstyle/ClassHeader.txt</headerLocation>
-                    <enableRSS>false</enableRSS>
                     <linkXRef>true</linkXRef>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
@@ -304,6 +304,7 @@
             <version>${servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
+
 <!--        Needed to make Tomcat log in tests-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -382,6 +383,18 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>2.0.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>

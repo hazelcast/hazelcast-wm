@@ -173,7 +173,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
     public void ensureInstanceIsUp() throws Exception {
         if (isInstanceNotActive(hz)) {
-            hz = createHazelcastInstance(
+            hz = Hazelcast.newHazelcastInstance(
                     new FileSystemXmlConfig(new File(sourceDir + "/WEB-INF/", "hazelcast.xml")));
         }
         if (serverXml1 != null) {

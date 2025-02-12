@@ -24,7 +24,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +38,7 @@ public class HazelcastHttpSession implements HttpSession {
 
     volatile String invalidatedOriginalSessionId;
 
-    private WebFilter webFilter;
+    private final WebFilter webFilter;
     private volatile boolean valid = true;
     private final String id;
     private final HttpSession originalSession;
@@ -51,7 +50,7 @@ public class HazelcastHttpSession implements HttpSession {
     private boolean keepRemoteActive = true;
     // only true if session is created first time in the cluster
     private volatile boolean clusterWideNew;
-    private Set<String> transientAttributes;
+    private final Set<String> transientAttributes;
 
     public HazelcastHttpSession(WebFilter webFilter, final String sessionId, final HttpSession originalSession,
                                 final boolean deferredWrite, final boolean stickySession,
@@ -82,10 +81,7 @@ public class HazelcastHttpSession implements HttpSession {
             removeAttribute(name);
             return;
         }
-        boolean transientEntry = false;
-        if (transientAttributes.contains(name)) {
-            transientEntry = true;
-        }
+        boolean transientEntry = transientAttributes.contains(name);
         LocalCacheEntry entry = localCache.get(name);
         if (entry == null || entry == WebFilter.NULL_ENTRY) {
             entry = new LocalCacheEntry(transientEntry);
@@ -136,8 +132,8 @@ public class HazelcastHttpSession implements HttpSession {
 
     public Enumeration<String> getAttributeNames() {
         final Set<String> keys = selectKeys();
-        return new Enumeration<String>() {
-            private final String[] elements = keys.toArray(new String[keys.size()]);
+        return new Enumeration<>() {
+            private final String[] elements = keys.toArray(new String[0]);
             private int index;
 
             @Override
@@ -163,11 +159,6 @@ public class HazelcastHttpSession implements HttpSession {
 
     public Object getValue(final String name) {
         return getAttribute(name);
-    }
-
-    public String[] getValueNames() {
-        final Set<String> keys = selectKeys();
-        return keys.toArray(new String[keys.size()]);
     }
 
     public void invalidate() {
@@ -280,9 +271,7 @@ public class HazelcastHttpSession implements HttpSession {
         if (sessionChanged() || isNew()) {
             Map<String, Object> updates = new HashMap<String, Object>();
 
-            Iterator<Map.Entry<String, LocalCacheEntry>> iterator = localCache.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, LocalCacheEntry> entry = iterator.next();
+            for (Map.Entry<String, LocalCacheEntry> entry : localCache.entrySet()) {
                 LocalCacheEntry cacheEntry = entry.getValue();
 
                 if (cacheEntry.isDirty() && !cacheEntry.isTransient()) {
@@ -292,7 +281,6 @@ public class HazelcastHttpSession implements HttpSession {
                         updates.put(entry.getKey(), cacheEntry.getValue());
                     }
                     cacheEntry.setDirty(false);
-
                 }
             }
 

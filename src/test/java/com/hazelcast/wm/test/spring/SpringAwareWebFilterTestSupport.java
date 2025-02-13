@@ -35,7 +35,6 @@ public abstract class SpringAwareWebFilterTestSupport extends AbstractWebFilterT
 
     protected static final String SESSION_ID_COOKIE_NAME = "JSESSIONID";
     protected static final String HZ_SESSION_ID_COOKIE_NAME = "hazelcast.sessionId";
-    protected static final String SPRING_SECURITY_COOKIE_NAME = "SPRING_SECURITY_REMEMBER_ME_COOKIE";
 
     public SpringAwareWebFilterTestSupport() {
         this(DEFAULT_SPRING_CONTEXT_FILE_PATH, DEFAULT_SPRING_CONTEXT_FILE_PATH);
@@ -54,10 +53,6 @@ public abstract class SpringAwareWebFilterTestSupport extends AbstractWebFilterT
             this.cookieStore = new BasicCookieStore();
         }
 
-        protected SpringSecuritySession(CookieStore cookieStore) {
-            this.cookieStore = cookieStore;
-        }
-
         protected String getCookie(String cookieName) {
             for (Cookie cookie : cookieStore.getCookies()) {
                 if (cookie.getName().equals(cookieName)) {
@@ -74,11 +69,6 @@ public abstract class SpringAwareWebFilterTestSupport extends AbstractWebFilterT
         protected String getHazelcastSessionId() {
             return getCookie(HZ_SESSION_ID_COOKIE_NAME);
         }
-
-        protected String getSpringSecurityCookie() {
-            return getCookie(SPRING_SECURITY_COOKIE_NAME);
-        }
-
     }
 
     protected SpringSecuritySession login(SpringSecuritySession springSecuritySession,

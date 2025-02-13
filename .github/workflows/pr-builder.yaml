@@ -14,6 +14,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup JDK
         uses: ./.github/actions/setup-jdk
-      - name: Maven, now you do the magic! I enchant you the Bash way!
+      - name: Build
         run: |
-          mvn --batch-mode --update-snapshots install
+          mvn clean install -DskipTests -B -P checkstyle -U
+      - name: Findbugs
+        run: |
+          mvn compile -Pfindbugs -B
+      - name: Verify
+        run: |
+          mvn verify -B -Dmaven.test.failure.ignore=false

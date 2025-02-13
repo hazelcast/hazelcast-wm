@@ -61,6 +61,7 @@
         <maven.sonar.plugin.version>5.0.0.4389</maven.sonar.plugin.version>
         <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
         <maven-release-plugin-version>3.0.1</maven-release-plugin-version>
+        <mockito.version>5.12.0</mockito.version>
     </properties>
 
     <licenses>
@@ -142,16 +143,6 @@
                 <configuration combine.self="override">
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <runOrder>failedfirst</runOrder>
-
-                    <!-- 1C means 1 process per cpu core -->
-                    <!-- forkCount>1C</forkCount>
-                    <reuseForks>true</reuseForks>
-
-                    <threadCount>1</threadCount>
-                    <perCoreThreadCount>true</perCoreThreadCount>
-                    <parallel>methods</parallel -->
-
-                    <!-- the argLine variable is needed for JaCoco -->
                     <argLine>
                         -Xms128m -Xmx2G
                         -Dhazelcast.phone.home.enabled=false
@@ -386,6 +377,7 @@
             <version>${httpclient.version}</version>
             <scope>test</scope>
             <exclusions>
+                <!-- We want to remove CL from classpath and use SLF4j -->
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
@@ -472,6 +464,12 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>4.2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -652,48 +650,19 @@
             </properties>
         </profile>
         <profile>
+            <id>5.5.z</id>
+            <properties>
+                <hazelcast.version>5.5.0</hazelcast.version>
+            </properties>
+        </profile>
+        <profile>
             <id>master</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.opentest4j</groupId>
-                    <artifactId>opentest4j</artifactId>
-                    <version>${opentest4j.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-core</artifactId>
-                    <version>${mockito.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
             <properties>
                 <hazelcast.version>6.0.0-SNAPSHOT</hazelcast.version>
-                <mockito.version>5.12.0</mockito.version>
             </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${maven.surefire.plugin.version}</version>
-                        <configuration combine.self="override">
-                            <parallel>none</parallel>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <rerunFailingTestsCount>5</rerunFailingTestsCount>
-                            <argLine>-Xms128m -Xmx2G
-                                -Dhazelcast.phone.home.enabled=false
-                                -Dhazelcast.mancenter.enabled=false
-                                -Dhazelcast.test.use.network=true
-                                -Djava.net.preferIPv4Stack=true
-                                -Dhazelcast.logging.type=log4j2
-                            </argLine>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 </project>

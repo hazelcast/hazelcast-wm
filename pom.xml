@@ -650,19 +650,19 @@
                 <hazelcast.version>5.4.0</hazelcast.version>
             </properties>
         </profile>
-        <profile>
-            <id>5.5.z</id>
-            <properties>
-                <hazelcast.version>5.5.0</hazelcast.version>
-            </properties>
-        </profile>
+<!--        <profile>-->
+<!--            <id>5.5.z</id>-->
+<!--            <properties>-->
+<!--                <hazelcast.version>5.5.0</hazelcast.version>-->
+<!--            </properties>-->
+<!--        </profile>-->
         <profile>
             <id>master</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <hazelcast.version>6.0.0-SNAPSHOT</hazelcast.version>
+                <hazelcast.version>5.5.0</hazelcast.version>
             </properties>
         </profile>
     </profiles>

@@ -24,7 +24,8 @@ jobs:
         run: |
           mvn verify -B -Dmaven.test.failure.ignore=false
 
-      - uses: EnricoMi/publish-unit-test-result-action@567cc7f8dcea3eba5da355f6ebc95663310d8a07
+      - name: Publish Test results
+        uses: EnricoMi/publish-unit-test-result-action@567cc7f8dcea3eba5da355f6ebc95663310d8a07
         if: ${{ !cancelled() }}
         with:
           files: "**/TEST-*.xml"

@@ -142,7 +142,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration combine.self="override">
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
                     <runOrder>failedfirst</runOrder>
                     <argLine>
                         -Xms128m -Xmx2G

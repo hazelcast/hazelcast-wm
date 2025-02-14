@@ -143,7 +143,9 @@
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration combine.self="override">
                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                    <useFile>false</useFile>
                     <runOrder>failedfirst</runOrder>
+                    <trimStackTrace>false</trimStackTrace>
                     <argLine>
                         -Xms128m -Xmx2G
                         -Dhazelcast.phone.home.enabled=false
@@ -644,18 +646,13 @@
                 <hazelcast.version>5.3.7</hazelcast.version>
             </properties>
         </profile>
+
         <profile>
             <id>5.4.z</id>
             <properties>
                 <hazelcast.version>5.4.0</hazelcast.version>
             </properties>
         </profile>
-<!--        <profile>-->
-<!--            <id>5.5.z</id>-->
-<!--            <properties>-->
-<!--                <hazelcast.version>5.5.0</hazelcast.version>-->
-<!--            </properties>-->
-<!--        </profile>-->
         <profile>
             <id>master</id>
             <activation>
@@ -664,6 +661,65 @@
             <properties>
                 <hazelcast.version>5.5.0</hazelcast.version>
             </properties>
+        </profile>
+
+        <profile>
+            <!-- SUP-420 case. Tomcat 9.0.z and 5.3.z hazelcast. Using jdk 1.8 because tomcat supports 1.8.
+             Therefore, we have to exclude jetty tests from compiling/running and jetty classes from classpath
+              because they require jdk 11. -->
+            <id>tomcat-jdk8</id>
+            <properties>
+                <hazelcast.version>5.3.7</hazelcast.version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>${maven.compiler.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>default-testCompile</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                                <configuration>
+                                    <testExcludes>
+                                        <exclude>
+                                            com/hazelcast/wm/test/jetty/**/*.java
+                                        </exclude>
+                                    </testExcludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <source>${jdk.version}</source>
+                            <target>${jdk.version}</target>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.plugin.version}</version>
+                        <configuration combine.self="override">
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <runOrder>failedfirst</runOrder>
+                            <excludes>
+                                <exclude>
+                                    com.hazelcast.wm.test.jetty.*
+                                </exclude>
+                            </excludes>
+                            <classpathDependencyExcludes>
+                                <classpathDependencyExclude>
+                                    org.eclipse.jetty:apache-jsp
+                                </classpathDependencyExclude>
+                            </classpathDependencyExcludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

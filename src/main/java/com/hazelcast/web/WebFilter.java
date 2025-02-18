@@ -180,7 +180,7 @@ public class WebFilter implements Filter {
         if (!create && !sessionExistsInTheCluster) {
             return null;
         }
-        LOGGER.fine("Session " + existingSessionId + " exists in cluster: " + sessionExistsInTheCluster);
+        LOGGER.fine("Session %s exists in cluster: %s", existingSessionId, sessionExistsInTheCluster);
         String id = sessionExistsInTheCluster ? existingSessionId : generateSessionId();
 
         if (requestWrapper.getOriginalSession(false) != null) {

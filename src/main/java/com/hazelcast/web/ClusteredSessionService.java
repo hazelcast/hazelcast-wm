@@ -69,8 +69,7 @@ public class ClusteredSessionService {
 
     private final WebFilterConfig filterConfig;
 
-    private final Queue<AbstractMap.SimpleEntry<String, Boolean>> orphanSessions = new
-            LinkedBlockingQueue<>();
+    private final Queue<AbstractMap.SimpleEntry<String, Boolean>> orphanSessions = new LinkedBlockingQueue<>();
 
     private volatile boolean failedConnection = true;
     private volatile long lastConnectionTry;

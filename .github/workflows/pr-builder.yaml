@@ -7,8 +7,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container: ubuntu:latest
+    # using ubicloud instead of "standard" ubuntu-latest fixes issue with members not being able to connect via multicast
+    runs-on: ubicloud-standard-8
 
     steps:
       - name: Get all the letters, words and paragraphs needed for the spell!

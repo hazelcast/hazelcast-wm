@@ -16,7 +16,6 @@
 package com.hazelcast.wm.test.jetty;
 
 import com.hazelcast.map.IMap;
-import com.hazelcast.internal.serialization.SerializationService;
 import com.hazelcast.test.HazelcastSerialClassRunner;
 import com.hazelcast.test.annotation.QuickTest;
 import com.hazelcast.web.SessionState;
@@ -31,7 +30,6 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static com.hazelcast.test.Accessors.getNode;
 import static com.hazelcast.wm.test.AbstractWebFilterTest.RequestType.POST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -51,17 +49,20 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         super("node1-node.xml", "node2-node.xml");
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 200_000)
     public void test_setAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
+        assertEquals("value", executeRequest("read", serverPort1, cookieStore));
         assertEquals("value", executeRequest("read", serverPort2, cookieStore));
     }
 
-    @Test(timeout = 20000)
+    @Test(timeout = 200_000)
     public void test_getAttribute() throws Exception {
         CookieStore cookieStore = new BasicCookieStore();
         executeRequest("write", serverPort1, cookieStore);
+        assertTrueEventually(() -> assertEquals(1, hz.getMap("default").size()));
+        assertEquals("value", executeRequest("readIfExist", serverPort1, cookieStore));
         assertEquals("value", executeRequest("readIfExist", serverPort2, cookieStore));
     }
 
@@ -91,7 +92,7 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         CookieStore cookieStore = new BasicCookieStore();
         IMap<String, Object> map = hz.getMap(DEFAULT_MAP_NAME);
         executeRequest("write", serverPort1, cookieStore);
-        assertEquals(1, map.size());
+        assertTrueEventually(() -> assertEquals(1, map.size()));
     }
 
     @Test(timeout = 20000)
@@ -112,7 +113,6 @@ public class WebFilterBasicTest extends AbstractWebFilterTest {
         assertEquals("value-updated", executeRequest("read", serverPort1, cookieStore));
         String newSessionId = map.keySet().iterator().next();
         SessionState sessionState = (SessionState) map.get(newSessionId);
-        SerializationService ss = getNode(hz).getSerializationService();
         assertSizeEventually(1, map);
         assertSizeEventually(1, sessionState.getAttributes());
     }

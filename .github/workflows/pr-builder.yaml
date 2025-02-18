@@ -7,7 +7,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # using ubicloud instead of "standard" ubuntu-latest fixes issue with members not being able to connect via multicast
+    runs-on: ubicloud-standard-8
 
     steps:
       - name: Get all the letters, words and paragraphs needed for the spell!
@@ -23,3 +24,10 @@ jobs:
       - name: Verify
         run: |
           mvn verify -B -Dmaven.test.failure.ignore=false
+
+      - name: Publish Test results
+        uses: EnricoMi/publish-unit-test-result-action@567cc7f8dcea3eba5da355f6ebc95663310d8a07
+        if: ${{ !cancelled() }}
+        with:
+          files: "**/TEST-*.xml"
+          large_files: true

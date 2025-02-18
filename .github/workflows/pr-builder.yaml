@@ -7,7 +7,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubicloud-standard-8
+    runs-on: ubuntu-latest
+    container: ubuntu:latest
 
     steps:
       - name: Get all the letters, words and paragraphs needed for the spell!

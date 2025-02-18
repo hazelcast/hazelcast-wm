@@ -24,8 +24,11 @@
         <Root level="WARN">
             <AppenderRef ref="Console"/>
         </Root>
+        <!-- http and wm is trace for detailed logging and http query logging -->
         <Logger name="org.apache.http" level="trace" />
         <Logger name="com.hazelcast.wm" level="trace" />
+
+        <!-- most of hazelcast on debug for more logs with exception of noisy metrics and internal.partition logs -->
         <Logger name="com.hazelcast" level="debug" />
         <Logger name="com.hazelcast.internal.metrics.impl" level="WARN" />
         <Logger name="com.hazelcast.internal.partition" level="WARN" />

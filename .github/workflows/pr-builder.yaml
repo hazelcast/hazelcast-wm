@@ -3,7 +3,7 @@ name: PR builder is just a magic
 on:
   pull_request_target:
     branches:
-      - master
+      - 'master'
 
 jobs:
   build:

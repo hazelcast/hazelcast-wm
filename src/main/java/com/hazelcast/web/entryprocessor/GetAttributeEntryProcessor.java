@@ -65,11 +65,11 @@ public final class GetAttributeEntryProcessor implements EntryProcessor<String, 
 
     @Override
     public void readData(ObjectDataInput in) throws IOException {
-        attributeName = in.readUTF();
+        attributeName = in.readString();
     }
 
     @Override
     public void writeData(ObjectDataOutput out) throws IOException {
-        out.writeUTF(attributeName);
+        out.writeString(attributeName);
     }
 }

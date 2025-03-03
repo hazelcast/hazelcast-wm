@@ -22,11 +22,10 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import com.hazelcast.test.HazelcastTestSupport;
 import com.hazelcast.test.TestEnvironment;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -45,6 +44,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,6 +52,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import static org.awaitility.Awaitility.await;
 
 public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
@@ -61,7 +63,6 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
     }
 
     static {
-
         final String logging = "hazelcast.logging.type";
         if (System.getProperty(logging) == null) {
             System.setProperty(logging, "log4j2");
@@ -88,8 +89,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
 
             sourceDir = baseDir.resolve("../../src/test/webapp").normalize().toString();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalStateException("Couldn't initialize AbstractWebFilterTest");
+            throw new IllegalStateException("Couldn't initialize AbstractWebFilterTest", e);
         }
     }
 
@@ -156,7 +156,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                             hz));
         } else {
             // For every test method a different test class can be constructed for parallel runs by JUnit.
-            // So container can be exist, but configurations of current test may not be exist.
+            // So container can exist, but configurations of current test may not be exist.
             // For this reason, we should copy container context information (such as ports, servers, ...)
             // to current test.
             cc.copyInto(this);
@@ -194,12 +194,23 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         }
     }
 
+    protected void waitForCluster(int expectedClusterSize) {
+        await()
+                .atMost(Duration.ofMinutes(5))
+                .pollInterval(Duration.ofSeconds(1))
+                .logging()
+                .until(() -> hz.getCluster().getMembers().size() == expectedClusterSize);
+    }
+
+    protected void waitForCluster() {
+        waitForCluster(2);
+    }
+
     public boolean isInstanceNotActive(HazelcastInstance hz) {
         if (hz == null) {
             return true;
         }
         return !hz.getLifecycleService().isRunning();
-
     }
 
     @AfterClass
@@ -214,6 +225,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                     cc.server2.stop();
                 }
             } catch (Throwable t) {
+                //noinspection CallToPrintStackTrace
                 t.printStackTrace();
             }
         }
@@ -272,7 +284,7 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
                                    String context,
                                    int serverPort,
                                    CookieStore cookieStore) throws Exception {
-        return request(reqType, context, serverPort, cookieStore, Collections.<String, String>emptyMap());
+        return request(reqType, context, serverPort, cookieStore, Collections.emptyMap());
     }
 
     public String executeRequest(RequestType reqType,
@@ -291,24 +303,25 @@ public abstract class AbstractWebFilterTest extends HazelcastTestSupport {
         if (reqType == null) {
             throw new IllegalArgumentException("Request type paramater cannot be empty !");
         }
-        HttpClient client = HttpClientBuilder.create().disableRedirectHandling().setDefaultCookieStore(cookieStore).build();
-        HttpUriRequest request;
-        switch (reqType) {
-            case GET:
-                request = new HttpGet("http://localhost:" + serverPort + "/" + context);
-                break;
-            case POST:
-                request = new HttpPost("http://localhost:" + serverPort + "/" + context);
-                List<NameValuePair> params = new ArrayList<>(requestParams.size());
-                for (Entry<String, String> reqParamEntry : requestParams.entrySet()) {
-                    params.add(new BasicNameValuePair(reqParamEntry.getKey(), reqParamEntry.getValue()));
-                }
-                ((HttpPost)request).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-                break;
-            default:
-                throw new IllegalArgumentException(reqType + " typed request is not supported");
+        try (var client = HttpClientBuilder.create().disableRedirectHandling().setDefaultCookieStore(cookieStore).build()) {
+            HttpUriRequest request;
+            switch (reqType) {
+                case GET:
+                    request = new HttpGet("http://localhost:" + serverPort + "/" + context);
+                    break;
+                case POST:
+                    request = new HttpPost("http://localhost:" + serverPort + "/" + context);
+                    List<NameValuePair> params = new ArrayList<>(requestParams.size());
+                    for (Entry<String, String> reqParamEntry : requestParams.entrySet()) {
+                        params.add(new BasicNameValuePair(reqParamEntry.getKey(), reqParamEntry.getValue()));
+                    }
+                    ((HttpPost)request).setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+                    break;
+                default:
+                    throw new IllegalArgumentException(reqType + " typed request is not supported");
+            }
+            return client.execute(request);
         }
-        return client.execute(request);
     }
 
     public abstract ServletContainer getServletContainer(int port,

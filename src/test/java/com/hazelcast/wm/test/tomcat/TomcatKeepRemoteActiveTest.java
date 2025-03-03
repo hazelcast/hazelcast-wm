@@ -31,7 +31,7 @@ public class TomcatKeepRemoteActiveTest extends KeepRemoteActiveTest {
 
     @Override
     public ServletContainer getServletContainer(int port, String sourceDir, String serverXml) throws Exception {
-        return new TomcatServer(port,sourceDir,serverXml);
+        return new TomcatServer(port, sourceDir, serverXml);
     }
 
 }

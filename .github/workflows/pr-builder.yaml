@@ -6,11 +6,31 @@ on:
       - 'master'
 
 jobs:
+  check_for_membership:
+    runs-on: ubuntu-latest
+    name: Check PR author membership
+    outputs:
+      check-result: ${{ steps.composite.outputs.check-result }}
+    steps:
+      - name: Action for membership check
+        id: composite
+        uses: hazelcast/hazelcast-tpm/membership@main
+        with:
+          organization-name: 'hazelcast'
+          member-name: ${{ github.actor }}
+          token: ${{ secrets.GH_TOKEN }}
+
   build:
     # using ubicloud instead of "standard" ubuntu-latest fixes issue with members not being able to connect via multicast
     runs-on: ubicloud-standard-8
+    needs: check_for_membership
 
     steps:
+      - name: Detect untrusted community PR
+        if: ${{ needs.check_for_membership.outputs.check-result == 'false' }}
+        run: |
+          echo "::error::ERROR: Untrusted external PR. Must be reviewed and executed by Hazelcast" 1>&2;
+          exit 1
       - name: Get all the letters, words and paragraphs needed for the spell!
         uses: actions/checkout@v4
       - name: Setup JDK

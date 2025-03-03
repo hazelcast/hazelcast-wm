@@ -25,6 +25,15 @@ jobs:
         run: |
           mvn verify -B -Dmaven.test.failure.ignore=false
 
+      - name: Get parent job name
+        id: get-parent-job-name
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          echo "PARENT_JOB_NAME=$(gh api repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID --jq '.name')" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Publish Test results
         uses: EnricoMi/publish-unit-test-result-action@567cc7f8dcea3eba5da355f6ebc95663310d8a07
         if: ${{ !cancelled() }}

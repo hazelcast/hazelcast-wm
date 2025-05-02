@@ -24,6 +24,7 @@ import org.springframework.security.web.session.HttpSessionDestroyedEvent;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  * Provides Spring aware Hazelcast based session replication by extending from
@@ -83,7 +84,7 @@ public class SpringAwareWebFilter extends WebFilter {
                      */
                     appContext.publishEvent(new HttpSessionCreatedEvent(session));
 
-                    LOGGER.finest("Published create session event for Spring for session with id "
+                    LOGGER.log(Level.FINEST, "Published create session event for Spring for session with id "
                             + session.getId());
                 }
             }
@@ -111,7 +112,7 @@ public class SpringAwareWebFilter extends WebFilter {
                      */
                     appContext.publishEvent(new HttpSessionDestroyedEvent(session));
 
-                    LOGGER.finest("Published destroy session event for Spring for session with id "
+                    LOGGER.log(Level.FINEST, "Published destroy session event for Spring for session with id "
                             + session.getId());
                 }
             }

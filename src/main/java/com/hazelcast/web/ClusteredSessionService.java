@@ -43,7 +43,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
+import java.util.logging.Level;
 
 
 /**
@@ -100,7 +100,7 @@ public class ClusteredSessionService {
                 ensureInstance();
             } catch (Exception e) {
                 if (LOGGER.isFinestEnabled()) {
-                    LOGGER.finest("Cannot connect hazelcast server", e);
+                    LOGGER.log(Level.FINEST, "Cannot connect hazelcast server", e);
                 }
             }
         }, 2 * CLUSTER_CHECK_INTERVAL, CLUSTER_CHECK_INTERVAL, TimeUnit.SECONDS);
@@ -119,7 +119,7 @@ public class ClusteredSessionService {
                     setFailedConnection(true);
                     LOGGER.warning("Cannot connect to Hazelcast server: " + e.getMessage());
                     if (LOGGER.isFinestEnabled()) {
-                        LOGGER.finest("Cannot connect hazelcast server", e);
+                        LOGGER.log(Level.FINEST, "Cannot connect hazelcast server", e);
                     }
                 }
             }
@@ -127,13 +127,13 @@ public class ClusteredSessionService {
     }
 
     private void reconnectHZInstance() throws ServletException {
-        LOGGER.info("Retrying the connection!!");
+        LOGGER.log(Level.INFO, "Retrying the connection!");
         lastConnectionTry = System.currentTimeMillis();
         hazelcastInstance = HazelcastInstanceLoader.loadInstance(this, filterConfig);
         clusterMap = hazelcastInstance.getMap(filterConfig.getMapName());
         sss = (SerializationServiceSupport) hazelcastInstance;
         setFailedConnection(false);
-        LOGGER.info("Successfully Connected!");
+        LOGGER.log(Level.INFO, "Successfully Connected!");
     }
 
     private void clearOrphanSessionQueue() {
@@ -159,7 +159,7 @@ public class ClusteredSessionService {
         try {
             return clusterMap.executeOnKey(sessionId, processor);
         } catch (Exception e) {
-            LOGGER.finest("Cannot connect hazelcast server", e);
+            LOGGER.log(Level.FINEST, "Cannot connect hazelcast server", e);
             throw e;
         }
     }

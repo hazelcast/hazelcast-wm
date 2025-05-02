@@ -215,7 +215,7 @@ public class WebFilter implements Filter {
         String oldHazelcastSessionId = originalSessions.put(originalSessionId, hazelcastSession.getId());
         if (LOGGER.isFinestEnabled()) {
             if (oldHazelcastSessionId != null) {
-                LOGGER.log(Level.FINEST,"!!! Overwrote an existing hazelcastSessionId " + oldHazelcastSessionId);
+                LOGGER.log(Level.FINEST, "Overwrote an existing hazelcastSessionId " + oldHazelcastSessionId);
             }
             LOGGER.log(Level.FINEST, "Created new session with id: " + hazelcastSession.getId());
             LOGGER.log(Level.FINEST, sessions.size() + " is sessions.size and originalSessions.size: " + originalSessions.size());
@@ -306,7 +306,7 @@ public class WebFilter implements Filter {
         if (session != null && session.isValid()) {
             if (config.isDeferredWrite()) {
                 if (LOGGER.isFinestEnabled()) {
-                    LOGGER.finest("UPDATING SESSION " + session.getId());
+                    LOGGER.log(Level.FINEST, "Updating session " + session.getId());
                 }
                 session.sessionDeferredWrite();
             }
@@ -418,7 +418,7 @@ public class WebFilter implements Filter {
             // following chunk is executed _only_ when session is invalidated and getSession is called on the request
             String invalidatedOriginalSessionId = null;
             if (hazelcastSession != null && !hazelcastSession.isValid()) {
-                LOGGER.finest("Session is invalid!");
+                LOGGER.log(Level.FINEST, "Session is invalid!");
                 destroySession(hazelcastSession, true);
                 invalidatedOriginalSessionId = hazelcastSession.invalidatedOriginalSessionId;
                 hazelcastSession = null;

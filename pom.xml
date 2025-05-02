@@ -67,7 +67,7 @@
     <licenses>
         <license>
             <name>The Hazelcast Community License</name>
-            <url>http://hazelcast.com/hazelcast-community-license</url>
+            <url>https://hazelcast.com/hazelcast-community-license</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -75,8 +75,8 @@
         <connection>scm:git:git://github.com/hazelcast/hazelcast-wm.git</connection>
         <developerConnection>scm:git:git@github.com:hazelcast/hazelcast-wm.git</developerConnection>
         <url>https://github.com/hazelcast/hazelcast/</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <developers>
         <developer>
             <id>oztalip</id>
@@ -228,7 +228,6 @@
                                     *
                                 </Import-Package>
                                 <Fragment-Host>com.hazelcast</Fragment-Host>
-                                <!--<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>-->
                             </instructions>
                         </configuration>
                     </execution>
@@ -299,19 +298,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.servlet.jsp</groupId>
-            <artifactId>jakarta.servlet.jsp-api</artifactId>
-            <version>${jsp.api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
-<!--        Needed to make Tomcat log in tests-->
+        <!-- Needed to make Tomcat log in tests -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>

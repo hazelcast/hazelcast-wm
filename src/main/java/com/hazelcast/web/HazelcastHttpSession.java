@@ -266,7 +266,7 @@ public class HazelcastHttpSession implements HttpSession {
                     localCache.put(attributeKey, cacheEntry);
                 }
                 if (LOGGER.isFinestEnabled()) {
-                    LOGGER.log("Storing " + attributeKey + " on session " + id);
+                    LOGGER.log(Level.FINEST, "Storing " + attributeKey + " on session " + id);
                 }
                 cacheEntry.setValue(entry.getValue());
                 cacheEntry.setDirty(false);

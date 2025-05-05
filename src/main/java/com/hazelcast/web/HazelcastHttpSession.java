@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 /**
  * HazelcastHttpSession is HttpSession implementation based on Hazelcast Imap.
@@ -117,7 +118,7 @@ public class HazelcastHttpSession implements HttpSession {
                 localCache.put(name, cacheEntry);
             } catch (Exception e) {
                 if (LOGGER.isFinestEnabled()) {
-                    LOGGER.finest("session could not be load so you might be dealing with stale data", e);
+                    LOGGER.log(Level.FINEST, "session could not be load so you might be dealing with stale data", e);
                 }
                 if (cacheEntry == null) {
                     return null;
@@ -265,7 +266,7 @@ public class HazelcastHttpSession implements HttpSession {
                     localCache.put(attributeKey, cacheEntry);
                 }
                 if (LOGGER.isFinestEnabled()) {
-                    LOGGER.finest("Storing " + attributeKey + " on session " + id);
+                    LOGGER.log(Level.FINEST, "Storing " + attributeKey + " on session " + id);
                 }
                 cacheEntry.setValue(entry.getValue());
                 cacheEntry.setDirty(false);

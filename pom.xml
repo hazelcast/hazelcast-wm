@@ -62,12 +62,15 @@
         <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
         <maven-release-plugin-version>3.0.1</maven-release-plugin-version>
         <mockito.version>5.12.0</mockito.version>
+
+        <!-- Required for tests with Tomcat and jdk 17 -->
+        <javaModuleArgs>--add-opens java.base/java.io=ALL-UNNAMED</javaModuleArgs>
     </properties>
 
     <licenses>
         <license>
             <name>The Hazelcast Community License</name>
-            <url>http://hazelcast.com/hazelcast-community-license</url>
+            <url>https://hazelcast.com/hazelcast-community-license</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -75,8 +78,8 @@
         <connection>scm:git:git://github.com/hazelcast/hazelcast-wm.git</connection>
         <developerConnection>scm:git:git@github.com:hazelcast/hazelcast-wm.git</developerConnection>
         <url>https://github.com/hazelcast/hazelcast/</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <developers>
         <developer>
             <id>oztalip</id>
@@ -152,6 +155,7 @@
                         -Dhazelcast.test.use.network=false
                         -Djava.net.preferIPv4Stack=true
                         -Dhazelcast.logging.type=log4j2
+                        ${javaModuleArgs}
                     </argLine>
                 </configuration>
             </plugin>
@@ -228,7 +232,6 @@
                                     *
                                 </Import-Package>
                                 <Fragment-Host>com.hazelcast</Fragment-Host>
-                                <!--<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>-->
                             </instructions>
                         </configuration>
                     </execution>
@@ -282,6 +285,46 @@
                     <pushChanges>false</pushChanges>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>jdk-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[${jdk.version},)</version>
+                                </requireJavaVersion>
+                                <enforceBytecodeVersion>
+                                    <maxJdkVersion>${jdk.version}</maxJdkVersion>
+                                </enforceBytecodeVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>dependency-convergence</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <dependencyConvergence />
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>1.10.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 
@@ -299,19 +342,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.servlet.jsp</groupId>
-            <artifactId>jakarta.servlet.jsp-api</artifactId>
-            <version>${jsp.api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${servlet.api.version}</version>
             <scope>provided</scope>
         </dependency>
 
-<!--        Needed to make Tomcat log in tests-->
+        <!-- Needed to make Tomcat log in tests -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
@@ -511,15 +548,6 @@
         </profile>
         <profile>
             <id>test-coverage</id>
-            <properties>
-                <argLine>
-                    -Xms128m -Xmx2G
-                    -Dhazelcast.version.check.enabled=false
-                    -Dhazelcast.mancenter.enabled=false
-                    -Dhazelcast.test.use.network=false
-                    -Djava.net.preferIPv4Stack=true
-                </argLine>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -535,6 +563,14 @@
                         <configuration combine.self="override">
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
                             <testFailureIgnore>true</testFailureIgnore>
+                            <argLine>
+                                -Xms128m -Xmx2G
+                                -Dhazelcast.version.check.enabled=false
+                                -Dhazelcast.mancenter.enabled=false
+                                -Dhazelcast.test.use.network=false
+                                -Djava.net.preferIPv4Stack=true
+                                ${javaModuleArgs}
+                            </argLine>
                         </configuration>
                     </plugin>
 
@@ -672,63 +708,5 @@
             </properties>
         </profile>
 
-        <profile>
-            <!-- SUP-420 case. Tomcat 9.0.z and 5.3.z hazelcast. Using jdk 1.8 because tomcat supports 1.8.
-             Therefore, we have to exclude jetty tests from compiling/running and jetty classes from classpath
-              because they require jdk 11. -->
-            <id>tomcat-jdk8</id>
-            <properties>
-                <hazelcast.version>5.3.7</hazelcast.version>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>${maven.compiler.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>default-testCompile</id>
-                                <phase>test-compile</phase>
-                                <goals>
-                                    <goal>testCompile</goal>
-                                </goals>
-                                <configuration>
-                                    <testExcludes>
-                                        <exclude>
-                                            com/hazelcast/wm/test/jetty/**/*.java
-                                        </exclude>
-                                    </testExcludes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <source>${jdk.version}</source>
-                            <target>${jdk.version}</target>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${maven.surefire.plugin.version}</version>
-                        <configuration combine.self="override">
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                            <runOrder>failedfirst</runOrder>
-                            <excludes>
-                                <exclude>
-                                    com.hazelcast.wm.test.jetty.*
-                                </exclude>
-                            </excludes>
-                            <classpathDependencyExcludes>
-                                <classpathDependencyExclude>
-                                    org.eclipse.jetty:apache-jsp
-                                </classpathDependencyExclude>
-                            </classpathDependencyExcludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 </project>

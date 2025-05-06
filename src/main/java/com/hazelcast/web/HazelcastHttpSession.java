@@ -24,7 +24,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +33,6 @@ import java.util.logging.Level;
  * HazelcastHttpSession is HttpSession implementation based on Hazelcast Imap.
  * It contains the methods used to get, put, manage the current state of the HttpSession.
  */
-@SuppressWarnings("checkstyle:methodcount")
 public class HazelcastHttpSession implements HttpSession {
     private static final ILogger LOGGER = Logger.getLogger(HazelcastHttpSession.class);
 
@@ -259,12 +257,8 @@ public class HazelcastHttpSession implements HttpSession {
         if (entrySet != null) {
             for (Map.Entry<String, Object> entry : entrySet) {
                 String attributeKey = entry.getKey();
-                LocalCacheEntry cacheEntry = localCache.get(attributeKey);
-                if (cacheEntry == null) {
-                    cacheEntry = new LocalCacheEntry(transientAttributes.contains(attributeKey));
-
-                    localCache.put(attributeKey, cacheEntry);
-                }
+                LocalCacheEntry cacheEntry = localCache.computeIfAbsent(attributeKey,
+                        k -> new LocalCacheEntry(transientAttributes.contains(k)));
                 if (LOGGER.isFinestEnabled()) {
                     LOGGER.log(Level.FINEST, "Storing " + attributeKey + " on session " + id);
                 }
@@ -276,11 +270,9 @@ public class HazelcastHttpSession implements HttpSession {
 
     void sessionDeferredWrite() {
         if (sessionChanged() || isNew()) {
-            Map<String, Object> updates = new HashMap<String, Object>();
+            Map<String, Object> updates = new HashMap<>();
 
-            Iterator<Map.Entry<String, LocalCacheEntry>> iterator = localCache.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, LocalCacheEntry> entry = iterator.next();
+            for (Map.Entry<String, LocalCacheEntry> entry : localCache.entrySet()) {
                 LocalCacheEntry cacheEntry = entry.getValue();
 
                 if (cacheEntry.isDirty() && !cacheEntry.isTransient()) {
@@ -290,7 +282,6 @@ public class HazelcastHttpSession implements HttpSession {
                         updates.put(entry.getKey(), cacheEntry.getValue());
                     }
                     cacheEntry.setDirty(false);
-
                 }
             }
 
@@ -306,7 +297,7 @@ public class HazelcastHttpSession implements HttpSession {
     }
 
     private Set<String> selectKeys() {
-        Set<String> keys = new HashSet<String>();
+        Set<String> keys = new HashSet<>();
         if (!deferredWrite) {
             Set<String> attributeNames = null;
             try {
@@ -369,4 +360,4 @@ public class HazelcastHttpSession implements HttpSession {
                     + e.getMessage(), e);
         }
     }
-} // END of HazelSession
+}

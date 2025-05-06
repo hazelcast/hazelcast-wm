@@ -24,6 +24,9 @@ import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Wrapper class which holds session attributes
@@ -31,7 +34,7 @@ import java.util.Map;
 
 public class SessionState implements IdentifiedDataSerializable {
 
-    private final Map<String, Data> attributes = new HashMap<String, Data>(1);
+    private final Map<String, Data> attributes = new HashMap<>(1);
 
     @Override
     public int getFactoryId() {
@@ -55,7 +58,7 @@ public class SessionState implements IdentifiedDataSerializable {
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeInt(attributes.size());
         for (Map.Entry<String, Data> entry : attributes.entrySet()) {
-            out.writeUTF(entry.getKey());
+            out.writeString(entry.getKey());
             IOUtil.writeData(out, entry.getValue());
         }
     }
@@ -64,25 +67,25 @@ public class SessionState implements IdentifiedDataSerializable {
     public void readData(ObjectDataInput in) throws IOException {
         int attCount = in.readInt();
         for (int i = 0; i < attCount; i++) {
-            attributes.put(in.readUTF(), IOUtil.readData(in));
+            attributes.put(in.readString(), IOUtil.readData(in));
         }
     }
 
     public void set(Map<String, Data> attributes) {
+        requireNonNull(attributes, "attributes should not be null, please report a bug if you got this error");
         this.attributes.putAll(attributes);
     }
 
     @Override
     public String toString() {
+        requireNonNull(attributes, "attributes should not be null, please report a bug if you got this error");
         StringBuilder sb = new StringBuilder("SessionState {");
-        sb.append(", attributes=" + ((attributes == null) ? 0 : attributes.size()));
-        if (attributes != null) {
-            for (Map.Entry<String, Data> entry : attributes.entrySet()) {
-                Data data = entry.getValue();
-                int len = (data == null) ? 0 : data.dataSize();
-                sb.append("\n\t");
-                sb.append(entry.getKey() + "[" + len + "]");
-            }
+        sb.append(", attributes=").append(attributes.size());
+        for (Map.Entry<String, Data> entry : attributes.entrySet()) {
+            Data data = entry.getValue();
+            int len = (data == null) ? 0 : data.dataSize();
+            sb.append("\n\t");
+            sb.append(entry.getKey()).append("[").append(len).append("]");
         }
         sb.append("\n}");
         return sb.toString();

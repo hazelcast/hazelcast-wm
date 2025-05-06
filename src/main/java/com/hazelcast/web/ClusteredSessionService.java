@@ -32,7 +32,10 @@ import com.hazelcast.web.entryprocessor.GetAttributeNamesEntryProcessor;
 import com.hazelcast.web.entryprocessor.GetSessionStateEntryProcessor;
 import com.hazelcast.web.entryprocessor.SessionUpdateEntryProcessor;
 
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.ServletException;
+import org.springframework.lang.NonNullFields;
+
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -310,8 +313,8 @@ public class ClusteredSessionService {
      */
     private static final class EnsureInstanceThreadFactory implements ThreadFactory {
 
-        public Thread newThread(final Runnable r) {
-            final Thread thread = new EnsureInstanceThread(r, ".hazelcast-wm.ensureInstance");
+        public Thread newThread(final @Nonnull Runnable runnable) {
+            final Thread thread = new EnsureInstanceThread(runnable, ".hazelcast-wm.ensureInstance");
             thread.setDaemon(true);
             return thread;
         }

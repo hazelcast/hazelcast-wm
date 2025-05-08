@@ -310,6 +310,11 @@ request parameter. You can enable it in your `web.xml` file:
 Note that this causes Hazelcast's `WebFilter` to consume the `ServletRequest#getInputStream` (as it
 needs to examine request parameters) so it will not be available to any servlet that is filtered by this `WebFilter`.
 
+# Upgrading from v5.0
+
+There is a guide available to help you upgrade your hazelcast-wm from v5.0 to v5.1. You can find it
+[here](./upgrade-guides/5.0-v5.1.md).
+
 # Upgrading from v4.0
 
 There is a guide available to help you upgrade your hazelcast-wm from v4.0 to v5.0. You can find it

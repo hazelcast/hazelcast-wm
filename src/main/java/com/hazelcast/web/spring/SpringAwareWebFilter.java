@@ -67,7 +67,7 @@ public class SpringAwareWebFilter extends WebFilter {
                 sessionRegistry.removeSessionInformation(originalSessionId);
                 // Publish event if this session is not registered
                 if (!isSessionRegistered(session.getId())) {
-                    /**
+                    /*
                      * Publish an event to notify
                      * {@link org.springframework.security.core.session.SessionRegistry} instance.
                      * So Spring knows our Hazelcast session.
@@ -105,7 +105,7 @@ public class SpringAwareWebFilter extends WebFilter {
                     // If original session id is registered already, we don't need it.
                     // So, we should remove it also.
                     sessionRegistry.removeSessionInformation(originalSessionId);
-                    /**
+                    /*
                      * Publish an event to notify
                      * {@link org.springframework.security.core.session.SessionRegistry} instance.
                      * So Spring clears information about our Hazelcast session.

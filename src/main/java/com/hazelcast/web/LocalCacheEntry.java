@@ -15,6 +15,8 @@
 
 package com.hazelcast.web;
 
+import java.util.Objects;
+
 /**
  * LocalCacheEntry which is used store cache entries inside
  * {@link WebFilter}
@@ -138,7 +140,7 @@ public class LocalCacheEntry {
         if (reload != that.reload || removed != that.removed || dirty != that.dirty || transientEntry != that.transientEntry) {
             return false;
         }
-        return !(value != null ? !value.equals(that.value) : that.value != null);
+        return Objects.equals(value, that.value);
 
     }
 

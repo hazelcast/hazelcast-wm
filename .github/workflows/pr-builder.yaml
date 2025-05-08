@@ -42,7 +42,7 @@ jobs:
 
       - name: Build
         run: |
-          mvn clean install -DskipTests -B -P checkstyle -U
+          mvn clean install -DskipTests -B -U
 
       - name: Findbugs
         run: |

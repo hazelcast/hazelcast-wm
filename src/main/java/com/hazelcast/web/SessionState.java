@@ -20,6 +20,7 @@ import com.hazelcast.internal.serialization.Data;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
+import jakarta.annotation.Nonnull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import static java.util.Objects.requireNonNull;
 
 public class SessionState implements IdentifiedDataSerializable {
 
+    @Nonnull
     private final Map<String, Data> attributes = new HashMap<>(1);
 
     @Override

@@ -11,6 +11,7 @@
 * [Defining Session Expiry](#defining-session-expiry)
 * [Using Sticky Sessions](#using-sticky-sessions)
 * [Marking Transient Attributes](#marking-transient-attributes)
+* [Upgrading from v5.0](#upgrading-from-v50)
 * [Upgrading from v4.0](#upgrading-from-v40)
 
 # Filter Based Web Session Replication

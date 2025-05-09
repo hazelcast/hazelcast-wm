@@ -17,7 +17,7 @@
     <name>hazelcast-wm</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-wm</artifactId>
-    <version>5.1</version>
+    <version>5.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Hazelcast In-Memory DataGrid Web Module Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -78,7 +78,7 @@
         <connection>scm:git:git://github.com/hazelcast/hazelcast-wm.git</connection>
         <developerConnection>scm:git:git@github.com:hazelcast/hazelcast-wm.git</developerConnection>
         <url>https://github.com/hazelcast/hazelcast/</url>
-        <tag>v5.1</tag>
+        <tag>HEAD</tag>
     </scm>
     <developers>
         <developer>

@@ -53,7 +53,7 @@ jobs:
           mvn verify -B -Dmaven.test.failure.ignore=false
 
       - name: Publish Test results
-        uses: EnricoMi/publish-unit-test-result-action@170bf24d20d201b842d7a52403b73ed297e6645b
+        uses: EnricoMi/publish-unit-test-result-action@afb2984f4d89672b2f9d9c13ae23d53779671984
         if: ${{ !cancelled() }}
         with:
           files: "**/TEST-*.xml"

@@ -40,7 +40,7 @@
         <jsp.api.version>4.0.0</jsp.api.version>
         <servlet.api.version>6.1.0</servlet.api.version>
 
-        <org.springframework.version>6.2.1</org.springframework.version>
+        <org.springframework.version>6.2.7</org.springframework.version>
         <spring-security.version>6.4.2</spring-security.version>
         <jetty.maven.plugin.version>11.0.24</jetty.maven.plugin.version>
         <tomcat.version>11.0.3</tomcat.version>

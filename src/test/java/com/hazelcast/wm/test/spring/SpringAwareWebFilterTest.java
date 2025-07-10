@@ -86,7 +86,7 @@ public class SpringAwareWebFilterTest extends SpringAwareWebFilterTestSupport {
     @Test
     public void testStaleLocalCache() throws Exception {
         // Scenario: There are two server nodes (1 & 2) behind a load balancer. Each node handles a request prior to
-        // authentication so that both nodes have the Hazlecast session ID cached locally against a Tomcat session ID.
+        // authentication so that both nodes have the Hazelcast session ID cached locally against a Tomcat session ID.
         // Say node '1' performs the authentication on the login request. Node '2' should not attempt to use the
         // original unauthenticated hazelcast session that was destroyed by node '1'.
 

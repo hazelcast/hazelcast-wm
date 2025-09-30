@@ -47,7 +47,7 @@ public class HazelcastHttpSession implements HttpSession {
     private final boolean stickySession;
     private final boolean deferredWrite;
     // true when session is fetched from local cache
-    private boolean keepRemoteActive = true;
+    private volatile boolean keepRemoteActive = true;
     // only true if session is created first time in the cluster
     private volatile boolean clusterWideNew;
     private final Set<String> transientAttributes;

@@ -40,7 +40,7 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Deploy release
-        run: ./mvnw deploy --activate-profiles release -DskipTests -DretryFailedDeploymentCount=3 -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: ./mvnw deploy --activate-profiles release -DskipTests -DretryFailedDeploymentCount=3
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}

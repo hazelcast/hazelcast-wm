@@ -26,8 +26,9 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Deploy snapshot
-        run: ./mvnw deploy -Prelease-snapshot --batch-mode --update-snapshots -DskipTests -DretryFailedDeploymentCount=3 -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: ./mvnw deploy --activate-profiles release-snapshot --update-snapshots -DskipTests -DretryFailedDeploymentCount=3 -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_ARGS: --batch-mode --no-transfer-progress

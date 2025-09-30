@@ -40,11 +40,12 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Deploy release
-        run: ./mvnw --batch-mode deploy -Prelease -DskipTests -DretryFailedDeploymentCount=3 -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: ./mvnw deploy --activate-profiles release -DskipTests -DretryFailedDeploymentCount=3 -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SONATYPE_OSS_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_ARGS: --batch-mode --no-transfer-progress
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

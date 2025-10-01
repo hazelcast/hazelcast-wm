@@ -1,4 +1,4 @@
-name: PR builder is just a magic
+name: PR builder
 
 on:
   pull_request_target:
@@ -42,7 +42,7 @@ jobs:
 
       - name: Build
         run: |
-          mvn clean install -DskipTests -B -U
+          mvn clean install -DskipTests -B -P checkstyle -U
 
       - name: Findbugs
         run: |

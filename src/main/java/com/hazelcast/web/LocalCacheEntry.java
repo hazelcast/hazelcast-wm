@@ -24,7 +24,7 @@ import java.util.Objects;
 public class LocalCacheEntry {
 
     private volatile boolean reload;
-    private boolean removed;
+    private volatile boolean removed;
     private Object value;
     private volatile boolean dirty;
     private final boolean transientEntry;

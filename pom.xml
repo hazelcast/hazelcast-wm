@@ -59,7 +59,7 @@
         <maven.checkstyle.plugin.version>3.4.0</maven.checkstyle.plugin.version>
         <maven.spotbugs.plugin.version>4.9.3.2</maven.spotbugs.plugin.version>
         <maven.sonar.plugin.version>5.0.0.4389</maven.sonar.plugin.version>
-        <maven.jacoco.plugin.version>0.7.9</maven.jacoco.plugin.version>
+        <maven.jacoco.plugin.version>0.8.13</maven.jacoco.plugin.version>
         <maven-release-plugin-version>3.0.1</maven-release-plugin-version>
         <mockito.version>5.12.0</mockito.version>
 

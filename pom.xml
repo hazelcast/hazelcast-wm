@@ -52,7 +52,7 @@
         <maven.bundle.plugin.version>6.0.0</maven.bundle.plugin.version>
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
         <maven.gpg.plugin.version>3.2.8</maven.gpg.plugin.version>
-        <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
+        <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <bytebuddy.version>1.17.1</bytebuddy.version>
 
         <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>

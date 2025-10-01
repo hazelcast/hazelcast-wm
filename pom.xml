@@ -40,18 +40,18 @@
         <jsp.api.version>4.0.0</jsp.api.version>
         <servlet.api.version>6.1.0</servlet.api.version>
 
-        <org.springframework.version>6.2.1</org.springframework.version>
+        <org.springframework.version>6.2.11</org.springframework.version>
         <spring-security.version>6.4.2</spring-security.version>
         <jetty.maven.plugin.version>11.0.24</jetty.maven.plugin.version>
-        <tomcat.version>11.0.9</tomcat.version>
+        <tomcat.version>11.0.11</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
-        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
         <maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
         <maven.bundle.plugin.version>6.0.0</maven.bundle.plugin.version>
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
-        <maven.gpg.plugin.version>3.2.4</maven.gpg.plugin.version>
+        <maven.gpg.plugin.version>3.2.8</maven.gpg.plugin.version>
         <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
         <bytebuddy.version>1.17.1</bytebuddy.version>
 

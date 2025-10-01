@@ -28,7 +28,14 @@ jobs:
       MAVEN_ARGS: --batch-mode --no-transfer-progress
     steps:
       - name: Detect untrusted community PR
-        if: ${{ needs.check_for_membership.outputs.check-result == 'false' }}
+        if: >-
+          ${{ needs.check_for_membership.outputs.check-result == 'false' &&
+            (
+              github.actor != 'dependabot[bot]' &&
+              github.actor != 'renovate[bot]' &&
+              github.actor != 'mend[bot]'
+            )
+          }}
         run: |
           echo "::error::ERROR: Untrusted external PR. Must be reviewed and executed by Hazelcast" 1>&2;
           exit 1
@@ -54,7 +61,7 @@ jobs:
           mvn verify -Dmaven.test.failure.ignore=false
 
       - name: Publish Test results
-        uses: EnricoMi/publish-unit-test-result-action@170bf24d20d201b842d7a52403b73ed297e6645b
+        uses: EnricoMi/publish-unit-test-result-action@3a74b2957438d0b6e2e61d67b05318aa25c9e6c6
         if: ${{ !cancelled() }}
         with:
           files: "**/TEST-*.xml"

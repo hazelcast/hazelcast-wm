@@ -21,4 +21,5 @@ runs:
         server-id: ${{ inputs.server-id }}
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
+        gpg-passphrase: MAVEN_GPG_PASSPHRASE
         gpg-private-key: ${{ inputs.gpg-private-key }}

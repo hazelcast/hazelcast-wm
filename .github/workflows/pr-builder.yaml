@@ -24,7 +24,8 @@ jobs:
     # using ubicloud instead of "standard" ubuntu-latest fixes issue with members not being able to connect via multicast
     runs-on: ubicloud-standard-8
     needs: check_for_membership
-
+    env:
+      MAVEN_ARGS: --batch-mode --no-transfer-progress
     steps:
       - name: Detect untrusted community PR
         if: >-
@@ -49,15 +50,15 @@ jobs:
 
       - name: Build
         run: |
-          mvn clean install -DskipTests -B -P checkstyle -U
+          mvn clean install --activate-profiles checkstyle --update-snapshots -DskipTests
 
       - name: Findbugs
         run: |
-          mvn compile -Pfindbugs -B
+          mvn compile --activate-profiles findbugs
 
       - name: Verify
         run: |
-          mvn verify -B -Dmaven.test.failure.ignore=false
+          mvn verify -Dmaven.test.failure.ignore=false
 
       - name: Publish Test results
         uses: EnricoMi/publish-unit-test-result-action@3a74b2957438d0b6e2e61d67b05318aa25c9e6c6

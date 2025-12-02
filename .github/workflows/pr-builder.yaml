@@ -41,7 +41,7 @@ jobs:
           exit 1
 
       - name: Get all the letters, words and paragraphs needed for the spell!
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 

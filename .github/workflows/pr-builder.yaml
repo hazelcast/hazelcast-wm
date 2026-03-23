@@ -31,9 +31,9 @@ jobs:
         if: >-
           ${{ needs.check_for_membership.outputs.check-result == 'false' &&
             (
-              github.actor != 'dependabot[bot]' &&
-              github.actor != 'renovate[bot]' &&
-              github.actor != 'mend[bot]'
+              github.event.pull_request.user.login != 'dependabot[bot]' &&
+              github.event.pull_request.user.login != 'renovate[bot]' &&
+              github.event.pull_request.user.login != 'mend[bot]'
             )
           }}
         run: |

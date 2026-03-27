@@ -16,9 +16,8 @@ jobs:
         id: composite
         uses: hazelcast/hazelcast-tpm/membership@main
         with:
-          organization-name: 'hazelcast'
           member-name: ${{ github.actor }}
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ github.token }}
 
   build:
     # using ubicloud instead of "standard" ubuntu-latest fixes issue with members not being able to connect via multicast
@@ -37,7 +36,8 @@ jobs:
             )
           }}
         run: |
-          echo "::error::ERROR: Untrusted external PR. Must be reviewed and executed by Hazelcast" 1>&2;
+          source /dev/stdin <<< "$(curl --silent https://raw.githubusercontent.com/hazelcast/github-actions-common-scripts/main/logging.functions.sh)"
+          echoerr "Untrusted external PR. Must be reviewed and executed by Hazelcast"
           exit 1
 
       - name: Get all the letters, words and paragraphs needed for the spell!

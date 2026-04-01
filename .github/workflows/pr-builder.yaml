@@ -17,7 +17,7 @@ jobs:
         uses: hazelcast/hazelcast-tpm/membership@main
         with:
           member-name: ${{ github.actor }}
-          token: ${{ github.token }}
+          token: ${{ secrets.GH_TOKEN }}
 
   build:
     # using ubicloud instead of "standard" ubuntu-latest fixes issue with members not being able to connect via multicast

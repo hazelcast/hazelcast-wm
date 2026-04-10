@@ -43,7 +43,7 @@
         <org.springframework.version>6.2.17</org.springframework.version>
         <spring-security.version>6.5.9</spring-security.version>
         <jetty.maven.plugin.version>11.0.25</jetty.maven.plugin.version>
-        <tomcat.version>11.0.20</tomcat.version>
+        <tomcat.version>11.0.21</tomcat.version>
         <httpclient.version>4.5.13</httpclient.version>
 
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>

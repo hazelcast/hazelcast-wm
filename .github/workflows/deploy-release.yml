@@ -41,7 +41,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           MAVEN_ARGS: --batch-mode --no-transfer-progress
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           # We want to create draft release to be able to edit body before actually releasing it.
           # There is no automatic drafter in this repo.

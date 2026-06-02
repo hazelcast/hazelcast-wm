@@ -55,7 +55,7 @@
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <bytebuddy.version>1.18.8</bytebuddy.version>
 
-        <maven.surefire.plugin.version>3.5.5</maven.surefire.plugin.version>
+        <maven.surefire.plugin.version>3.5.6</maven.surefire.plugin.version>
         <maven.checkstyle.plugin.version>3.6.0</maven.checkstyle.plugin.version>
         <maven.spotbugs.plugin.version>4.9.8.3</maven.spotbugs.plugin.version>
         <maven.sonar.plugin.version>5.6.0.6792</maven.sonar.plugin.version>

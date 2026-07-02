@@ -40,7 +40,7 @@
         <jsp.api.version>4.0.0</jsp.api.version>
         <servlet.api.version>6.1.0</servlet.api.version>
 
-        <org.springframework.version>6.2.18</org.springframework.version>
+        <org.springframework.version>7.0.8</org.springframework.version>
         <spring-security.version>7.1.0</spring-security.version>
         <jetty.maven.plugin.version>11.0.25</jetty.maven.plugin.version>
         <tomcat.version>11.0.22</tomcat.version>
@@ -53,13 +53,13 @@
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>
         <maven.gpg.plugin.version>3.2.8</maven.gpg.plugin.version>
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
-        <bytebuddy.version>1.18.9</bytebuddy.version>
+        <bytebuddy.version>1.18.10</bytebuddy.version>
 
         <maven.surefire.plugin.version>3.5.6</maven.surefire.plugin.version>
         <maven.checkstyle.plugin.version>3.6.0</maven.checkstyle.plugin.version>
         <maven.spotbugs.plugin.version>4.9.8.3</maven.spotbugs.plugin.version>
         <maven.sonar.plugin.version>5.7.0.6970</maven.sonar.plugin.version>
-        <maven.jacoco.plugin.version>0.8.14</maven.jacoco.plugin.version>
+        <maven.jacoco.plugin.version>0.8.15</maven.jacoco.plugin.version>
         <maven-release-plugin-version>3.3.1</maven-release-plugin-version>
         <mockito.version>5.23.0</mockito.version>
 
@@ -325,7 +325,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>6.1.0</version>
+                <version>6.1.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

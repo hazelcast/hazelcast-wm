@@ -41,7 +41,7 @@ jobs:
           exit 1
 
       - name: Get all the letters, words and paragraphs needed for the spell!
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
@@ -61,7 +61,7 @@ jobs:
           mvn verify -Dmaven.test.failure.ignore=false
 
       - name: Publish Test results
-        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
+        uses: EnricoMi/publish-unit-test-result-action@d0a4676d0e0b938bc201470d88276b7c74c712b3 # v2.24.0
         if: ${{ !cancelled() }}
         with:
           files: "**/TEST-*.xml"

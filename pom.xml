@@ -47,7 +47,7 @@
         <httpclient.version>4.5.13</httpclient.version>
 
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
-        <maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
+        <maven.jar.plugin.version>3.5.1</maven.jar.plugin.version>
         <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
         <maven.bundle.plugin.version>6.1.0</maven.bundle.plugin.version>
         <maven.animal.sniffer.plugin.version>1.14</maven.animal.sniffer.plugin.version>

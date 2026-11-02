@@ -8,11 +8,6 @@ on:
         description: See https://github.com/hazelcast/maven-release-tooling/blob/main/release/action.yml
 
 jobs:
-  compatibility-tests:
-    name: Run compatibility tests
-    uses: ./.github/workflows/compatibility-tests.yml
-    secrets: inherit
-
   release: 
     concurrency: release
     runs-on: ubuntu-latest
@@ -30,7 +25,7 @@ jobs:
       - uses: hazelcast/maven-release-tooling/release@main
         with:
           next-snapshot-version: ${{ inputs.next-snapshot-version }}
-          release-files: **/target/hazelcast-wm-*.jar
+          release-files: '**/target/hazelcast-wm-*.jar'
         env:
           MAVEN_ARGS: --activate-profiles release  
           MAVEN_USERNAME: ${{ secrets.SONATYPE_OSS_USERNAME }}

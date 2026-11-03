@@ -77,7 +77,7 @@
     <scm>
         <connection>scm:git:git://github.com/hazelcast/hazelcast-wm.git</connection>
         <developerConnection>scm:git:git@github.com:hazelcast/hazelcast-wm.git</developerConnection>
-        <url>https://github.com/hazelcast/hazelcast/</url>
+        <url>https://github.com/hazelcast/hazelcast-wm</url>
         <tag>HEAD</tag>
     </scm>
     <developers>
@@ -221,6 +221,7 @@
                                     org.springframework.security.web.session;version="[6,8)";resolution:=optional,
                                     org.springframework.web.context;resolution:=optional,
                                     org.springframework.web.context.support;resolution:=optional,
+                                    jakarta.annotation;resolution:=optional,
                                     *
                                 </Import-Package>
                                 <Fragment-Host>com.hazelcast</Fragment-Host>
@@ -375,6 +376,7 @@
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>3.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
 
